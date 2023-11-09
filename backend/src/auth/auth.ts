@@ -22,7 +22,6 @@ export const verifyAdmin = (
     const decoded = jwt.verify(token, JWT_SECRET_KEY, {
       algorithms: ["HS256"],
     }) as jwt.JwtPayload;
-
     if (decoded.role !== "admin") {
       throw new AppError("Access denied. Only admins are allowed.", 403);
     }
@@ -30,6 +29,8 @@ export const verifyAdmin = (
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       next(new AppError(`JWT error: ${error.message}`, 401));
+    } else if (error instanceof AppError) {
+      next(error);
     } else {
       next(new AppError("An error occurred while verifying the token.", 500));
     }
@@ -52,7 +53,6 @@ export const verifyAdminAndGuard = (
     const decoded = jwt.verify(token, JWT_SECRET_KEY, {
       algorithms: ["HS256"],
     }) as jwt.JwtPayload;
-
     if (decoded.role !== "admin" && decoded.role !== "guard") {
       throw new AppError("Access denied.", 403);
     }
@@ -60,6 +60,8 @@ export const verifyAdminAndGuard = (
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       next(new AppError(`JWT error: ${error.message}`, 401));
+    } else if (error instanceof AppError) {
+      next(error);
     } else {
       next(new AppError("An error occurred while verifying the token.", 500));
     }
