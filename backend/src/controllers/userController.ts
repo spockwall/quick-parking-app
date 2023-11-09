@@ -62,13 +62,19 @@ export const getUserById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      // Handle the case where the user ID is not provided
+      return next(new AppError("User ID is required", 400));
+    }
     const user = await prisma.user.findUnique({ where: { id } });
 
-    if (user) {
-      res.json(user);
-    } else {
-      next(new AppError("User not found", 404));
+    if (!user) {
+      // Handle the case where the user does not exist
+      return next(new AppError("User not found", 404));
     }
+
+    res.json(user);
   } catch (error) {
     next(new AppError("Error retrieving user by id", 500));
   }
@@ -82,6 +88,16 @@ export const updateUser = async (
   try {
     const { id } = req.params;
     const updateData = req.body;
+
+    if (!id) {
+      return next(new AppError("User ID is required for update", 400));
+    }
+
+    const user = await prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
 
     await prisma.user.update({ where: { id }, data: updateData });
 
@@ -98,10 +114,20 @@ export const deleteUser = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return next(new AppError("User ID is required for deletion", 400));
+    }
+
+    const user = await prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      // Handle the case where the user does not exist
+      return next(new AppError("User not found", 404));
+    }
 
     await prisma.user.delete({ where: { id } });
 
-    res.status(204).json({ message: "User deleted successfully" });
+    res.status(204).send();
   } catch (error) {
     next(new AppError("Error deleting user", 500));
   }

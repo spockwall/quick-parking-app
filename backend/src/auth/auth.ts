@@ -19,7 +19,6 @@ export const verifyAdmin = (
     }
 
     const token = authHeader.split(" ")[1];
-    // Explicitly specifying the HS256 algorithm for verification
     const decoded = jwt.verify(token, JWT_SECRET_KEY, {
       algorithms: ["HS256"],
     }) as jwt.JwtPayload;
@@ -50,7 +49,6 @@ export const verifyAdminAndGuard = (
     }
 
     const token = authHeader.split(" ")[1];
-    // Explicitly specifying the HS256 algorithm for verification
     const decoded = jwt.verify(token, JWT_SECRET_KEY, {
       algorithms: ["HS256"],
     }) as jwt.JwtPayload;
