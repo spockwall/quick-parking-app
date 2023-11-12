@@ -2,6 +2,7 @@ import { Prisma, PrismaClient, Role, Status } from "@prisma/client";
 import { Request, Response } from "express";
 import { AppError } from "../err/errorHandler";
 import "express-async-errors";
+import { parsePaginationParams } from "../utils/pagination";
 
 const prisma = new PrismaClient();
 
@@ -13,8 +14,7 @@ interface QueryParams {
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   const { offset, limit } = req.query as QueryParams;
 
-  const skipValue = offset ? parseInt(offset, 10) : 0;
-  const takeValue = limit ? parseInt(limit, 10) : 10;
+  const { skipValue, takeValue } = parsePaginationParams(offset, limit);
 
   const users = await prisma.user.findMany({
     skip: skipValue,
