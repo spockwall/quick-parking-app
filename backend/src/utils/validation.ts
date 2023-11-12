@@ -2,6 +2,7 @@ import Joi from "joi";
 import { Role, Status } from "@prisma/client";
 
 //TODO register needed？
+//TODO password needed?
 export const userSchema = Joi.object({
   email: Joi.string().email(),
   name: Joi.string(),
