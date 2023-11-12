@@ -1,7 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "../err/errorHandler";
+import { handleAuthError } from "../err/authErr";
 require("dotenv").config();
+
+enum Role {
+  Staff = "staff",
+  Admin = "admin",
+  Guard = "guard",
+}
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 if (!JWT_SECRET_KEY) {
@@ -13,7 +20,19 @@ const verifyToken = (req: Request) => {
   if (!token) {
     throw new AppError("No token provided", 401);
   }
-  return jwt.verify(token, JWT_SECRET_KEY) as jwt.JwtPayload;
+  try {
+    return jwt.verify(token, JWT_SECRET_KEY) as jwt.JwtPayload;
+  } catch (error) {
+    const jwtError = error as Error;
+    throw new AppError(`Token verification error: ${jwtError.message}`, 401);
+  }
+};
+
+const verifyRole = (req: Request, roles: Role[]) => {
+  const decoded = verifyToken(req);
+  if (!roles.includes(decoded.role as Role)) {
+    throw new AppError("Access denied", 403);
+  }
 };
 
 export const verifyAdmin = (
@@ -22,26 +41,10 @@ export const verifyAdmin = (
   next: NextFunction
 ) => {
   try {
-    const decoded = verifyToken(req);
-    if (decoded.role !== "admin") {
-      throw new AppError("Access denied. Only admins are allowed", 403);
-    }
+    verifyRole(req, [Role.Admin]);
     next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      next(new AppError(`JWT error: ${error.message}`, 401));
-    } else if (error instanceof AppError) {
-      next(error);
-    } else {
-      next(
-        error instanceof AppError
-          ? error
-          : new AppError(
-              "An unexpected error occurred while verifying the token",
-              500
-            )
-      );
-    }
+    handleAuthError(error, next);
   }
 };
 
@@ -51,25 +54,9 @@ export const verifyAdminAndGuard = (
   next: NextFunction
 ) => {
   try {
-    const decoded = verifyToken(req);
-    if (!["admin", "guard"].includes(decoded.role)) {
-      throw new AppError("Access denied", 403);
-    }
+    verifyRole(req, [Role.Admin, Role.Guard]);
     next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      next(new AppError(`JWT error: ${error.message}`, 401));
-    } else if (error instanceof AppError) {
-      next(error);
-    } else {
-      next(
-        error instanceof AppError
-          ? error
-          : new AppError(
-              "An unexpected error occurred while verifying the token",
-              500
-            )
-      );
-    }
+    handleAuthError(error, next);
   }
 };

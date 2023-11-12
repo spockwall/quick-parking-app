@@ -8,12 +8,24 @@ datasource db {
 }
 
 model User {
-  id                 String   @id @default(uuid())
+  id                 String   @id
   name               String
   password           String
   phone              String
   email              String
   licensePlateNumber String[]
-  role               String
-  status             String
+  role               Role
+  status             Status
+}
+
+enum Role {
+  staff
+  admin
+  guard
+}
+
+enum Status {
+  common
+  difficulty
+  disability
 }

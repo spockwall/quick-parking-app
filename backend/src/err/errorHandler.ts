@@ -12,9 +12,8 @@ export class AppError extends Error {
   }
 }
 
-// Error handling middleware
 export const errorHandler = (
-  err: AppError,
+  err: Error | AppError,
   req: Request,
   res: Response,
   next: NextFunction
@@ -23,11 +22,16 @@ export const errorHandler = (
     return next(err);
   }
 
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
+  if (!(err instanceof AppError)) {
+    err = new AppError("An unexpected error occurred", 500);
+  }
 
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
+  const appError = err as AppError;
+
+  const errorResponse = {
+    status: appError.status,
+    message: appError.message,
+  };
+
+  res.status(appError.statusCode).json(errorResponse);
 };

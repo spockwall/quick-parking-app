@@ -1,12 +1,18 @@
 import express from "express";
+import "express-async-errors";
 import userRoutes from "./routes/userRoutes";
+import { errorHandler } from "./err/errorHandler";
+import cookieParser from "cookie-parser";
+import { json, urlencoded } from "body-parser";
 
 const app = express();
-const cookieParser = require("cookie-parser");
 
-app.use(express.json());
+app.use(json());
+app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/", userRoutes);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
