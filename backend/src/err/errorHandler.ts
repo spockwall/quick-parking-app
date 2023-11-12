@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 export class AppError extends Error {
@@ -22,11 +23,23 @@ export const errorHandler = (
     return next(err);
   }
 
-  if (!(err instanceof AppError)) {
-    err = new AppError("An unexpected error occurred", 500);
+  let error = err;
+
+  if (!(error instanceof AppError)) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        error = new AppError("User with given ID already exists", 400);
+      } else if (error.code === "P2025") {
+        error = new AppError("User not found", 404);
+      } else {
+        error = new AppError("Database error", 500);
+      }
+    } else {
+      error = new AppError("An unexpected error occurred", 500);
+    }
   }
 
-  const appError = err as AppError;
+  const appError = error as AppError;
 
   const errorResponse = {
     status: appError.status,
