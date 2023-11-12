@@ -15,48 +15,35 @@ if (!JWT_SECRET_KEY) {
   throw new AppError("JWT_SECRET_KEY must be defined", 500);
 }
 
-const verifyToken = (req: Request) => {
+const verifyToken = (req: Request, next: NextFunction) => {
   const token = req.cookies.jwt;
   if (!token) {
-    throw new AppError("No token provided", 401);
+    return next(new AppError("No token provided", 401));
   }
   try {
     return jwt.verify(token, JWT_SECRET_KEY) as jwt.JwtPayload;
   } catch (error) {
-    const jwtError = error as Error;
-    throw new AppError(`Token verification error: ${jwtError.message}`, 401);
-  }
-};
-
-const verifyRole = (req: Request, roles: Role[]) => {
-  const decoded = verifyToken(req);
-  if (!roles.includes(decoded.role as Role)) {
-    throw new AppError("Access denied", 403);
-  }
-};
-
-export const verifyAdmin = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    verifyRole(req, [Role.Admin]);
-    next();
-  } catch (error) {
     handleAuthError(error, next);
   }
 };
 
-export const verifyAdminAndGuard = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    verifyRole(req, [Role.Admin, Role.Guard]);
-    next();
-  } catch (error) {
-    handleAuthError(error, next);
-  }
+const hasRequiredRole = (decoded: jwt.JwtPayload, roles: Role[]): boolean => {
+  return roles.some((role) => decoded.role === role);
 };
+
+const verifyRolesMiddleware = (roles: Role[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const decoded = verifyToken(req, next);
+    if (decoded && hasRequiredRole(decoded, roles)) {
+      next();
+    } else {
+      next(new AppError("Access denied", 403));
+    }
+  };
+};
+
+export const verifyAdmin = verifyRolesMiddleware([Role.Admin]);
+export const verifyAdminAndGuard = verifyRolesMiddleware([
+  Role.Admin,
+  Role.Guard,
+]);
