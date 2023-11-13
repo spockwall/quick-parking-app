@@ -1,7 +1,7 @@
 import { Router } from "express";
 import UserController from "../controllers/userController";
 
-const router = Router();
-const userController = new UserController(router);
+const userRouter = Router();
+const userController = new UserController(userRouter);
 
-export default router;
+export default userRouter;

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Request, Response, Router } from "express";
 import { AppError } from "../err/errorHandler";
 import "express-async-errors";
@@ -19,12 +19,12 @@ class UserController {
 
   private initRoutes() {
     this.router
-      .route("/users")
+      .route("/")
       .get(verifyAdminAndGuard, this.getUsers)
       .post(verifyAdmin, this.createUser);
 
     this.router
-      .route("/users/:id")
+      .route("/:id")
       .get(verifyAdminAndGuard, this.getUserById)
       .patch(verifyAdmin, this.updateUser)
       .delete(verifyAdmin, this.deleteUser);
