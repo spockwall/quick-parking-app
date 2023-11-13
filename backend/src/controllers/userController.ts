@@ -34,11 +34,20 @@ class UserController {
     const { offset, limit } = req.query as QueryParams;
     const { skipValue, takeValue } = parsePaginationParams(offset, limit);
 
+    // don't return password
     const users = await this.prisma.user.findMany({
       skip: skipValue,
       take: takeValue,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        licensePlateNumber: true,
+        role: true,
+        status: true,
+      },
     });
-
     res.json({ users });
   };
 
@@ -49,7 +58,8 @@ class UserController {
     }
 
     const user = await this.prisma.user.create({ data: newUser });
-    res.status(201).json({ message: "User created successfully", user });
+    const { password, ...userWithoutPassword } = user;
+    res.status(201).json({ message: "User created successfully", user: userWithoutPassword });
   };
 
   getUserById = async (req: Request, res: Response): Promise<void> => {
