@@ -29,3 +29,27 @@ enum Status {
   difficulty
   disability
 }
+
+model ParkingSpace {
+  id                 Int       @id @default(autoincrement())
+  SpaceId            String    @unique
+  state              State
+  type               Type
+  startTime          Int?      
+  occupant           String?     
+  floor              Int
+  slot               Int
+  licensePlateNumber String?   
+}
+
+enum State{
+  available
+  occupied
+  error
+}
+
+enum Type{
+  general
+  disabledOnly
+  difficulty
+}
