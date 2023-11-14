@@ -3,11 +3,9 @@ import { Request, Response } from "express";
 import { AppError } from "../err/errorHandler";
 import "express-async-errors";
 import { parkingSpaceSchema } from "../utils/validation";
-import { encryptPswd, comparePswd } from "../utils/encrypt";
-import jwt from "jsonwebtoken";
 import { QueryParams } from "../utils/queryParams";
 import { parsePaginationParams } from "../utils/pagination";
-import { verifyAdmin, verifyAdminAndGuard } from "../auth/auth";
+
 
 const prisma = new PrismaClient();
 

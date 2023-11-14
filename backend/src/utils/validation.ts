@@ -1,6 +1,5 @@
 import Joi from "joi";
-import { Role, Status } from "@prisma/client";
-import {State, Type} from "@prisma/client";
+import { Role, Status, State, Type} from "@prisma/client";
 
 //TODO register needed？
 export const userSchema = Joi.object({
