@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Role, Status, State, Type} from "@prisma/client";
+import { Role, Status, State } from "@prisma/client";
 
 //TODO register needed？
 export const userSchema = Joi.object({
@@ -16,7 +16,7 @@ export const userSchema = Joi.object({
 export const parkingSpaceSchema = Joi.object({
   SpaceId: Joi.string(),
   state: Joi.string().valid(...Object.values(State)),
-  type: Joi.string().valid(...Object.values(Type)),
+  type: Joi.string().valid(...Object.values(Status)),
   startTime: Joi.number(),
   occupant: Joi.number().unsafe(),
   floor: Joi.number(),

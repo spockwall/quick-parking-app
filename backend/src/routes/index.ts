@@ -5,8 +5,8 @@ import parkingSpacesRouter from "./parkingSpacesRoutes";
 
 const router = Router();
 
-router.use('/users',userRouter);
-router.use('/account',accountRouter);
-router.use(parkingSpacesRouter);
+router.use("/users", userRouter);
+router.use("/auth", accountRouter);
+router.use("/parking_spaces", parkingSpacesRouter);
 
 export default router;

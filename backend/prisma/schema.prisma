@@ -34,7 +34,7 @@ model ParkingSpace {
   id                 Int       @id @default(autoincrement())
   SpaceId            String    @unique
   state              State
-  type               Type
+  type               Status
   startTime          Int?      
   occupant           String?     
   floor              Int
@@ -46,10 +46,4 @@ enum State{
   available
   occupied
   error
-}
-
-enum Type{
-  general
-  disabledOnly
-  difficulty
 }
