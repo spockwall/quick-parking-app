@@ -34,15 +34,15 @@ enum Status {
 
 model ParkingSpace {
   id                 Int       @id @default(autoincrement())
-  SpaceId            String    @unique
+  spaceId            String    @unique
   state              State
-  type               Status
+  status               Status
   startTime          Int?      
   occupant           String?     
   floor              Int
   slot               Int
   licensePlateNumber String?  
-  User               User?     @relation(fields: [occupant], references: [id])
+  user               User?     @relation(fields: [occupant], references: [id])
  
 }
 

@@ -5,7 +5,6 @@ import "express-async-errors";
 import { parsePaginationParams } from "../utils/pagination";
 import { createUserSchema, userSchema } from "../utils/validation";
 import { QueryParams } from "../utils/params";
-import { verifyAdmin, verifyAdminAndGuard } from "../auth/auth";
 import { encryptPswd } from "../utils/encrypt";
 
 const prisma = new PrismaClient();

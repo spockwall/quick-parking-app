@@ -25,11 +25,11 @@ export const userSchema = Joi.object({
 });
 
 export const parkingSpaceSchema = Joi.object({
-  SpaceId: Joi.string(),
+  spaceId: Joi.string(),
   state: Joi.string().valid(...Object.values(State)),
-  type: Joi.string().valid(...Object.values(Status)),
+  status: Joi.string().valid(...Object.values(Status)),
   startTime: Joi.number(),
-  occupant: Joi.number().unsafe(),
+  occupant: Joi.string(),
   floor: Joi.number(),
   slot: Joi.number(),
   licensePlateNumber: Joi.string(),

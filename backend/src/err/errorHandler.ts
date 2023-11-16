@@ -24,7 +24,7 @@ export const errorHandler = (
   }
 
   let error = err;
-  // console.log(error);
+  console.log(error);
 
   if (!(error instanceof AppError)) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
