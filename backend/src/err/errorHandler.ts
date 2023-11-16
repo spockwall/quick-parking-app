@@ -24,6 +24,7 @@ export const errorHandler = (
   }
 
   let error = err;
+  // console.log(error);
 
   if (!(error instanceof AppError)) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -35,6 +36,7 @@ export const errorHandler = (
         error = new AppError("Database error", 500);
       }
     } else {
+      // console.log(err);
       error = new AppError("An unexpected error occurred", 500);
     }
   }

@@ -1,7 +1,19 @@
 import { Router } from "express";
-import UserController from "../controllers/userController";
+import {
+  getUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+} from "../controllers/userController";
+import { verifyAdmin, verifyAdminAndGuard } from "../auth/auth";
 
 const userRouter = Router();
-const userController = new UserController(userRouter);
+
+userRouter.get("/", verifyAdminAndGuard, getUsers);
+userRouter.post("/", verifyAdmin, createUser);
+userRouter.get("/:id", verifyAdminAndGuard, getUserById);
+userRouter.patch("/:id", verifyAdmin, updateUser);
+userRouter.delete("/:id", verifyAdmin, deleteUser);
 
 export default userRouter;

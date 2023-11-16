@@ -9,13 +9,15 @@ datasource db {
 
 model User {
   id                 String   @id
-  name               String
+  name               String?
   password           String
-  phone              String
-  email              String
+  phone              String?
+  email              String?
   licensePlateNumber String[]
   role               Role
-  status             Status
+  status             Status?
+  parkingSpaces      ParkingSpace[]
+
 }
 
 enum Role {
@@ -39,7 +41,9 @@ model ParkingSpace {
   occupant           String?     
   floor              Int
   slot               Int
-  licensePlateNumber String?   
+  licensePlateNumber String?  
+  User               User?     @relation(fields: [occupant], references: [id])
+ 
 }
 
 enum State{

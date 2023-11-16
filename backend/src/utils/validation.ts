@@ -1,16 +1,27 @@
 import Joi from "joi";
 import { Role, Status, State } from "@prisma/client";
 
-//TODO register needed？
+export const createUserSchema = Joi.object({
+  id: Joi.string().required(),
+  password: Joi.string().required(),
+  role: Joi.string()
+    .valid(...Object.values(Role))
+    .required(),
+});
+
 export const userSchema = Joi.object({
-  email: Joi.string().email(),
-  name: Joi.string(),
-  id: Joi.string(),
-  password: Joi.string(),
-  phone: Joi.string(),
-  licensePlateNumber: Joi.array().items(Joi.string()),
-  role: Joi.string().valid(...Object.values(Role)),
-  status: Joi.string().valid(...Object.values(Status)),
+  email: Joi.string().email().required(),
+  name: Joi.string().required(),
+  id: Joi.string().required(),
+  password: Joi.string().required(),
+  phone: Joi.string().required(),
+  licensePlateNumber: Joi.array().items(Joi.string()).required(),
+  role: Joi.string()
+    .valid(...Object.values(Role))
+    .required(),
+  status: Joi.string()
+    .valid(...Object.values(Status))
+    .required(),
 });
 
 export const parkingSpaceSchema = Joi.object({
