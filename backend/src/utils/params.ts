@@ -14,6 +14,6 @@ export interface CommonQueryParams {
 }
 
 export interface LoginParams {
-  id: string;
+  userId: string;
   password: string;
 }

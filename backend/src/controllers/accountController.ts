@@ -16,12 +16,15 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     throw new AppError("UserSchema Validation error", 400);
   }
 
-  const { id } = req.body;
+  const { userId } = req.body;
 
   if (updatedUser.password) {
     updatedUser.password = await encryptPswd(updatedUser.password);
   }
-  const user = await prisma.user.update({ where: { id }, data: updatedUser });
+  const user = await prisma.user.update({
+    where: { userId },
+    data: updatedUser,
+  });
 
   const { password, ...userWithoutPassword } = user;
   res
@@ -31,13 +34,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 // use jwt to create a token and send it back to the client
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const { id, password } = req.body as LoginParams;
+  const { userId, password } = req.body as LoginParams;
 
-  if (!id || !password) {
+  if (!userId || !password) {
     throw new AppError("ID and password are required", 400);
   }
 
-  const user = await prisma.user.findFirst({ where: { id } });
+  const user = await prisma.user.findFirst({ where: { userId } });
 
   if (!user) {
     throw new AppError("User not found", 404);
@@ -48,9 +51,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
   // create a token and return
   const tokenParams = {
-    id: user.id,
+    id: user.userId,
     name: user.name,
-    licensePlateNumber: user.licensePlateNumber.toString(),
     role: user.role,
   };
   const token = jwt.sign(tokenParams, process.env.JWT_SECRET_KEY!, {

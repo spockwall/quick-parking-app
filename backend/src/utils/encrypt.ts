@@ -3,7 +3,6 @@ import { genSalt, hash, compare } from "bcrypt";
 export const encryptPswd = async (password: string): Promise<string> => {
   const salt = await genSalt(10);
   const hashedPassword = await hash(password, salt);
-  //   console.log(hashedPassword);
   return hashedPassword;
 };
 

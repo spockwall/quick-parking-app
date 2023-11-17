@@ -7,16 +7,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ParkingSpace {
+  spaceId String   @id @unique
+  state   State
+  status  Status
+  floor   Int
+  slot    Int
+  records Record[]
+}
+
+model Record {
+  id                 Int          @id @default(autoincrement())
+  spaceId            String
+  userId             String
+  licensePlateNumber String
+  enterTime          Int
+  exitTime           Int?
+  parkingSpace       ParkingSpace @relation(fields: [spaceId], references: [spaceId])
+  user               User         @relation(fields: [userId], references: [userId])
+}
+
 model User {
-  id                 String   @id
-  name               String?
-  password           String
-  phone              String?
-  email              String?
-  licensePlateNumber String[]
-  role               Role
-  status             Status?
-  parkingSpaces      ParkingSpace[]
+  userId        String         @id
+  name          String?
+  password      String
+  phone         String?
+  email         String?
+  role          Role
+  status        Status? 
+  records       Record[]
+  licensePlates LicensePlate[]
+   
+}
+
+model LicensePlate {
+  licensePlateNumber String   @id
+  userId             String
+  user               User     @relation(fields: [userId], references: [userId])
 
 }
 
@@ -32,21 +59,7 @@ enum Status {
   disability
 }
 
-model ParkingSpace {
-  id                 Int       @id @default(autoincrement())
-  spaceId            String    @unique
-  state              State
-  status               Status
-  startTime          Int?      
-  occupant           String?     
-  floor              Int
-  slot               Int
-  licensePlateNumber String?  
-  user               User?     @relation(fields: [occupant], references: [id])
- 
-}
-
-enum State{
+enum State {
   available
   occupied
   error

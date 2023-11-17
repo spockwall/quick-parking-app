@@ -12,8 +12,8 @@ const userRouter = Router();
 
 userRouter.get("/", verifyAdminAndGuard, getUsers);
 userRouter.post("/", verifyAdmin, createUser);
-userRouter.get("/:id", verifyAdminAndGuard, getUserById);
-userRouter.patch("/:id", verifyAdmin, updateUser);
-userRouter.delete("/:id", verifyAdmin, deleteUser);
+userRouter.get("/:userId", verifyAdminAndGuard, getUserById);
+userRouter.patch("/:userId", verifyAdmin, updateUser);
+userRouter.delete("/:userId", verifyAdmin, deleteUser);
 
 export default userRouter;

@@ -42,15 +42,11 @@ export const getParkingSpaces = async (
     skip: skipValue,
     take: takeValue,
     select: {
-      id: true,
       spaceId: true,
       state: true,
       status: true,
-      startTime: true,
-      occupant: true,
       floor: true,
       slot: true,
-      licensePlateNumber: true,
     },
   });
 
@@ -70,15 +66,11 @@ export const getParkingSpaceById = async (
   const parkingSpace = await prisma.parkingSpace.findUnique({
     where: { spaceId },
     select: {
-      id: true,
       spaceId: true,
       state: true,
       status: true,
-      startTime: true,
-      occupant: true,
       floor: true,
       slot: true,
-      licensePlateNumber: true,
     },
   });
 
