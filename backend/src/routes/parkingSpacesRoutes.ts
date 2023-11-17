@@ -10,5 +10,5 @@ const parkingSpacesRouter = Router();
 
 parkingSpacesRouter.post("/", verifyAdminAndGuard, createParkingSpace);
 parkingSpacesRouter.get("/", verifyAdminAndGuard, getParkingSpaces);
-parkingSpacesRouter.get("/:SpaceId", verifyAdminAndGuard, getParkingSpaceById);
+parkingSpacesRouter.get("/:spaceId", verifyAdminAndGuard, getParkingSpaceById);
 export default parkingSpacesRouter;
