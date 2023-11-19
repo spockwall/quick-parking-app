@@ -99,6 +99,9 @@ export const updateUser = async (
     throw new AppError("User ID is required for update", 400);
   }
 
+  if (updateData.password) {
+    updateData.password = await encryptPswd(updateData.password);
+  }
   const { licensePlates, ...userData } = updateData;
   await prisma.user.update({ where: { userId }, data: userData });
 

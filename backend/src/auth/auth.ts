@@ -42,8 +42,27 @@ const verifyRolesMiddleware = (roles: Role[]) => {
   };
 };
 
+const isTheSameUser = (decoded: jwt.JwtPayload, userId: string): boolean => {
+  return decoded.id === userId;
+}
+
+export const verifyUserId = (req: Request, res: Response, next: NextFunction) => {
+  const decoded = verifyToken(req, next);
+  if (decoded && isTheSameUser(decoded, req.params.userId)) {
+    next();
+  } else {
+    next(new AppError("Access denied", 403));
+  }
+};
+
 export const verifyAdmin = verifyRolesMiddleware([Role.Admin]);
 export const verifyAdminAndGuard = verifyRolesMiddleware([
   Role.Admin,
   Role.Guard,
 ]);
+export const verifyAdminAndGuardAndStaff = verifyRolesMiddleware([
+  Role.Admin,
+  Role.Guard,
+  Role.Staff,
+]);
+

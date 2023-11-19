@@ -12,11 +12,9 @@ export const createParkingSpace = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  // try {
   const { error, value: newParkingSpace } = parkingSpaceSchema.validate(
     req.body
   );
-  // console.log(req.body);
   if (error) {
     throw new AppError("ParkingSpaceSchema Validation error", 400);
   }
@@ -26,10 +24,6 @@ export const createParkingSpace = async (
   res.status(200).json({
     message: "Parking space created successfully",
   });
-  // } catch (error) {
-  //   console.error("Error creating parking space:", error);
-  //   res.status(401).json({ message: "Could not create parking space" });
-  // }
 };
 export const getParkingSpaces = async (
   req: Request,
@@ -47,6 +41,17 @@ export const getParkingSpaces = async (
       status: true,
       floor: true,
       slot: true,
+      records: {
+        where: { exitTime: null },  // only get records where exitTime is null
+        select: {
+          id: true,
+          spaceId: true,
+          userId: true,
+          licensePlateNumber: true,
+          enterTime: true,
+          exitTime: true,
+        },
+      },
     },
   });
 
@@ -71,6 +76,67 @@ export const getParkingSpaceById = async (
       status: true,
       floor: true,
       slot: true,
+      records: {
+        where: { exitTime: null },  // only get records where exitTime is null
+        select: {
+          id: true,
+          spaceId: true,
+          userId: true,
+          licensePlateNumber: true,
+          enterTime: true,
+          exitTime: true,
+        },
+      },
+    },
+  });
+
+  if (!parkingSpace) {
+    throw new AppError("Parking space not found", 404);
+  }
+
+  res.status(200).json({ parkingSpace });
+};
+
+export const staffGetParkingSpaces = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { offset, limit } = req.query as QueryParams;
+  const { skipValue, takeValue } = parsePaginationParams(offset, limit);
+
+  const parkingSpaces = await prisma.parkingSpace.findMany({
+    skip: skipValue,
+    take: takeValue,
+    select: {
+      spaceId: true,
+      state: true,
+      status: true,
+      floor: true,
+      slot: true,
+    },
+  });
+
+  res.status(200).json({ parkingSpaces });
+};
+
+
+export const staffGetParkingSpaceByUid = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    throw new AppError("UserId is required", 400);
+  }
+  //Maybe we need to use findMany to handle the mutiple cars per user
+  const parkingSpace = await prisma.record.findMany({
+    where: { exitTime: null, userId: userId },
+    select: {
+      id: true,
+      spaceId: true,
+      userId: true,
+      enterTime: true,
     },
   });
 

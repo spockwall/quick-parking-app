@@ -35,7 +35,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 // use jwt to create a token and send it back to the client
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { userId, password } = req.body as LoginParams;
-
   if (!userId || !password) {
     throw new AppError("ID and password are required", 400);
   }
