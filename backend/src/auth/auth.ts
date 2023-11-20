@@ -44,9 +44,13 @@ const verifyRolesMiddleware = (roles: Role[]) => {
 
 const isTheSameUser = (decoded: jwt.JwtPayload, userId: string): boolean => {
   return decoded.id === userId;
-}
+};
 
-export const verifyUserId = (req: Request, res: Response, next: NextFunction) => {
+export const verifyUserId = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const decoded = verifyToken(req, next);
   if (decoded && isTheSameUser(decoded, req.params.userId)) {
     next();
@@ -65,4 +69,3 @@ export const verifyAdminAndGuardAndStaff = verifyRolesMiddleware([
   Role.Guard,
   Role.Staff,
 ]);
-
