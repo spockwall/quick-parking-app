@@ -9,29 +9,6 @@ import { LoginParams } from "../utils/params";
 
 const prisma = new PrismaClient();
 
-export const register = async (req: Request, res: Response): Promise<void> => {
-  const { error, value: updatedUser } = userSchema.validate(req.body);
-
-  if (error) {
-    throw new AppError("UserSchema Validation error", 400);
-  }
-
-  const { userId } = req.body;
-
-  if (updatedUser.password) {
-    updatedUser.password = await encryptPswd(updatedUser.password);
-  }
-  const user = await prisma.user.update({
-    where: { userId },
-    data: updatedUser,
-  });
-
-  const { password, ...userWithoutPassword } = user;
-  res
-    .status(201)
-    .json({ message: "User created successfully", user: userWithoutPassword });
-};
-
 // use jwt to create a token and send it back to the client
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { userId, password } = req.body as LoginParams;
@@ -50,7 +27,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
   // create a token and return
   const tokenParams = {
-    id: user.userId,
+    userId: user.userId,
     name: user.name,
     role: user.role,
   };

@@ -6,6 +6,7 @@ import { parsePaginationParams } from "../utils/pagination";
 import { createUserSchema, userSchema } from "../utils/validation";
 import { QueryParams } from "../utils/params";
 import { encryptPswd } from "../utils/encrypt";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
@@ -91,55 +92,85 @@ export const updateUser = async (
   res: Response
 ): Promise<void> => {
   const { userId } = req.params;
-  const { error, value: updateData } = userSchema.validate(req.body);
-  if (error) {
-    throw new AppError("Validation error: " + error.details[0].message, 400);
-  }
+  
   if (!userId) {
     throw new AppError("User ID is required for update", 400);
   }
 
-  if (updateData.password) {
-    updateData.password = await encryptPswd(updateData.password);
+  const { error, value: updatedUser } = userSchema.validate(req.body);
+  // check jwt token if the role is admin
+  const token = req.cookies.jwt;
+  const decodedToken = jwt.decode(token!) as jwt.JwtPayload;
+
+  const originalData = await prisma.user.findUnique({
+    where: { userId: updatedUser.userId },
+    select: { role: true, licensePlates: { select: { licensePlateNumber: true } } },
+  });
+  if(!originalData) { 
+    throw new AppError("User not found", 404);
   }
-  const { licensePlates, ...userData } = updateData;
-  await prisma.user.update({ where: { userId }, data: userData });
-
-  if (licensePlates && Array.isArray(licensePlates)) {
-    await prisma.licensePlate.deleteMany({ where: { userId } });
-
-    for (const plate of licensePlates) {
-      await prisma.licensePlate.create({
-        data: { licensePlateNumber: plate, userId },
-      });
+  if(decodedToken!.role === "admin" && decodedToken!.userId !== userId) {
+    const newRole = updatedUser.role;
+    if(originalData!.role === "admin" && newRole !== "admin") {
+      throw new AppError("Can't edit other admins' role", 401);
     }
+    const user = await prisma.user.update({
+      where: { userId },
+      data: {
+        role: newRole,
+      },
+    });
+    const { password, ...userWithoutPassword } = user;
+    res
+      .status(201)
+      .json({ message: "User changes role successfully", user: userWithoutPassword });
+  }
+  else if (decodedToken!.userId !== userId) {
+    throw new AppError("Can't edit others' data", 401);
   }
 
-  const userWithPlates = await prisma.user.findUnique({
-    where: { userId },
-    include: {
-      licensePlates: true,
+  if (error) {
+    throw new AppError("Validation error: " + error.details[0].message, 400);
+  }
+
+  // check if the license plate registered by others
+  const licensePlates = await prisma.licensePlate.findMany({
+    where: { licensePlateNumber: { in: updatedUser.licensePlates }, userId: { not: updatedUser.userId } },
+  });
+  if (licensePlates.length > 0) {
+    throw new AppError(`License plate ${licensePlates.map(p=>p.licensePlateNumber)} already registered`, 400);
+  }
+  // delete license plates not in the updatedUser
+  const licensePlatesToDelete = originalData.licensePlates.map((lp) => lp.licensePlateNumber).filter((lp) => !updatedUser.licensePlates.includes(lp));
+  await prisma.licensePlate.deleteMany({
+    where: { licensePlateNumber: { in: licensePlatesToDelete } },
+  }); 
+  await prisma.licensePlate.createMany({
+    data: updatedUser.licensePlates.map((lp: String) => ({
+      licensePlateNumber: lp,
+      userId: updatedUser.userId,
+    })),
+    skipDuplicates: true,
+  });
+
+  delete updatedUser.licensePlates;
+  
+  if (updatedUser.password) {
+    updatedUser.password = await encryptPswd(updatedUser.password);
+  }
+
+  const user = await prisma.user.update({
+    where: { userId: updatedUser.userId },
+    data: {
+      ...updatedUser,
     },
   });
 
-  if (!userWithPlates) {
-    throw new AppError("User not found after update", 404);
-  }
-
-  const licensePlateNumbers = userWithPlates.licensePlates.map(
-    (lp) => lp.licensePlateNumber
-  );
-
-  const {
-    password,
-    licensePlates: _,
-    ...userWithoutSensitiveInfo
-  } = userWithPlates;
-
-  res.status(200).json({
-    ...userWithoutSensitiveInfo,
-    licensePlateNumber: licensePlateNumbers,
-  });
+  const { password, ...userWithoutPassword } = user;
+  res
+    .status(201)
+    .json({ message: "User updated successfully", user: userWithoutPassword });
+  
 };
 
 export const deleteUser = async (

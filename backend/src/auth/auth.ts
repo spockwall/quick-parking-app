@@ -28,7 +28,7 @@ const verifyToken = (req: Request, next: NextFunction) => {
 };
 
 const hasRequiredRole = (decoded: jwt.JwtPayload, roles: Role[]): boolean => {
-  return roles.some((role) => decoded.role === role);
+  return roles.includes(decoded.role as Role);
 };
 
 const verifyRolesMiddleware = (roles: Role[]) => {
@@ -42,8 +42,8 @@ const verifyRolesMiddleware = (roles: Role[]) => {
   };
 };
 
-const isTheSameUser = (decoded: jwt.JwtPayload, userId: string): boolean => {
-  return decoded.id === userId;
+const isTheSameUser = (decoded: jwt.JwtPayload, req: Request): boolean => {
+  return decoded.userId === req.params.userId || decoded.userId === req.body.userId || decoded.userId === req.query.userId;
 };
 
 export const verifyUserId = (
@@ -52,7 +52,7 @@ export const verifyUserId = (
   next: NextFunction
 ) => {
   const decoded = verifyToken(req, next);
-  if (decoded && isTheSameUser(decoded, req.params.userId)) {
+  if (decoded && isTheSameUser(decoded, req)) {
     next();
   } else {
     next(new AppError("Access denied", 403));
