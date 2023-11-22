@@ -33,7 +33,7 @@ export const parkingSpaceSchema = Joi.object({
     .valid(...Object.values(Status))
     .required(),
   floor: Joi.number().required(),
-  slot: Joi.number().required(),
+  lot: Joi.number().required(),
 });
 
 export const recordSchema = Joi.object({

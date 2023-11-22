@@ -43,7 +43,11 @@ const verifyRolesMiddleware = (roles: Role[]) => {
 };
 
 const isTheSameUser = (decoded: jwt.JwtPayload, req: Request): boolean => {
-  return decoded.userId === req.params.userId || decoded.userId === req.body.userId || decoded.userId === req.query.userId;
+  return (
+    decoded.userId === req.params.userId ||
+    decoded.userId === req.body.userId ||
+    decoded.userId === req.query.userId
+  );
 };
 
 export const verifyUserId = (

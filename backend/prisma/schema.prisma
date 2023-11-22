@@ -12,7 +12,7 @@ model ParkingSpace {
   state   State
   status  Status
   floor   Int
-  slot    Int
+  lot    Int
   records Record[]
 }
 

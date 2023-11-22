@@ -1,7 +1,7 @@
 import { QueryParams } from "./params";
 
 export const processQueryParams = (queryParams: Partial<QueryParams>) => {
-  const { status, state, slot, floor } = queryParams;
+  const { status, state, lot, floor } = queryParams;
   const whereCondition: { [key: string]: any } = {};
 
   if (status) {
@@ -10,8 +10,8 @@ export const processQueryParams = (queryParams: Partial<QueryParams>) => {
   if (state) {
     whereCondition.state = state;
   }
-  if (slot) {
-    whereCondition.slot = Number(slot);
+  if (lot) {
+    whereCondition.lot = Number(lot);
   }
   if (floor) {
     whereCondition.floor = Number(floor);

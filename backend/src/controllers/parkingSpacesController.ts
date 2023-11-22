@@ -40,9 +40,9 @@ export const getParkingSpaces = async (
       state: true,
       status: true,
       floor: true,
-      slot: true,
+      lot: true,
       records: {
-        where: { exitTime: null },  // only get records where exitTime is null
+        where: { exitTime: null }, // only get records where exitTime is null
         select: {
           id: true,
           spaceId: true,
@@ -75,9 +75,9 @@ export const getParkingSpaceById = async (
       state: true,
       status: true,
       floor: true,
-      slot: true,
+      lot: true,
       records: {
-        where: { exitTime: null },  // only get records where exitTime is null
+        where: { exitTime: null }, // only get records where exitTime is null
         select: {
           id: true,
           spaceId: true,
@@ -112,13 +112,12 @@ export const staffGetParkingSpaces = async (
       state: true,
       status: true,
       floor: true,
-      slot: true,
+      lot: true,
     },
   });
 
   res.status(200).json({ parkingSpaces });
 };
-
 
 export const staffGetParkingSpaceByUid = async (
   req: Request,

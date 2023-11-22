@@ -2,7 +2,7 @@ import { State, Status } from "@prisma/client";
 
 export interface QueryParams extends CommonQueryParams {
   state?: State;
-  slot?: number;
+  lot?: number;
   floor?: number;
   parkingSpaceId?: string;
 }

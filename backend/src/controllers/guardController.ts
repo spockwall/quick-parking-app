@@ -110,6 +110,15 @@ export const createEnterRecord = async (
     throw new AppError("License plate not found or no associated user", 404);
   }
 
+  if (
+    (parkingSpace.status === Status.difficulty &&
+      licensePlate.user.status !== Status.difficulty) ||
+    (parkingSpace.status === Status.disability &&
+      licensePlate.user.status !== Status.disability)
+  ) {
+    throw new AppError("User is not eligible to book this parking space", 403);
+  }
+
   const record = await prisma.record.create({
     data: {
       spaceId,
@@ -134,7 +143,6 @@ export const recordExit = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  console.log("456");
   const { spaceId, licensePlateNumber } = req.body;
 
   const { error } = recordSchema.validate({
