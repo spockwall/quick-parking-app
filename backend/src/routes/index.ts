@@ -13,5 +13,4 @@ router.use("/parking_spaces", parkingSpacesRouter);
 router.use("/guards/parking_spaces", guardRouter);
 router.use("/staff", staffRouter);
 
-
 export default router;

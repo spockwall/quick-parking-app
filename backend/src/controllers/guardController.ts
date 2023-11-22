@@ -1,4 +1,3 @@
-// guardController.ts
 import { PrismaClient, State, Status, Record } from "@prisma/client";
 import { Request, Response } from "express";
 import { QueryParams } from "../utils/params";

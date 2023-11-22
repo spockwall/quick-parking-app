@@ -1,4 +1,3 @@
-// guardRoutes.ts 或相应的路由文件
 import { Router } from "express";
 import {
   createEnterRecord,
@@ -8,7 +7,7 @@ import {
   getParkingSpacesRatio,
   getParkingSpaceRatioById,
 } from "../controllers/guardController";
-import { verifyAdmin, verifyAdminAndGuard } from "../auth/auth";
+import { verifyAdminAndGuard } from "../auth/auth";
 
 const guardRouter = Router();
 

@@ -2,8 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { AppError } from "../err/errorHandler";
 import "express-async-errors";
-import { userSchema } from "../utils/validation";
-import { encryptPswd, comparePswd } from "../utils/encrypt";
+import { comparePswd } from "../utils/encrypt";
 import jwt from "jsonwebtoken";
 import { LoginParams } from "../utils/params";
 

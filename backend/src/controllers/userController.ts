@@ -92,7 +92,7 @@ export const updateUser = async (
   res: Response
 ): Promise<void> => {
   const { userId } = req.params;
-  
+
   if (!userId) {
     throw new AppError("User ID is required for update", 400);
   }
@@ -104,14 +104,17 @@ export const updateUser = async (
 
   const originalData = await prisma.user.findUnique({
     where: { userId: updatedUser.userId },
-    select: { role: true, licensePlates: { select: { licensePlateNumber: true } } },
+    select: {
+      role: true,
+      licensePlates: { select: { licensePlateNumber: true } },
+    },
   });
-  if(!originalData) { 
+  if (!originalData) {
     throw new AppError("User not found", 404);
   }
-  if(decodedToken!.role === "admin" && decodedToken!.userId !== userId) {
+  if (decodedToken!.role === "admin" && decodedToken!.userId !== userId) {
     const newRole = updatedUser.role;
-    if(originalData!.role === "admin" && newRole !== "admin") {
+    if (originalData!.role === "admin" && newRole !== "admin") {
       throw new AppError("Can't edit other admins' role", 401);
     }
     const user = await prisma.user.update({
@@ -121,11 +124,11 @@ export const updateUser = async (
       },
     });
     const { password, ...userWithoutPassword } = user;
-    res
-      .status(201)
-      .json({ message: "User changes role successfully", user: userWithoutPassword });
-  }
-  else if (decodedToken!.userId !== userId) {
+    res.status(201).json({
+      message: "User changes role successfully",
+      user: userWithoutPassword,
+    });
+  } else if (decodedToken!.userId !== userId) {
     throw new AppError("Can't edit others' data", 401);
   }
 
@@ -135,16 +138,26 @@ export const updateUser = async (
 
   // check if the license plate registered by others
   const licensePlates = await prisma.licensePlate.findMany({
-    where: { licensePlateNumber: { in: updatedUser.licensePlates }, userId: { not: updatedUser.userId } },
+    where: {
+      licensePlateNumber: { in: updatedUser.licensePlates },
+      userId: { not: updatedUser.userId },
+    },
   });
   if (licensePlates.length > 0) {
-    throw new AppError(`License plate ${licensePlates.map(p=>p.licensePlateNumber)} already registered`, 400);
+    throw new AppError(
+      `License plate ${licensePlates.map(
+        (p) => p.licensePlateNumber
+      )} already registered`,
+      400
+    );
   }
   // delete license plates not in the updatedUser
-  const licensePlatesToDelete = originalData.licensePlates.map((lp) => lp.licensePlateNumber).filter((lp) => !updatedUser.licensePlates.includes(lp));
+  const licensePlatesToDelete = originalData.licensePlates
+    .map((lp) => lp.licensePlateNumber)
+    .filter((lp) => !updatedUser.licensePlates.includes(lp));
   await prisma.licensePlate.deleteMany({
     where: { licensePlateNumber: { in: licensePlatesToDelete } },
-  }); 
+  });
   await prisma.licensePlate.createMany({
     data: updatedUser.licensePlates.map((lp: String) => ({
       licensePlateNumber: lp,
@@ -154,7 +167,7 @@ export const updateUser = async (
   });
 
   delete updatedUser.licensePlates;
-  
+
   if (updatedUser.password) {
     updatedUser.password = await encryptPswd(updatedUser.password);
   }
@@ -170,7 +183,6 @@ export const updateUser = async (
   res
     .status(201)
     .json({ message: "User updated successfully", user: userWithoutPassword });
-  
 };
 
 export const deleteUser = async (
