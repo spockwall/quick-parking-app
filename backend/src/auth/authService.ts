@@ -1,8 +1,12 @@
+import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { AppError } from "../err/errorHandler";
+import { comparePswd } from "../utils/encrypt";
 import { handleAuthError } from "../err/authErr";
 require("dotenv").config();
+
+const prisma = new PrismaClient();
 
 enum Role {
   Staff = "staff",
@@ -15,10 +19,39 @@ if (!JWT_SECRET_KEY) {
   throw new AppError("JWT_SECRET_KEY must be defined", 500);
 }
 
-const verifyToken = (req: Request, next: NextFunction) => {
+export const authenticateUser = async (
+  userId: string,
+  password: string
+): Promise<string> => {
+  const user = await prisma.user.findFirst({ where: { userId } });
+  if (!user) {
+    throw new AppError("Authentication failed.", 404);
+  }
+
+  const isPasswordValid: boolean = await comparePswd(password, user.password);
+  if (!isPasswordValid) {
+    throw new AppError("Authentication failed.", 401);
+  }
+
+  const tokenParams: object = {
+    userId: user.userId,
+    name: user.name,
+    role: user.role,
+  };
+
+  const signOptions: SignOptions = {
+    expiresIn: process.env.JWT_EXPIRATION || "1d",
+  };
+  return jwt.sign(tokenParams, JWT_SECRET_KEY, signOptions);
+};
+
+const verifyToken = (
+  req: Request,
+  next: NextFunction
+): jwt.JwtPayload | undefined => {
   const token = req.cookies.jwt;
   if (!token) {
-    return next(new AppError("No token provided", 401));
+    throw next(new AppError("No token provided", 401));
   }
   try {
     return jwt.verify(token, JWT_SECRET_KEY) as jwt.JwtPayload;
@@ -31,7 +64,7 @@ const hasRequiredRole = (decoded: jwt.JwtPayload, roles: Role[]): boolean => {
   return roles.includes(decoded.role as Role);
 };
 
-const verifyRolesMiddleware = (roles: Role[]) => {
+export const verifyRolesMiddleware = (roles: Role[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const decoded = verifyToken(req, next);
     if (decoded && hasRequiredRole(decoded, roles)) {

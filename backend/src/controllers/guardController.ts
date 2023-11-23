@@ -1,5 +1,6 @@
 import { PrismaClient, State, Status, Record } from "@prisma/client";
 import { Request, Response } from "express";
+import moment from "moment";
 import { QueryParams } from "../utils/params";
 import { parsePaginationParams } from "../utils/pagination";
 import { processQueryParams } from "../utils/queryUtils";
@@ -20,7 +21,7 @@ export const getParkingSpacesDuration = async (
     queryParams.limit
   );
 
-  const currentTime = Math.floor(Date.now() / 1000);
+  const currentTime = moment().unix();
 
   const records = await prisma.record.findMany({
     skip: skipValue,
@@ -84,18 +85,18 @@ export const createEnterRecord = async (
 ): Promise<void> => {
   const { spaceId, licensePlateNumber } = req.body;
 
-  const enterTime = Math.floor(Date.now() / 1000);
+  const enterTime = moment().unix();
 
   const parkingSpace = await prisma.parkingSpace.findUnique({
     where: { spaceId },
   });
 
   if (!parkingSpace) {
-    throw new AppError("Parking space not found", 404);
+    throw new AppError("Resource not found", 404);
   }
 
   if (parkingSpace.state === State.occupied) {
-    throw new AppError("Parking space is already occupied", 400);
+    throw new AppError("Operation not permitted", 400);
   }
 
   const licensePlate = await prisma.licensePlate.findUnique({
@@ -106,7 +107,7 @@ export const createEnterRecord = async (
   });
 
   if (!licensePlate || !licensePlate.user) {
-    throw new AppError("License plate not found or no associated user", 404);
+    throw new AppError("Resource not found", 404);
   }
 
   if (
@@ -115,7 +116,7 @@ export const createEnterRecord = async (
     (parkingSpace.status === Status.disability &&
       licensePlate.user.status !== Status.disability)
   ) {
-    throw new AppError("User is not eligible to book this parking space", 403);
+    throw new AppError("Operation not permitted", 403);
   }
 
   const record = await prisma.record.create({
@@ -149,10 +150,10 @@ export const recordExit = async (
     licensePlateNumber,
   });
   if (error) {
-    throw new AppError(error.details[0].message, 400);
+    throw new AppError("Invalid request data", 400);
   }
 
-  const exitTime = Math.floor(Date.now() / 1000);
+  const exitTime = moment().unix();
 
   const recordToUpdate = await prisma.record.findFirst({
     where: {
@@ -163,7 +164,7 @@ export const recordExit = async (
   });
 
   if (!recordToUpdate) {
-    throw new AppError("Record not found", 404);
+    throw new AppError("Resource not found", 404);
   }
 
   const updatedRecord = await prisma.record.update({
@@ -182,6 +183,8 @@ export const recordExit = async (
   });
 };
 
+// ...其他导入和代码
+
 export const getParkingSpacesRatio = async (
   req: Request,
   res: Response
@@ -189,21 +192,20 @@ export const getParkingSpacesRatio = async (
   interface SpaceUsage {
     [key: string]: number;
   }
-  const today = new Date();
-  today.setHours(9, 0, 0, 0); // Set to 9 AM local server time
-  const startOfDayInSeconds = Math.floor(today.getTime() / 1000);
 
-  const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-  const elapsedTimeTodayInSeconds = currentTimeInSeconds - startOfDayInSeconds;
+  const today = moment().startOf("day").unix(); // Set to start of the current day
+
+  const currentTimeInSeconds = moment().unix();
+  const elapsedTimeTodayInSeconds = currentTimeInSeconds - today;
 
   const spaceUsage: SpaceUsage = {};
 
   const records: Record[] = await prisma.record.findMany({
     where: {
       AND: [
-        { enterTime: { gte: startOfDayInSeconds } },
+        { enterTime: { gte: today } },
         {
-          OR: [{ exitTime: null }, { exitTime: { gte: startOfDayInSeconds } }],
+          OR: [{ exitTime: null }, { exitTime: { gte: today } }],
         },
       ],
     },
@@ -238,15 +240,11 @@ export const getParkingSpaceRatioById = async (
 ): Promise<void> => {
   const { spaceId } = req.params;
 
-  const now = new Date();
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(now.getDate() - 7);
-  sevenDaysAgo.setHours(9, 0, 0, 0); // Start from 9 AM 7 days ago
+  const now = moment();
+  const sevenDaysAgo = moment().subtract(7, "days").startOf("day"); // Start from 9 AM 7 days ago
 
-  const startOfSevenDaysAgoInSeconds = Math.floor(
-    sevenDaysAgo.getTime() / 1000
-  );
-  const currentTimeInSeconds = Math.floor(now.getTime() / 1000);
+  const startOfSevenDaysAgoInSeconds = sevenDaysAgo.unix();
+  const currentTimeInSeconds = now.unix();
 
   const records: Record[] = await prisma.record.findMany({
     where: {
@@ -265,21 +263,10 @@ export const getParkingSpaceRatioById = async (
 
   let totalAvailableTime = 0;
   for (let day = 0; day < 7; day++) {
-    const startOfDay = new Date();
-    startOfDay.setDate(now.getDate() - day);
-    startOfDay.setHours(9, 0, 0, 0);
-    const startOfDayTimestamp = startOfDay.getTime();
+    const startOfDay = moment().subtract(day, "days").startOf("day");
+    const endOfDay = day === 0 ? now : startOfDay.clone().endOf("day");
 
-    let endOfDayTimestamp;
-    if (day === 0) {
-      endOfDayTimestamp = now.getTime();
-    } else {
-      const endOfDay = new Date(startOfDay);
-      endOfDay.setHours(23, 59, 59, 999);
-      endOfDayTimestamp = endOfDay.getTime();
-    }
-
-    totalAvailableTime += (endOfDayTimestamp - startOfDayTimestamp) / 1000;
+    totalAvailableTime += endOfDay.unix() - startOfDay.unix();
   }
 
   const usageRatio = totalUsedTime / totalAvailableTime;

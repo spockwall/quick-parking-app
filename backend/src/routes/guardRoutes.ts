@@ -7,7 +7,7 @@ import {
   getParkingSpacesRatio,
   getParkingSpaceRatioById,
 } from "../controllers/guardController";
-import { verifyAdminAndGuard } from "../auth/auth";
+import { verifyAdminAndGuard } from "../auth/authService";
 
 const guardRouter = Router();
 

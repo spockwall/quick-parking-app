@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyAdminAndGuard } from "../auth/auth";
+import { verifyAdminAndGuard } from "../auth/authService";
 import {
   createParkingSpace,
   getParkingSpaces,

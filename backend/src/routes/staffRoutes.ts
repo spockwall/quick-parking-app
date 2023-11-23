@@ -5,7 +5,7 @@ import {
   staffGetParkingSpaces,
   staffGetParkingSpaceByUid,
 } from "../controllers/parkingSpacesController";
-import { verifyUserId, verifyAdminAndGuardAndStaff } from "../auth/auth";
+import { verifyUserId, verifyAdminAndGuardAndStaff } from "../auth/authService";
 
 const staffRouter = Router();
 

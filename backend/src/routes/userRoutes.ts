@@ -6,7 +6,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController";
-import { verifyAdmin, verifyAdminAndGuard } from "../auth/auth";
+import { verifyAdmin, verifyAdminAndGuard } from "../auth/authService";
 
 const userRouter = Router();
 
