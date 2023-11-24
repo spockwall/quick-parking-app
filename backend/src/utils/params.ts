@@ -5,6 +5,7 @@ export interface QueryParams extends CommonQueryParams {
   lot?: number;
   floor?: number;
   parkingSpaceId?: string;
+  days?: string;
 }
 
 export interface CommonQueryParams {

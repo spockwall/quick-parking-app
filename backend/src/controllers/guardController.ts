@@ -1,4 +1,9 @@
-import { PrismaClient, State, Status, Record } from "@prisma/client";
+import {
+  PrismaClient,
+  State,
+  Status,
+  Record as PrismaRecord,
+} from "@prisma/client";
 import { Request, Response } from "express";
 import moment from "moment";
 import { QueryParams } from "../utils/params";
@@ -6,6 +11,7 @@ import { parsePaginationParams } from "../utils/pagination";
 import { processQueryParams } from "../utils/queryUtils";
 import { AppError } from "../err/errorHandler";
 import { recordSchema } from "../utils/validation";
+import redis from "../config/redisconfig";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +21,13 @@ export const getParkingSpacesDuration = async (
 ): Promise<void> => {
   const queryParams = req.query as Partial<QueryParams>;
   const whereCondition = processQueryParams(queryParams);
+  const cacheKey = JSON.stringify(whereCondition);
+
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    res.json(JSON.parse(cachedData));
+    return;
+  }
 
   const { skipValue, takeValue } = parsePaginationParams(
     queryParams.offset,
@@ -43,6 +56,13 @@ export const getParkingSpacesDuration = async (
     };
   });
 
+  await redis.set(
+    cacheKey,
+    JSON.stringify(parkingSpacesWithDuration),
+    "EX",
+    3600
+  );
+
   res.json({
     parkingSpaces: parkingSpacesWithDuration,
   });
@@ -53,6 +73,14 @@ export const getParkingSpaceUserInfo = async (
   res: Response
 ): Promise<void> => {
   const { parkingSpaceId } = req.params;
+
+  const cacheKey = `parkingSpaceUserInfo:${parkingSpaceId}`;
+
+  const cachedUserInfo = await redis.get(cacheKey);
+  if (cachedUserInfo) {
+    res.status(200).json({ userInfo: JSON.parse(cachedUserInfo) });
+    return;
+  }
 
   const activeRecord = await prisma.record.findFirst({
     where: {
@@ -75,6 +103,8 @@ export const getParkingSpaceUserInfo = async (
     email: activeRecord.user?.email,
     licensePlateNumber: activeRecord.licensePlateNumber,
   };
+
+  await redis.set(cacheKey, JSON.stringify(userInfo), "EX", 3600);
 
   res.status(200).json({ userInfo });
 };
@@ -101,9 +131,7 @@ export const createEnterRecord = async (
 
   const licensePlate = await prisma.licensePlate.findUnique({
     where: { licensePlateNumber },
-    include: {
-      user: true,
-    },
+    include: { user: true },
   });
 
   if (!licensePlate || !licensePlate.user) {
@@ -133,6 +161,9 @@ export const createEnterRecord = async (
     data: { state: State.occupied },
   });
 
+  const cacheKey = `parkingSpaceInfo:${spaceId}`;
+  await redis.del(cacheKey);
+
   res.status(201).json({
     message: "Enter record created successfully",
     record,
@@ -146,7 +177,7 @@ export const recordExit = async (
   const { spaceId, licensePlateNumber } = req.body;
 
   const { error } = recordSchema.validate({
-    spaceId: spaceId,
+    spaceId,
     licensePlateNumber,
   });
   if (error) {
@@ -177,57 +208,65 @@ export const recordExit = async (
     data: { state: State.available },
   });
 
+  const parkingSpaceCacheKey = `parkingSpaceInfo:${spaceId}`;
+  await redis.del(parkingSpaceCacheKey);
+
+  const allParkingSpacesCacheKey = "allParkingSpacesInfo";
+  await redis.del(allParkingSpacesCacheKey);
+
   res.status(200).json({
     message: "Exit record updated successfully",
     updatedRecord,
   });
 };
 
-// ...其他导入和代码
-
 export const getParkingSpacesRatio = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  interface SpaceUsage {
-    [key: string]: number;
-  }
+  const queryParams = req.query as Partial<QueryParams>;
+  const whereCondition = processQueryParams(queryParams);
 
-  const today = moment().startOf("day").unix(); // Set to start of the current day
+  const spaceUsage: Record<string, number> = {};
 
-  const currentTimeInSeconds = moment().unix();
-  const elapsedTimeTodayInSeconds = currentTimeInSeconds - today;
-
-  const spaceUsage: SpaceUsage = {};
-
-  const records: Record[] = await prisma.record.findMany({
+  // Fetch records from the past 'days' days
+  const records: PrismaRecord[] = await prisma.record.findMany({
     where: {
-      AND: [
-        { enterTime: { gte: today } },
-        {
-          OR: [{ exitTime: null }, { exitTime: { gte: today } }],
-        },
-      ],
+      ...whereCondition,
+      enterTime: {
+        gte: moment()
+          .subtract(Number(queryParams.days || 7), "days")
+          .unix(),
+      },
     },
   });
 
   records.forEach((record) => {
-    const exitTime = record.exitTime ?? currentTimeInSeconds;
-    const duration = exitTime - record.enterTime;
-    if (duration > 0) {
-      spaceUsage[record.spaceId] = (spaceUsage[record.spaceId] || 0) + duration;
+    const exitTimeMoment = record.exitTime
+      ? moment.unix(record.exitTime)
+      : moment();
+    const enterTimeMoment = moment.unix(record.enterTime);
+    const durationInSeconds = exitTimeMoment.diff(enterTimeMoment, "seconds");
+    if (durationInSeconds > 0) {
+      spaceUsage[record.spaceId] =
+        (spaceUsage[record.spaceId] || 0) + durationInSeconds;
     }
   });
 
-  const spaceVacancy: SpaceUsage = {};
+  const days = Number(queryParams.days || 7);
+  const totalPeriodInSeconds = days * 24 * 60 * 60; // Total period in seconds
+
+  const spaceVacancy: Record<string, number> = {};
   Object.keys(spaceUsage).forEach((spaceId) => {
-    spaceVacancy[spaceId] = spaceUsage[spaceId] / elapsedTimeTodayInSeconds;
+    // Calculate the vacancy ratio for each space
+    spaceVacancy[spaceId] = spaceUsage[spaceId] / totalPeriodInSeconds;
   });
 
+  // Format the results for the response
   const formattedVacancy = Object.entries(spaceVacancy).map(
     ([spaceId, ratio]) => ({
       spaceId,
-      ratio,
+      ratio: parseFloat(ratio.toFixed(5)), // Optionally round the ratio to two decimal places for readability
     })
   );
 
@@ -241,12 +280,20 @@ export const getParkingSpaceRatioById = async (
   const { spaceId } = req.params;
 
   const now = moment();
-  const sevenDaysAgo = moment().subtract(7, "days").startOf("day"); // Start from 9 AM 7 days ago
+  const sevenDaysAgo = moment().subtract(7, "days").startOf("day");
 
   const startOfSevenDaysAgoInSeconds = sevenDaysAgo.unix();
   const currentTimeInSeconds = now.unix();
 
-  const records: Record[] = await prisma.record.findMany({
+  const cacheKey = `spaceRatio:${spaceId}:${now.format("YYYY-MM-DD")}`;
+
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    res.json(JSON.parse(cachedData));
+    return;
+  }
+
+  const records: PrismaRecord[] = await prisma.record.findMany({
     where: {
       spaceId: spaceId,
       enterTime: {
@@ -269,10 +316,16 @@ export const getParkingSpaceRatioById = async (
     totalAvailableTime += endOfDay.unix() - startOfDay.unix();
   }
 
-  const usageRatio = totalUsedTime / totalAvailableTime;
+  const usageRatio = parseFloat(
+    (totalUsedTime / totalAvailableTime).toFixed(5)
+  );
 
-  res.json({
-    spaceId,
-    usageRatio,
-  });
+  await redis.set(
+    cacheKey,
+    JSON.stringify({ spaceId, usageRatio }),
+    "EX",
+    86400
+  );
+
+  res.json({ spaceId, usageRatio });
 };

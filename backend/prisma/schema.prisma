@@ -37,7 +37,6 @@ model User {
   status        Status? 
   records       Record[]
   licensePlates LicensePlate[]
-   
 }
 
 model LicensePlate {
