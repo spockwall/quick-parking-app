@@ -1,14 +1,20 @@
 import express from "express";
 import "express-async-errors";
-import router from "./routes";
 import { errorHandler } from "./err/errorHandler";
 import cookieParser from "cookie-parser";
-import { json, urlencoded } from "body-parser";
+import cors from "cors";
+import router from "./routes";
 
 const app = express();
 
-app.use(json());
-app.use(urlencoded({ extended: true }));
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/", router);
 

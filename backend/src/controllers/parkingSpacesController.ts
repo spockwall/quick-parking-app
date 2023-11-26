@@ -77,7 +77,7 @@ export const getParkingSpaceById = async (
       floor: true,
       lot: true,
       records: {
-        where: { exitTime: null }, // only get records where exitTime is null
+        where: { exitTime: null },
         select: {
           id: true,
           spaceId: true,
@@ -128,7 +128,6 @@ export const staffGetParkingSpaceByUid = async (
   if (!userId) {
     throw new AppError("UserId is required", 400);
   }
-  //Maybe we need to use findMany to handle the mutiple cars per user
   const parkingSpace = await prisma.record.findMany({
     where: { exitTime: null, userId: userId },
     select: {

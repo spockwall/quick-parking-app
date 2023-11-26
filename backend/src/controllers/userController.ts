@@ -19,14 +19,12 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
   );
   const cacheKey = `users:offset:${queryParams.offset}:limit:${queryParams.limit}`;
 
-  // 尝试从 Redis 获取缓存数据
   const cachedUsers = await redis.get(cacheKey);
   if (cachedUsers) {
     res.json(JSON.parse(cachedUsers));
     return;
   }
 
-  // 缓存中没有数据，执行数据库查询
   const users = await prisma.user.findMany({
     skip: skipValue,
     take: takeValue,
@@ -43,13 +41,12 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     };
   });
 
-  // 将查询结果存储在 Redis 缓存中
   await redis.set(
     cacheKey,
     JSON.stringify({ users: usersWithoutSensitiveInfo }),
     "EX",
     3600
-  ); // 缓存 1 小时
+  );
 
   res.json({ users: usersWithoutSensitiveInfo });
 };
@@ -71,8 +68,7 @@ export const createUser = async (
 
   const user = await prisma.user.create({ data: userData });
 
-  // 清除用户列表缓存
-  const cacheKey = "users:list"; // 假设这是你的用户列表缓存键
+  const cacheKey = "users:list";
   await redis.del(cacheKey);
 
   const { password, ...userWithoutPassword } = user;
@@ -94,7 +90,6 @@ export const getUserById = async (
 
   const cacheKey = `user:${userId}`;
 
-  // 尝试从 Redis 获取缓存数据
   let cachedUser = await redis.get(cacheKey);
   if (cachedUser) {
     res.json(JSON.parse(cachedUser));
@@ -116,8 +111,7 @@ export const getUserById = async (
     throw new AppError("User not found", 404);
   }
 
-  // 存储用户信息到 Redis 缓存
-  await redis.set(cacheKey, JSON.stringify(user), "EX", 3600); // 缓存 1 小时
+  await redis.set(cacheKey, JSON.stringify(user), "EX", 3600);
 
   res.json(user);
 };
@@ -133,7 +127,6 @@ export const updateUser = async (
   }
 
   const { error, value: updatedUser } = userSchema.validate(req.body);
-  // check jwt token if the role is admin
   const token = req.cookies.jwt;
   const decodedToken = jwt.decode(token!) as jwt.JwtPayload;
   if (!decodedToken) {
@@ -176,7 +169,6 @@ export const updateUser = async (
     throw new AppError("Validation error: " + error.details[0].message, 400);
   }
 
-  // check if the license plate registered by others
   const licensePlates = await prisma.licensePlate.findMany({
     where: {
       licensePlateNumber: { in: updatedUser.licensePlates },
@@ -191,7 +183,6 @@ export const updateUser = async (
       400
     );
   }
-  // delete license plates not in the updatedUser
   const licensePlatesToDelete = originalData.licensePlates
     .map((lp) => lp.licensePlateNumber)
     .filter((lp) => !updatedUser.licensePlates.includes(lp));
@@ -235,17 +226,13 @@ export const deleteUser = async (
     throw new AppError("User ID is required for deletion", 400);
   }
 
-  // Invalidate any cache related to the user before deletion
   const userCacheKey = `user:${userId}`;
   await redis.del(userCacheKey);
 
-  // You might also want to invalidate any lists or collections the user is part of
   const usersListCacheKey = "users:list";
   await redis.del(usersListCacheKey);
 
-  // Delete the user from the database
   await prisma.user.delete({ where: { userId } });
 
-  // No content response since the user has been deleted
   res.status(204).send();
 };

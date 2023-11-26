@@ -214,6 +214,9 @@ export const recordExit = async (
   const allParkingSpacesCacheKey = "allParkingSpacesInfo";
   await redis.del(allParkingSpacesCacheKey);
 
+  const cacheKey = `parkingSpaceUserInfo:${spaceId}`;
+  await redis.del(cacheKey);
+
   res.status(200).json({
     message: "Exit record updated successfully",
     updatedRecord,
