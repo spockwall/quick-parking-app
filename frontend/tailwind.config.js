@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: [
     "./index.html",
@@ -6,7 +7,24 @@ export default {
     "./src/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {      
+      colors: {
+        'blue-dark': '#214F6D',
+        'blue-exdark': '#1A3E55',        
+        'blue': '#3B88C3',
+        'blue-light': '#6FC2DD',
+        'yellow': '#F5C14A',
+        'yellow-dark': '#FFAE36',
+        'red': '#E65345',
+        'gray': '#B9B9B9',
+      },
+    },
+    fontFamily: {
+      lexend: ['Lexend', 'sans-serif'],
+    },
+    boxShadow: {
+      inner: 'inset -1px -1px 5px 1px #3B88C3',
+    }
   },
   plugins: [],
 }
