@@ -7,7 +7,7 @@ import Toolbar from "@mui/material/Toolbar";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
-const commonButtonClass = "text-white bg-blue-dark hover:bg-blue-exdark focus:outline-none focus:ring-2 focus:ring-blue-exdark rounded-full text-sm md:text-lg px-3 md:px-5 py-2.5 text-center flex";
+const commonButtonClass = "text-white bg-blue-dark hover:bg-blue-exdark focus:outline-none focus:ring-2 focus:ring-blue-exdark rounded-full text-xs sm:text-md md:text-lg px-4 sm:px-6 py-2.5 text-center flex justify-center items-center";
 
 export default function HeaderBar() { 
 
@@ -54,22 +54,22 @@ export default function HeaderBar() {
         </IconButton> */}
         <div className="flex align-middle justify-center">
           <button>
-            <img className="w-12 h-20 md:w-18 md:h-26" src="/logo.svg" alt="Quick Parking" onClick={() => navigate("/guard")} />
+            <img className="w-12 h-20 sm:w-14 sm:h-24" src="/logo.svg" alt="Quick Parking" onClick={() => navigate("/guard")} />
           </button>
           <div className="flex sm:hidden text-md align-middle items-center justify-center text-start ml-1.5">
             {routeText}
           </div>          
-          <div className="hidden sm:flex md:ml-4 flex-col align-middle justify-center">
-            <div className="text-lg ml-2 md:text-xl text-blue-dark font-bold flex justify-start">Quick Parking</div>
-            <div className="mt-1 ml-2 text-sm md:text-md text-transparent bg-clip-text bg-gradient-to-r from-yellow to-yellow-dark flex justify-start">Time saved daily.</div>
+          <div className="hidden sm:flex md:ml-2 flex-col align-middle justify-center">
+            <div className="text-xl ml-2 md:text-2xl text-blue-dark font-bold flex justify-start">Quick Parking</div>
+            <div className="mt-1 ml-2 text-sm md:text-lg text-transparent bg-clip-text bg-gradient-to-r from-yellow to-yellow-dark flex justify-start">Time saved daily.</div>
           </div>
         </div>        
         
         <button type="button" onClick={handleClickLogout} className={`
         ${commonButtonClass}
       `}>
-          <span className="mr-1 text-sm md:text-md text-center ">Log Out</span>          
-          <LogoutRoundedIcon fontSize="small" className="text-xs md:text-sm" />
+          <span className="mr-1 text-xs sm:text-md md:text-lg text-center ">Log Out</span>          
+          <LogoutRoundedIcon fontSize="small" style={{ fontSize: "1.3rem" }} />
         </button>
       </Toolbar>
     </AppBar>

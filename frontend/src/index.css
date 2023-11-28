@@ -105,3 +105,8 @@ body {
 .MuiMenuItem-root{
   font-family: 'Lexend', sans-serif !important;
 }
+.MuiInputBase-root.MuiInput-root:after{
+  font-family: 'Lexend', sans-serif !important;
+  border-bottom: 2px solid #3B88C3;
+}
+

@@ -21,7 +21,7 @@ const UsageHistoryDetail = () => {
   }, [spaceId]);
 
   return (
-    <div className='flex flex-col' style={{ height: '88vh' }}>
+    <div className='flex flex-col'>
       <div className="flex flex-row sm:flex-col">
         <div>
           <div className="flex justify-start mt-8 md:mt-6 ml-4 sm:ml-10">

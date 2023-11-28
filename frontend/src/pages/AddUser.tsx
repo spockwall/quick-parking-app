@@ -1,0 +1,169 @@
+import { useState, useEffect } from 'react';
+
+import LoginRegisterInputField from "../components/LoginRegisterInputField";
+import { AddUserService } from "../services/addUserService";
+import { useNavigate } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
+// import Success from '../assets/success.svg';
+import SuccessModal from "../components/modals/SuccessModal";
+
+import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
+
+// import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+
+const commonButtonClass = "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle font-bold";
+
+export default function AddUser(): JSX.Element {
+  // const location = useLocation();
+  // const role = location.state?.role;
+  // const role = 'admin';
+
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [role, setRole] = useState<string>('carOwner');
+
+  const navigate = useNavigate();
+
+  const handleRole = (role: string) => {
+    setRole(role);
+  };
+
+  useEffect(() => {
+    if (!role) {
+      setRole('carOwner');
+    }
+  }, [role]);
+
+  const handleLogout = () => {
+    // TODO: redirect to logout page
+    navigate('/logout');
+  };
+
+  const handleAdd = () => {
+    const addUserService = new AddUserService();
+    const addUser = addUserService.addUser(id, password, role);
+    if (addUser === true) {
+      setShowModal(true);
+    } else {
+      // TODO: add user failed...??
+    }
+  };
+
+  // const renderModal = showModal ? (
+  //   <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50">
+  //     <div className="bg-white p-8 rounded-md relative border-2 border-green-400">
+  //       <button
+  //         onClick={() => setShowModal(false)}
+  //         className="absolute top-1 right-1 text-gray-500 hover:text-gray-700"
+  //       >
+  //         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  //           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  //         </svg>
+  //       </button>
+  //       <div className="flex flex-col items-center justify-center h-full">
+  //         <img src={Success} className="max-w-full max-h-full mb-2" />
+  //         <div className="text-center font-semibold text-2xl">User Created!</div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // ) : null;
+
+
+  return (
+    <div className="flex flex-col justify-center items-center h-screen bg-blue-light">
+      {/* Add User */}
+      <div className="flex flex-col items-center text-white text-3xl sm:text-4xl">
+        <div className="flex items-center font-bold">
+          Add User
+          <PersonAddAlt1RoundedIcon className="ml-2" sx={{ fontSize: 36 }} />
+        </div>
+      </div>
+
+      {/* Role */}
+      <div className="w-10/12 sm:w-3/5 flex flex-col pb-1 text-blue-dark font-semibold mt-8">
+        <div className="w-10/12 flex flex-col mt-1 m-auto">
+          User
+        </div>
+        <div className="w-10/12 flex m-auto justify-between mt-2">
+          <div className="">
+            <button
+              className={`${commonButtonClass}focus:ring-yellow-dark ${role === 'carOwner' ? 'bg-yellow-dark text-white' : 'bg-transparent   hover:bg-yellow  text-white'}`}
+              onClick={() => handleRole('carOwner')}
+            >
+              Car Owner
+            </button>
+          </div>
+          <span className="font-semibold text-center flex items-center">or</span>
+          <div className="flex justify-end">
+            <button
+              className={`${commonButtonClass} focus:ring-yellow-dark ${role === 'guard' ? 'bg-yellow-dark text-white' : 'bg-transparent   hover:bg-yellow  text-white'}` }
+              onClick={() => handleRole('guard')}
+            >
+              Guard
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="w-10/12 sm:w-3/5 flex flex-col mt-4">
+        <div className="w-10/12 flex flex-col mt-1 m-auto">
+          <LoginRegisterInputField
+            title="User ID"
+            value={id}
+            type="text"
+            placeholder="Alice"
+            onChange={(e) => {
+              setId(e.target.value);
+            }}
+          />
+        </div>
+        <div className="w-10/12 flex flex-col mt-5 m-auto">
+          <LoginRegisterInputField
+            title="Password"
+            value={password}
+            type="password"
+            placeholder="new password"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Button */}
+      <div className="w-10/12 sm:w-3/5 flex flex-col mt-12">
+        <div className="w-10/12 flex m-auto justify-between">
+          <div className="">
+            <button type="button" onClick={handleLogout} className={`
+        ${commonButtonClass} bg-red hover:bg-red-dark focus:ring-red-dark
+        text-sm md:text-lg
+      `}>
+              <LogoutRoundedIcon className="scale-x-[-1] mr-1" />
+              <span className="text-center ">Log Out</span>
+              
+            </button>
+          </div>
+          <div className="">
+            <button type="button" onClick={handleAdd} className={`
+        ${commonButtonClass} bg-blue-dark hover:bg-blue-exdark focus:ring-blue-exdark
+        text-sm md:text-lg
+      `}>
+              
+              <span className="mr-1 text-center">Add</span>
+              {/* <AddRoundedIcon className="scale-x-[-1] text-end" /> */}
+
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* {renderModal} */}
+      <SuccessModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+      />
+    </div>
+  );
+}

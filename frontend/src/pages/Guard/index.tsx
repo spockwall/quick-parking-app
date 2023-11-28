@@ -21,7 +21,7 @@ import NavigateNextOutlinedIcon from '@mui/icons-material/NavigateNextOutlined';
 const CommonButton = styled(Button)`
   text-transform: none;
   font-size: 16px;
-  padding: 15px 15px;
+  padding: 10px 15px;
   border: 2px solid;
   border-radius: 12px;
   background-color: #ffffff;
@@ -60,34 +60,33 @@ const Guard = () => {
         <div className=''>
           <GuardHeaderBar />
           {isGuardRoute && (
-            <div className='flex items-center align-middle justify-center' style={{ height: '88vh' }}>
-              <Stack direction="column" spacing={5}>
-                
+            <div className='flex items-center align-middle justify-center mt-32 sm:mt-24'>
+              <Stack direction="column" spacing={5} className='w-4/5 sm:w-8/12 md:w-7/12 lg:w-5/12'>
                 <CommonButton variant="contained" onClick={() => handleNavigate('/usageduration')}>
                   <Grid container spacing={0} className='flex justify-center align-middle text-center'>
-                    <Grid item xs={3} className='flex align-middle items-center justify-center'>
+                    <Grid item xs={2} className='flex align-middle items-center justify-center'>
                       <UpdateRoundedIcon className='text-white bg-blue-dark rounded-lg p-1' style={{ fontSize: "3rem" }} />
                     </Grid>
-                    <Grid item xs={8} className='flex align-middle items-center'>
-                      <div className="flex flex-col">
+                    <Grid item xs={9} className='flex align-middle items-center justify-start pl-3'>
+                      <div className="flex flex-col justify-start align-top">
                         <div className="mt-0 sm:mt-2 text-lg md:text-xl text-black font-lexend font-medium flex justify-start">Usage Duration</div>
-                        <div className="hidden sm:flex my-2 text-sm text-start text-gray font-lexend font-medium justify-start">Check car owner’s usage duration</div>
+                        <div className="hidden sm:flex my-2 text-sm md:text-md text-start text-gray font-lexend font-medium justify-start">Check car owner’s usage duration</div>
                       </div>
                     </Grid>
                     <Grid item xs={1} className='flex align-middle items-center justify-center'>
                       <NavigateNextOutlinedIcon className='text-blue-dark' style={{ fontSize: "2rem" }} />
                     </Grid>
-                  </Grid>                  
+                  </Grid>
                 </CommonButton>
                 <CommonButton variant="contained" onClick={() => handleNavigate('/usageratio')}>
-                  <Grid container spacing={0}>
-                    <Grid item xs={3} className='flex align-middle items-center justify-center'>
+                  <Grid container spacing={0} className='flex justify-center align-middle text-center'>
+                    <Grid item xs={2} className='flex align-middle items-center justify-center'>
                       <HistoryToggleOffOutlinedIcon className='text-white bg-blue-dark rounded-lg p-1' style={{ fontSize: "3rem" }} />
                     </Grid>
-                    <Grid item xs={8} className='flex align-middle items-center'>
-                      <div className="flex flex-col">
-                        <div className="mt-0 sm:mt-2 text-lg md:text-xl text-black font-lexend font-medium flex ">Usage Ratio</div>
-                        <div className="hidden sm:flex my-2 text-xs md:text-md text-gray font-lexend font-medium justify-start">Check car owner’s usage ratio</div>
+                    <Grid item xs={9} className='flex align-middle items-center justify-start pl-3'>
+                      <div className="flex flex-col justify-start align-top">
+                        <div className="mt-0 sm:mt-2 text-lg md:text-xl text-black font-lexend font-medium flex justify-start">Usage Ratio</div>
+                        <div className="hidden sm:flex my-2 text-sm md:text-md text-start text-gray font-lexend font-medium justify-start">Check car owner’s usage ratio</div>
                       </div>
                     </Grid>
                     <Grid item xs={1} className='flex align-middle items-center justify-center'>
@@ -96,15 +95,16 @@ const Guard = () => {
                   </Grid>
                 </CommonButton>
                 <CommonButton variant="contained" onClick={() => handleNavigate('/usagehistory')}>
-                  <Grid container spacing={0}>
-                    <Grid item xs={3} className='flex align-middle items-center justify-center'>
+                  <Grid container spacing={0} className='flex justify-center align-middle text-center'>
+                    <Grid item xs={2} className='flex align-middle items-center justify-center'>
                       <DirectionsCarFilledOutlinedIcon className='text-white bg-blue-dark rounded-lg p-1' style={{
-                        fontSize: '3rem' }} />
+                        fontSize: '3rem'
+                      }} />
                     </Grid>
-                    <Grid item xs={8} className='flex align-middle items-center'>
-                      <div className="flex flex-col">
+                    <Grid item xs={9} className='flex align-middle items-center justify-start pl-3'>
+                      <div className="flex flex-col justify-start align-top">
                         <div className="mt-0 sm:mt-2 text-lg md:text-xl text-black font-lexend font-medium flex justify-start">Usage History</div>
-                        <div className="hidden sm:flex my-2 text-xs md:text-md text-gray font-lexend font-medium justify-start text-start">Check parking space usage history</div>
+                        <div className="hidden sm:flex my-2 text-sm md:text-md text-gray font-lexend font-medium justify-start text-start">Check parking space usage history</div>
                       </div>
                     </Grid>
                     <Grid item xs={1} className='flex align-middle items-center justify-center'>

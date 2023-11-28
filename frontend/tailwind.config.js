@@ -16,7 +16,8 @@ export default {
         'yellow': '#F5C14A',
         'yellow-dark': '#FFAE36',
         'red': '#E65345',
-        'gray': '#B9B9B9',
+        'red-dark': '#D54D40',
+        'gray': '#D9D9D9',
       },
     },
     fontFamily: {
