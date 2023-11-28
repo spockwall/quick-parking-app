@@ -14,9 +14,10 @@ const prisma = new PrismaClient();
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   const queryParams = req.query as Partial<QueryParams>;
   const { skipValue, takeValue } = parsePaginationParams(
-    queryParams.offset,
-    queryParams.limit
+    queryParams.offset ?? "0",
+    queryParams.limit ?? "10"
   );
+
   const cacheKey = `users:offset:${queryParams.offset}:limit:${queryParams.limit}`;
 
   const cachedUsers = await redis.get(cacheKey);
@@ -68,8 +69,7 @@ export const createUser = async (
 
   const user = await prisma.user.create({ data: userData });
 
-  const cacheKey = "users:list";
-  await redis.del(cacheKey);
+  await deleteAllUserListCaches();
 
   const { password, ...userWithoutPassword } = user;
   res.status(201).json({
@@ -92,7 +92,7 @@ export const getUserById = async (
 
   let cachedUser = await redis.get(cacheKey);
   if (cachedUser) {
-    res.json(JSON.parse(cachedUser));
+    res.json({ user: JSON.parse(cachedUser) });
     return;
   }
 
@@ -111,9 +111,20 @@ export const getUserById = async (
     throw new AppError("User not found", 404);
   }
 
-  await redis.set(cacheKey, JSON.stringify(user), "EX", 3600);
+  const { password, licensePlates, ...userWithoutSensitiveInfo } = user;
+  const userWithoutSensitiveInfoForCache = {
+    ...userWithoutSensitiveInfo,
+    licensePlateNumbers: licensePlates.map((lp) => lp.licensePlateNumber),
+  };
 
-  res.json(user);
+  await redis.set(
+    cacheKey,
+    JSON.stringify(userWithoutSensitiveInfoForCache),
+    "EX",
+    3600
+  );
+
+  res.json({ user: userWithoutSensitiveInfoForCache });
 };
 
 export const updateUser = async (
@@ -143,7 +154,9 @@ export const updateUser = async (
     throw new AppError("User not found", 404);
   }
 
-  await redis.del(`user:${updatedUser.userId}`);
+  await deleteUserCache(userId);
+  await deleteAllUserListCaches();
+  await clearParkingSpaceUserInfoCache(userId);
 
   if (decodedToken!.role === "admin" && decodedToken!.userId !== userId) {
     const newRole = updatedUser.role;
@@ -157,10 +170,6 @@ export const updateUser = async (
       },
     });
     const { password, ...userWithoutPassword } = user;
-    res.status(201).json({
-      message: "User changes role successfully",
-      user: userWithoutPassword,
-    });
   } else if (decodedToken!.userId !== userId) {
     throw new AppError("Can't edit others' data", 401);
   }
@@ -211,6 +220,7 @@ export const updateUser = async (
   });
 
   const { password, ...userWithoutPassword } = user;
+
   res
     .status(201)
     .json({ message: "User updated successfully", user: userWithoutPassword });
@@ -226,13 +236,51 @@ export const deleteUser = async (
     throw new AppError("User ID is required for deletion", 400);
   }
 
-  const userCacheKey = `user:${userId}`;
-  await redis.del(userCacheKey);
-
-  const usersListCacheKey = "users:list";
-  await redis.del(usersListCacheKey);
+  await deleteUserCache(userId);
+  await deleteAllUserListCaches();
+  await clearParkingSpaceUserInfoCache(userId);
 
   await prisma.user.delete({ where: { userId } });
 
   res.status(204).send();
 };
+
+async function deleteAllUserListCaches() {
+  const scanAndDelete = async (pattern: string) => {
+    let cursor = "0";
+    do {
+      const reply = await redis.scan(cursor, "MATCH", pattern, "COUNT", 100);
+      cursor = reply[0];
+      const keys = reply[1];
+      if (keys.length) {
+        await Promise.all(keys.map((key) => redis.del(key)));
+      }
+    } while (cursor !== "0");
+  };
+
+  await scanAndDelete("users:offset:*");
+}
+
+async function deleteUserCache(userId: string) {
+  try {
+    console.log(`Deleting cache for user ID: ${userId}`);
+    const userCacheKey = `user:${userId}`;
+    await redis.del(userCacheKey);
+  } catch (error) {
+    console.error(`Error deleting user cache for ID ${userId}:`, error);
+  }
+}
+
+async function clearParkingSpaceUserInfoCache(userId: string) {
+  const relatedParkingSpaces = await prisma.record.findMany({
+    where: { userId, exitTime: null },
+    select: { spaceId: true },
+  });
+
+  const keysToDelete = relatedParkingSpaces.map(
+    (space) => `parkingSpaceUserInfo:${space.spaceId}`
+  );
+  if (keysToDelete.length) {
+    await redis.del(keysToDelete);
+  }
+}

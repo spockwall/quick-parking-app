@@ -25,7 +25,10 @@ export const getParkingSpacesDuration = async (
 
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
-    res.json(JSON.parse(cachedData));
+    res.json({
+      parkingSpaces: JSON.parse(cachedData),
+      message: "Fetch all parking spaces duration successfully",
+    });
     return;
   }
 
@@ -44,27 +47,32 @@ export const getParkingSpacesDuration = async (
       spaceId: true,
       enterTime: true,
       exitTime: true,
+      parkingSpace: {
+        select: {
+          state: true,
+          status: true,
+        },
+      },
     },
   });
 
-  const parkingSpacesWithDuration = records.map((record) => {
+  const parkingSpaces = records.map((record) => {
     const exitTime = record.exitTime ?? currentTime;
     const duration = exitTime - record.enterTime;
     return {
-      spaceId: record.spaceId,
+      parkingSpaceId: record.spaceId,
+      state: record.parkingSpace.state,
+      status: record.parkingSpace.status,
+      startTime: record.enterTime,
       duration: duration,
     };
   });
 
-  await redis.set(
-    cacheKey,
-    JSON.stringify(parkingSpacesWithDuration),
-    "EX",
-    3600
-  );
+  await redis.set(cacheKey, JSON.stringify(parkingSpaces), "EX", 60);
 
   res.json({
-    parkingSpaces: parkingSpacesWithDuration,
+    parkingSpaces: parkingSpaces,
+    message: "Fetch all parking spaces duration successfully",
   });
 };
 
@@ -78,7 +86,8 @@ export const getParkingSpaceUserInfo = async (
 
   const cachedUserInfo = await redis.get(cacheKey);
   if (cachedUserInfo) {
-    res.status(200).json({ userInfo: JSON.parse(cachedUserInfo) });
+    res.status(200).json({ user: JSON.parse(cachedUserInfo) });
+
     return;
   }
 
@@ -91,9 +100,8 @@ export const getParkingSpaceUserInfo = async (
       user: true,
     },
   });
-
   if (!activeRecord) {
-    res.status(200).json({ userInfo: null });
+    res.status(200).json({ user: null });
     return;
   }
 
@@ -106,7 +114,7 @@ export const getParkingSpaceUserInfo = async (
 
   await redis.set(cacheKey, JSON.stringify(userInfo), "EX", 3600);
 
-  res.status(200).json({ userInfo });
+  res.status(200).json({ user: userInfo });
 };
 
 export const createEnterRecord = async (
@@ -161,8 +169,12 @@ export const createEnterRecord = async (
     data: { state: State.occupied },
   });
 
-  const cacheKey = `parkingSpaceInfo:${spaceId}`;
-  await redis.del(cacheKey);
+  await redis.del(`parkingSpaceInfo:${spaceId}`);
+
+  await clearParkingSpacesListCache();
+
+  const userId = licensePlate.userId;
+  await redis.del(`staffParkingSpaceByUserId:${userId}`);
 
   res.status(201).json({
     message: "Enter record created successfully",
@@ -208,18 +220,18 @@ export const recordExit = async (
     data: { state: State.available },
   });
 
-  const parkingSpaceCacheKey = `parkingSpaceInfo:${spaceId}`;
-  await redis.del(parkingSpaceCacheKey);
+  await redis.del(`parkingSpaceInfo:${spaceId}`);
 
-  const allParkingSpacesCacheKey = "allParkingSpacesInfo";
-  await redis.del(allParkingSpacesCacheKey);
+  await clearParkingSpacesListCache();
 
-  const cacheKey = `parkingSpaceUserInfo:${spaceId}`;
-  await redis.del(cacheKey);
+  await redis.del(`parkingSpaceUserInfo:${spaceId}`);
+
+  const userId = recordToUpdate.userId;
+  await redis.del(`staffParkingSpaceByUserId:${userId}`);
 
   res.status(200).json({
     message: "Exit record updated successfully",
-    updatedRecord,
+    record: updatedRecord,
   });
 };
 
@@ -232,8 +244,7 @@ export const getParkingSpacesRatio = async (
 
   const spaceUsage: Record<string, number> = {};
 
-  // Fetch records from the past 'days' days
-  const records: PrismaRecord[] = await prisma.record.findMany({
+  const records = await prisma.record.findMany({
     where: {
       ...whereCondition,
       enterTime: {
@@ -241,6 +252,9 @@ export const getParkingSpacesRatio = async (
           .subtract(Number(queryParams.days || 7), "days")
           .unix(),
       },
+    },
+    include: {
+      parkingSpace: true,
     },
   });
 
@@ -257,23 +271,26 @@ export const getParkingSpacesRatio = async (
   });
 
   const days = Number(queryParams.days || 7);
-  const totalPeriodInSeconds = days * 24 * 60 * 60; // Total period in seconds
+  const totalPeriodInSeconds = days * 24 * 60 * 60;
 
-  const spaceVacancy: Record<string, number> = {};
-  Object.keys(spaceUsage).forEach((spaceId) => {
-    // Calculate the vacancy ratio for each space
-    spaceVacancy[spaceId] = spaceUsage[spaceId] / totalPeriodInSeconds;
+  const parkingSpaces = Object.keys(spaceUsage).map((spaceId) => {
+    const parkingSpace = records.find(
+      (record) => record.spaceId === spaceId
+    )?.parkingSpace;
+
+    const usageRatio = spaceUsage[spaceId] / totalPeriodInSeconds;
+
+    return {
+      parkingSpaceId: spaceId,
+      status: parkingSpace?.status,
+      usageRatio: parseFloat(usageRatio.toFixed(5)),
+    };
   });
 
-  // Format the results for the response
-  const formattedVacancy = Object.entries(spaceVacancy).map(
-    ([spaceId, ratio]) => ({
-      spaceId,
-      ratio: parseFloat(ratio.toFixed(5)), // Optionally round the ratio to two decimal places for readability
-    })
-  );
-
-  res.json({ spaceVacancy: formattedVacancy });
+  res.json({
+    parkingSpaces,
+    message: "Fetch all parking spaces usage ratio successfully",
+  });
 };
 
 export const getParkingSpaceRatioById = async (
@@ -283,52 +300,92 @@ export const getParkingSpaceRatioById = async (
   const { spaceId } = req.params;
 
   const now = moment();
-  const sevenDaysAgo = moment().subtract(7, "days").startOf("day");
+  const sevenDaysAgo = moment().subtract(6, "days").startOf("day");
 
-  const startOfSevenDaysAgoInSeconds = sevenDaysAgo.unix();
-  const currentTimeInSeconds = now.unix();
-
-  const cacheKey = `spaceRatio:${spaceId}:${now.format("YYYY-MM-DD")}`;
+  const cacheKey = `spaceRatio:${spaceId}:${sevenDaysAgo.format(
+    "YYYY-MM-DD"
+  )}-${now.format("YYYY-MM-DD")}`;
 
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
-    res.json(JSON.parse(cachedData));
+    res.json({
+      usageHistory: JSON.parse(cachedData),
+      message: "Fetch usage ratio of the specific parking spaces successfully",
+    });
     return;
   }
 
-  const records: PrismaRecord[] = await prisma.record.findMany({
-    where: {
-      spaceId: spaceId,
-      enterTime: {
-        gte: startOfSevenDaysAgoInSeconds,
-      },
-    },
+  const parkingSpace = await prisma.parkingSpace.findUnique({
+    where: { spaceId },
   });
 
-  let totalUsedTime = 0;
-  records.forEach((record) => {
-    const exitTime = record.exitTime ?? currentTimeInSeconds;
-    totalUsedTime += exitTime - record.enterTime;
-  });
-
-  let totalAvailableTime = 0;
-  for (let day = 0; day < 7; day++) {
-    const startOfDay = moment().subtract(day, "days").startOf("day");
-    const endOfDay = day === 0 ? now : startOfDay.clone().endOf("day");
-
-    totalAvailableTime += endOfDay.unix() - startOfDay.unix();
+  if (!parkingSpace) {
+    throw new AppError("Parking space not found", 404);
+  }
+  interface UsageHistory {
+    parkingSpaceId: string;
+    dates: string[];
+    usageRatios: number[];
   }
 
-  const usageRatio = parseFloat(
-    (totalUsedTime / totalAvailableTime).toFixed(5)
-  );
+  const usageHistory: UsageHistory = {
+    parkingSpaceId: spaceId,
+    dates: [],
+    usageRatios: [],
+  };
 
-  await redis.set(
-    cacheKey,
-    JSON.stringify({ spaceId, usageRatio }),
-    "EX",
-    86400
-  );
+  for (let day = 0; day < 7; day++) {
+    const startOfDay = moment().subtract(day, "days").startOf("day").unix();
+    const endOfDay = moment().subtract(day, "days").endOf("day").unix();
 
-  res.json({ spaceId, usageRatio });
+    const records = await prisma.record.findMany({
+      where: {
+        spaceId: spaceId,
+        enterTime: {
+          gte: startOfDay,
+          lt: endOfDay,
+        },
+      },
+    });
+
+    let totalUsedTime = 0;
+    records.forEach((record) => {
+      const exitTime = record.exitTime ?? endOfDay;
+      totalUsedTime += exitTime - record.enterTime;
+    });
+
+    const totalAvailableTime = endOfDay - startOfDay;
+    const usageRatio = parseFloat(
+      (totalUsedTime / totalAvailableTime).toFixed(5)
+    );
+
+    usageHistory.dates.unshift(moment.unix(startOfDay).format("YYYY-MM-DD"));
+    usageHistory.usageRatios.unshift(usageRatio);
+  }
+
+  await redis.set(cacheKey, JSON.stringify(usageHistory), "EX", 86400);
+
+  res.json({
+    usageHistory,
+    message: "Fetch usage ratio of the specific parking spaces successfully",
+  });
 };
+
+async function clearParkingSpacesListCache() {
+  const scanAndDelete = async (pattern: string) => {
+    let cursor = "0";
+    do {
+      const reply = await redis.scan(cursor, "MATCH", pattern, "COUNT", 20);
+      cursor = reply[0];
+      const keys = reply[1];
+      if (keys.length) {
+        await Promise.all(keys.map((key) => redis.del(key)));
+      }
+    } while (cursor !== "0");
+  };
+
+  await Promise.all([
+    scanAndDelete("publicParkingSpaces:*"),
+    scanAndDelete("staffParkingSpaces:*"),
+  ]);
+}
