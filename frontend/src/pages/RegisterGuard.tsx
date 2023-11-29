@@ -46,7 +46,7 @@ export default function Register(): JSX.Element {
             title="Your ID"
             value={id}
             readOnly={true}
-            className="p-1.5 border border-blue bg-gray rounded-md grow"
+            className="px-1 py-0.5 border border-blue bg-gray rounded-md grow"
           />
         </div>
         <div className="w-10/12 flex flex-col mt-5 m-auto">

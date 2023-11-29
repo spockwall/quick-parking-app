@@ -50,7 +50,7 @@ export default function Register(): JSX.Element {
             title="Your ID"
             value={id}
             readOnly={true}
-            className="p-1.5 border bg-gray border-blue bg-gray-200 rounded-md grow"
+            className="px-1 py-0.5 border bg-gray border-blue bg-gray-200 rounded-md grow"
           />
         </div>
         <div className="w-10/12 flex flex-col m-auto mt-2">
@@ -111,7 +111,7 @@ export default function Register(): JSX.Element {
       </div>
 
       {/* Button */}
-      <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col text-lg mt-8 sm:mt-6">
+      <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col mt-6 sm:mt-4">
         <div className="w-10/12 flex m-auto justify-between mt-2">
           <button
             type="button"

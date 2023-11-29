@@ -60,7 +60,7 @@ const Guard = () => {
         <div className=''>
           <GuardHeaderBar />
           {isGuardRoute && (
-            <div className='flex items-center align-middle justify-center mt-32 sm:mt-24'>
+            <div className='flex items-center align-middle justify-center mt-32 sm:mt-16'>
               <Stack direction="column" spacing={5} className='w-4/5 sm:w-8/12 md:w-7/12 lg:w-5/12'>
                 <CommonButton variant="contained" onClick={() => handleNavigate('/usageduration')}>
                   <Grid container spacing={0} className='flex justify-center align-middle text-center'>
