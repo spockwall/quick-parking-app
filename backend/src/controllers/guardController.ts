@@ -26,7 +26,7 @@ export const getParkingSpacesDuration = async (
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
     res.json({
-      parkingSpaces: JSON.parse(cachedData),
+      ...JSON.parse(cachedData),
       message: "Fetch all parking spaces duration successfully",
     });
     return;
@@ -70,10 +70,7 @@ export const getParkingSpacesDuration = async (
 
   await redis.set(cacheKey, JSON.stringify(parkingSpaces), "EX", 60);
 
-  res.json({
-    parkingSpaces: parkingSpaces,
-    message: "Fetch all parking spaces duration successfully",
-  });
+  res.json(parkingSpaces);
 };
 
 export const getParkingSpaceUserInfo = async (
@@ -86,7 +83,7 @@ export const getParkingSpaceUserInfo = async (
 
   const cachedUserInfo = await redis.get(cacheKey);
   if (cachedUserInfo) {
-    res.status(200).json({ user: JSON.parse(cachedUserInfo) });
+    res.status(200).json(JSON.parse(cachedUserInfo));
 
     return;
   }
@@ -101,7 +98,7 @@ export const getParkingSpaceUserInfo = async (
     },
   });
   if (!activeRecord) {
-    res.status(200).json({ user: null });
+    res.status(200).json(null);
     return;
   }
 
@@ -114,7 +111,7 @@ export const getParkingSpaceUserInfo = async (
 
   await redis.set(cacheKey, JSON.stringify(userInfo), "EX", 3600);
 
-  res.status(200).json({ user: userInfo });
+  res.status(200).json(userInfo);
 };
 
 export const createEnterRecord = async (
@@ -177,8 +174,8 @@ export const createEnterRecord = async (
   await redis.del(`staffParkingSpaceByUserId:${userId}`);
 
   res.status(201).json({
+    ...record,
     message: "Enter record created successfully",
-    record,
   });
 };
 
@@ -230,8 +227,8 @@ export const recordExit = async (
   await redis.del(`staffParkingSpaceByUserId:${userId}`);
 
   res.status(200).json({
+    ...updatedRecord,
     message: "Exit record updated successfully",
-    record: updatedRecord,
   });
 };
 
@@ -286,11 +283,7 @@ export const getParkingSpacesRatio = async (
       usageRatio: parseFloat(usageRatio.toFixed(5)),
     };
   });
-
-  res.json({
-    parkingSpaces,
-    message: "Fetch all parking spaces usage ratio successfully",
-  });
+  res.json(parkingSpaces);
 };
 
 export const getParkingSpaceRatioById = async (
@@ -309,7 +302,7 @@ export const getParkingSpaceRatioById = async (
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
     res.json({
-      usageHistory: JSON.parse(cachedData),
+      ...JSON.parse(cachedData),
       message: "Fetch usage ratio of the specific parking spaces successfully",
     });
     return;
@@ -366,7 +359,7 @@ export const getParkingSpaceRatioById = async (
   await redis.set(cacheKey, JSON.stringify(usageHistory), "EX", 86400);
 
   res.json({
-    usageHistory,
+    ...usageHistory,
     message: "Fetch usage ratio of the specific parking spaces successfully",
   });
 };

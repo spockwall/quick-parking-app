@@ -44,12 +44,12 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
   await redis.set(
     cacheKey,
-    JSON.stringify({ users: usersWithoutSensitiveInfo }),
+    JSON.stringify(usersWithoutSensitiveInfo),
     "EX",
     3600
   );
 
-  res.json({ users: usersWithoutSensitiveInfo });
+  res.json(usersWithoutSensitiveInfo);
 };
 
 export const createUser = async (
@@ -73,8 +73,8 @@ export const createUser = async (
 
   const { password, ...userWithoutPassword } = user;
   res.status(201).json({
+    userWithoutPassword,
     message: "User created successfully",
-    user: userWithoutPassword,
   });
 };
 
@@ -92,7 +92,7 @@ export const getUserById = async (
 
   let cachedUser = await redis.get(cacheKey);
   if (cachedUser) {
-    res.json({ user: JSON.parse(cachedUser) });
+    res.json(JSON.parse(cachedUser));
     return;
   }
 
@@ -124,7 +124,7 @@ export const getUserById = async (
     3600
   );
 
-  res.json({ user: userWithoutSensitiveInfoForCache });
+  res.json(userWithoutSensitiveInfoForCache);
 };
 
 export const updateUser = async (
@@ -223,7 +223,7 @@ export const updateUser = async (
 
   res
     .status(201)
-    .json({ message: "User updated successfully", user: userWithoutPassword });
+    .json({ ...userWithoutPassword, message: "User updated successfully" });
 };
 
 export const deleteUser = async (

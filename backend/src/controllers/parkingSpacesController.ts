@@ -44,7 +44,7 @@ export const getParkingSpaces = async (
 
   const cachedParkingSpaces = await redis.get(cacheKey);
   if (cachedParkingSpaces) {
-    res.status(200).json({ parkingSpaces: JSON.parse(cachedParkingSpaces) });
+    res.status(200).json(JSON.parse(cachedParkingSpaces));
     return;
   }
 
@@ -73,7 +73,7 @@ export const getParkingSpaces = async (
 
   await redis.set(cacheKey, JSON.stringify(parkingSpaces), "EX", 3600);
 
-  res.status(200).json({ parkingSpaces });
+  res.status(200).json(parkingSpaces);
 };
 
 export const getParkingSpaceById = async (
@@ -90,7 +90,7 @@ export const getParkingSpaceById = async (
 
   let cachedParkingSpace = await redis.get(cacheKey);
   if (cachedParkingSpace) {
-    res.status(200).json({ parkingSpace: JSON.parse(cachedParkingSpace) });
+    res.status(200).json(JSON.parse(cachedParkingSpace));
     return;
   }
 
@@ -121,7 +121,7 @@ export const getParkingSpaceById = async (
   }
   await redis.set(cacheKey, JSON.stringify(parkingSpace), "EX", 3600);
 
-  res.status(200).json({ parkingSpace });
+  res.status(200).json(parkingSpace);
 };
 
 export const staffGetParkingSpaces = async (
@@ -138,7 +138,7 @@ export const staffGetParkingSpaces = async (
 
   const cachedParkingSpaces = await redis.get(cacheKey);
   if (cachedParkingSpaces) {
-    res.status(200).json({ parkingSpaces: JSON.parse(cachedParkingSpaces) });
+    res.status(200).json(JSON.parse(cachedParkingSpaces));
     return;
   }
 
@@ -156,7 +156,7 @@ export const staffGetParkingSpaces = async (
 
   await redis.set(cacheKey, JSON.stringify(parkingSpaces), "EX", 3600);
 
-  res.status(200).json({ parkingSpaces });
+  res.status(200).json(parkingSpaces);
 };
 
 export const staffGetParkingSpaceByUid = async (
@@ -173,7 +173,7 @@ export const staffGetParkingSpaceByUid = async (
 
   let cachedParkingSpace = await redis.get(cacheKey);
   if (cachedParkingSpace) {
-    res.status(200).json({ parkingSpace: JSON.parse(cachedParkingSpace) });
+    res.status(200).json(JSON.parse(cachedParkingSpace));
     return;
   }
 
@@ -194,7 +194,7 @@ export const staffGetParkingSpaceByUid = async (
 
   await redis.set(cacheKey, JSON.stringify(parkingSpace), "EX", 3600);
 
-  res.status(200).json({ parkingSpace });
+  res.status(200).json(parkingSpace);
 };
 
 async function clearParkingSpacesCache() {
