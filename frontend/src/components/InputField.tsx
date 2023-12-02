@@ -1,5 +1,3 @@
-// import Input from "@mui/material/Input";
-// import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 
 import { alpha, styled } from '@mui/material/styles';
@@ -24,15 +22,15 @@ const BootstrapInput = styled(InputBase)(({ theme, disabled }) => ({
     fontSize: 16,
     // width: 'auto',
     padding: '6px 10px',
-    margin: '0',
+    margin: '',
     transition: theme.transitions.create([
       'border-color',
       'background-color',
       'box-shadow',
     ]),
     '&:focus': {
-      boxShadow: `${alpha('#214F6D', 0.25)} 0 0 0 0.2rem`,
-      borderColor: '#214F6D',
+      boxShadow: `${alpha('#206295', 0.25)} 0 0 0 0.3rem`,
+      borderColor: '#206295',
       fontSize: 17,
     },
   },
@@ -67,18 +65,11 @@ export default function LoginRegisterInputField(props: LoginRegisterInputFieldPr
         readOnly={props.readOnly ?? false}
         onChange={props.onChange}
       /> */}
-      <Box
-        component="form"
-        sx={{
-          '& > :not(style)': {  },
-        }}
-        noValidate
-        autoComplete="off"
-      >
+      <Box>
         <InputLabel shrink htmlFor="bootstrap-input">
           {props.title ?? ""}
         </InputLabel>
-        <BootstrapInput defaultValue="react-bootstrap"     id="bootstrap-input" 
+        <BootstrapInput 
           value={props.value ?? ""}
           // id="outlined-basic"
           // label={props.title ?? ""}

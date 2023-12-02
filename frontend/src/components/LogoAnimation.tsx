@@ -8,7 +8,7 @@ const LogoAnimation = () => {
   useEffect(() => {   
     const animationTimeout = setTimeout(() => {
       navigate("/checkrole");
-    }, 4500); 
+    }, 4000); 
     return () => clearTimeout(animationTimeout);
   }, [navigate]);
   

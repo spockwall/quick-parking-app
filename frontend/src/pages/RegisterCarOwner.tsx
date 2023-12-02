@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import LoginRegisterInputField from "../components/LoginRegisterInputField";
+import InputField from "../components/InputField";
 import { RegisterService } from '../services/registerService';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -25,10 +25,10 @@ export default function Register(): JSX.Element {
     const register = registerService.registerCarOwner(id, name, carId, phone, email, password);
 
     if (register === true) {
-      // TODO: redirect to default page
-      navigate('/parkinglot');
+      // redirect to default page
+      navigate('/staff');
     } else {
-      // TODO: register failed...??
+      // register failed...??
     }
   };
 
@@ -39,22 +39,22 @@ export default function Register(): JSX.Element {
   return (
     <div className="flex flex-col justify-center items-center align-middle h-screen bg-blue-light">
       {/* Log In */}
-      <div className="flex flex-col items-center text-white text-3xl sm:text-4xl">
+      <div className="flex flex-col items-center text-white text-2xl sm:text-3xl">
         <div className="flex items-center font-bold">Register</div>
       </div>
 
       {/* Info */}
-      <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col mt-3">
-        <div className="w-10/12 flex flex-col mt-2 m-auto">
-          <LoginRegisterInputField
+      <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col mt-1">
+        <div className="w-10/12 flex flex-col m-auto">
+          <InputField
             title="Your ID"
             value={id}
             readOnly={true}
             className="px-1 py-0.5 border bg-gray border-blue bg-gray-200 rounded-md grow"
           />
         </div>
-        <div className="w-10/12 flex flex-col m-auto mt-2">
-          <LoginRegisterInputField
+        <div className="w-10/12 flex flex-col m-auto mt-1">
+          <InputField
             title="Your Name"
             value={name}
             type="text"
@@ -64,8 +64,8 @@ export default function Register(): JSX.Element {
             }}
           />
         </div>
-        <div className="w-10/12 flex flex-col mt-2 m-auto">
-          <LoginRegisterInputField
+        <div className="w-10/12 flex flex-col mt-1 m-auto">
+          <InputField
             title="License Plate Number"
             value={carId}
             type="text"
@@ -75,8 +75,8 @@ export default function Register(): JSX.Element {
             }}
           />
         </div>
-        <div className="w-10/12 flex flex-col mt-2 m-auto">
-          <LoginRegisterInputField
+        <div className="w-10/12 flex flex-col mt-1 m-auto">
+          <InputField
             title="Phone Number"
             value={phone}
             type="text"
@@ -86,8 +86,8 @@ export default function Register(): JSX.Element {
             }}
           />
         </div>
-        <div className="w-10/12 flex flex-col mt-2 m-auto">
-          <LoginRegisterInputField
+        <div className="w-10/12 flex flex-col mt-1 m-auto">
+          <InputField
             title="Email Address"
             value={email}
             type="text"
@@ -97,8 +97,8 @@ export default function Register(): JSX.Element {
             }}
           />
         </div>
-        <div className="w-10/12 flex flex-col mt-2 m-auto">
-          <LoginRegisterInputField
+        <div className="w-10/12 flex flex-col mt-1 m-auto">
+          <InputField
             title="New Password"
             value={password}
             type="password"

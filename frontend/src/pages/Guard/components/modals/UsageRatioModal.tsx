@@ -7,6 +7,7 @@ import Fade from '@mui/material/Fade';
 // import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 type ModalProps = {
   open: boolean;
@@ -26,14 +27,14 @@ export default function UsageRatioModal(props: ModalProps) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 280,
+    width: 300,
     bgcolor: '#6FC2DD',
     border: '2px solid #214F6D',
     borderRadius: '8px',
     boxShadow: 24,
     p: 3,
     fontFamily: 'Lexend, sans-serif',
-    '@media (min-width: 768px)': {
+    '@media (min-width: 550px)': {
       width: 400,
       p: 4
     },
@@ -55,6 +56,11 @@ export default function UsageRatioModal(props: ModalProps) {
     >
       <Fade in={open}>
         <Box sx={style}>
+          <div className='flex justify-end'>
+            <button>
+              < CloseRoundedIcon onClick={() => handleClose()} />
+            </button>
+          </div>
           <Typography id="transition-modal-title" variant="h6" fontSize={22} color="white" fontFamily="lexend" className='text-center'>
             Usage Ratio History
           </Typography>

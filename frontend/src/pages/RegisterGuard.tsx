@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import LoginRegisterInputField from "../components/LoginRegisterInputField";
+import InputField from "../components/InputField";
 import { RegisterService } from '../services/registerService';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -21,10 +21,10 @@ export default function Register(): JSX.Element {
     const register = registerService.registerGuard(id, name, password);
 
     if (register === true) {
-      // TODO: redirect to default page
+      // redirect to default page
       navigate('/guard');
     } else {
-      // TODO: register failed...??
+      // register failed...??
     }
   };
 
@@ -42,7 +42,7 @@ export default function Register(): JSX.Element {
       {/* Info */}
       <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col mt-8">
         <div className="w-10/12 flex flex-col mt-1 m-auto">
-          <LoginRegisterInputField
+          <InputField
             title="Your ID"
             value={id}
             readOnly={true}
@@ -50,7 +50,7 @@ export default function Register(): JSX.Element {
           />
         </div>
         <div className="w-10/12 flex flex-col mt-5 m-auto">
-          <LoginRegisterInputField
+          <InputField
             title="Your Name"
             value={name}
             type="text"
@@ -61,7 +61,7 @@ export default function Register(): JSX.Element {
           />
         </div>
         <div className="w-10/12 flex flex-col mt-5 m-auto">
-          <LoginRegisterInputField
+          <InputField
             title="New Password"
             value={password}
             type="password"
@@ -82,7 +82,7 @@ export default function Register(): JSX.Element {
         ${commonButtonClass} bg-red hover:bg-red-dark focus:ring-red-dark
       text-sm md:text-lg`}
             onClick={handleBack}
-            // style={{ boxShadow: '1 1 8 0.1rem #D54D40' }}
+          // style={{ boxShadow: '1 1 8 0.1rem #D54D40' }}
           >
             <ArrowBackIosRoundedIcon fontSize="small" className="mr-1" />
             <span className="text-center ">Back</span>

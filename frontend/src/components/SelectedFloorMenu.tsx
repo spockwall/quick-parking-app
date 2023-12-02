@@ -6,18 +6,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
+
 const options = [
-  'Lot 1',
-  'Lot 2',
-  'Lot 3',
-  'Lot 4',
-  'Lot 5',
-  'Lot 6',
-  'Lot 7',
-  'Lot 8',
+  '3 F',
+  '2 F',
+  '1 F',
+  'B1 F',
+  'B2 F',
+  'B3 F',
 ];
 
-export default function SelectedLotMenu() {
+export default function SelectedFloorMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const open = Boolean(anchorEl);
@@ -50,15 +49,14 @@ export default function SelectedLotMenu() {
           aria-controls="menu"
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClickListItem}
-          sx={{ color: 'white', background: '#6FC2DD', textAlign: 'center', borderRadius: '8px', boxShadow: 'inset 1px 1px 5px 1px #3B88C3', }}
+          sx={{ color: 'white', background: '#6FC2DD', textAlign: 'center', borderRadius: '8px', boxShadow: 'inset 1px 1px 5px 1px #3B88C3', paddingBottom: '6px', paddingTop: '6px' }}
         >
           <ListItemText
-            className='font-lexend'
             primary={options[selectedIndex]}
-            sx={{ margin: '0 2px 0 2px'}}
+            sx={{ margin: '0 2px 0 2px' }}
           />
           <KeyboardArrowDownIcon />
-        </ListItem>
+        </ListItem>        
       </List>
       <Menu
         id="menu"

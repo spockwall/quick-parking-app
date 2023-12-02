@@ -34,6 +34,9 @@ export default function HeaderBar() {
     case 'usagehistory':
       routeText = 'Usage History';
       break;
+    case 'currentstatus':
+      routeText = 'Current Status';
+      break;
     default:
       routeText = 'History Detail'; 
   }

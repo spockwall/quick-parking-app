@@ -96,12 +96,19 @@ body {
   }   
 }
 .animation-fade-in-out {
-  animation: fade-in-out 4.5s ease-in-out;
+  animation: fade-in-out 4s ease-in-out;
 }
 
 .MuiTypography-root {
   font-family: 'Lexend', sans-serif !important;
+  font-size: 16px !important;
 }
+@media (max-width: 600px) {
+  .MuiTypography-root {
+    font-size: 12px !important;
+  }
+}
+
 .MuiMenuItem-root{
   font-family: 'Lexend', sans-serif !important;
 }
@@ -111,6 +118,9 @@ body {
 .MuiFormLabel-root.MuiInputLabel-root {
   font-family: 'Lexend', sans-serif !important;
   font-weight: bold;
+  color: #214F6D;
+  font-size: 18px;
+  margin-top: 8px;
 }
 /* .MuiInputBase-root.MuiInput-root:before{
   border-bottom: none;
@@ -125,4 +135,15 @@ body {
 .MuiInputBase-root.MuiInput-root.Mui-disabled:before{
   border-bottom-style: none;
 } */
+/* .MuiPaper-root .MuiMenu-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+} */
 
+.MuiPaper-root.MuiPopover-paper.MuiMenu-paper{
+  width: 5.5rem;
+}
+#transition-modal-title{
+  font-size: 22px !important;
+}

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import SelectedLotMenu from './SelectedLotMenu';
-import SelectedFloorMenu from './SelectedFloorMenu';
+import SelectedLotMenu from '../../../components/SelectedLotMenu';
+import SelectedFloorMenu from '../../../components/SelectedFloorMenu';
+import ScrollToTopButton from '../../../components/ScrollToTopButton';
+
 
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
@@ -9,8 +11,12 @@ import Grid from '@mui/material/Grid';
 import NavigateNextOutlinedIcon from '@mui/icons-material/NavigateNextOutlined';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+// import IconButton from '@mui/material/IconButton';
 
+// import ArrowCircleUpRoundedIcon from '@mui/icons-material/ArrowCircleUpRounded';
 import UsageDurationModal from "./modals/UsageDurationModal";
+
+
 
 const CommonButton = styled(Button)`
   text-transform: none;
@@ -47,27 +53,27 @@ export default function UsageDuration() {
         <div className='flex lg:w-1/3 gap-12 md:gap-9 mt-0 sm:mt-1 md:mt-0 mb-2 md:mb-0'>
           <SelectedLotMenu />
           <SelectedFloorMenu />
-        </div> 
+        </div>
       </div>
-            
-      <Divider className='text-blue-dark' sx={{ width: '80%', borderColor: '#3B88C3', borderWidth: '1.5px', borderRadius: '24px' }} />  
-      <div className="mt-6 w-3/4 md:w-1/2">     
-        <Stack direction="column" spacing={2}>
-          <Grid container spacing={0} className='flex justify-center align-middle text-center text-black'>
-            <Grid item xs={1} className='flex align-middle items-center justify-center'>
+
+      <Divider className='text-blue-dark' sx={{ width: '80%', borderColor: '#3B88C3', borderWidth: '1.5px', borderRadius: '24px' }} />
+      <div className="mt-6 w-3/4 md:w-1/2 sm:max-h-80">
+        <Stack direction="column" spacing={2.5}>
+          <Grid container spacing={1} className='flex justify-center align-middle text-center text-black'>
+            <Grid item xs={1.4} className='flex align-middle items-center justify-center'>
               Order
             </Grid>
-            <Grid item xs={7} className='flex align-middle items-center justify-center'>
+            <Grid item xs={6} className='flex align-middle items-center justify-center'>
               Time
             </Grid>
-            <Grid item xs={2} className='flex align-middle items-center justify-center'>
+            <Grid item xs={2.6} className='flex align-middle items-center justify-center'>
               Space
             </Grid>
             <Grid item xs className='flex align-middle items-center justify-center'>
-              
+
             </Grid>
           </Grid>
-          <CommonButton variant="contained" onClick={ handleClickOpen } >
+          <CommonButton variant="contained" onClick={handleClickOpen} >
             <Grid container spacing={0} className='flex justify-center align-middle text-center text-black'>
               <Grid item xs={1} className='flex align-middle items-center justify-center text-red'>
                 1
@@ -101,14 +107,15 @@ export default function UsageDuration() {
           </CommonButton>
         </Stack>
       </div>
+      <ScrollToTopButton />
       <UsageDurationModal
         open={open}
         onClose={() => setOpen(false)}
-        // Other props //
-        // Name 
-        // Car Id
-        // Phone Number
-        // Email Address
+      // Other props //
+      // Name 
+      // Car Id
+      // Phone Number
+      // Email Address
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import SelectedLotMenu from './SelectedLotMenu';
-import SelectedFloorMenu from './SelectedFloorMenu';
+import SelectedLotMenu from '../../../components/SelectedLotMenu';
+import SelectedFloorMenu from '../../../components/SelectedFloorMenu';
 
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
@@ -11,6 +11,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 import UsageRatioModal from "./modals/UsageRatioModal";
+import ScrollToTopButton from '../../../components/ScrollToTopButton';
 
 const CommonButton = styled(Button)`
   text-transform: none;
@@ -52,15 +53,15 @@ export default function UsageRatio() {
 
       <Divider className='text-blue-dark' sx={{ width: '80%', borderColor: '#3B88C3', borderWidth: '1.5px', borderRadius: '24px' }} />
       <div className="mt-6 w-3/4 md:w-1/2">
-        <Stack direction="column" spacing={2}>
-          <Grid container spacing={0} className='flex justify-center align-middle text-center text-black'>
-            <Grid item xs={1} className='flex align-middle items-center justify-center'>
+        <Stack direction="column" spacing={2.5}>
+          <Grid container spacing={1} className='flex justify-center align-middle text-center text-black'>
+            <Grid item xs={1.4} className='flex align-middle items-center justify-center'>
               Order
             </Grid>
-            <Grid item xs={7} className='flex align-middle items-center justify-center'>
+            <Grid item xs={6} className='flex align-middle items-center justify-center'>
               Ratio
             </Grid>
-            <Grid item xs={2} className='flex align-middle items-center justify-center'>
+            <Grid item xs={2.6} className='flex align-middle items-center justify-center'>
               Space
             </Grid>
             <Grid item xs className='flex align-middle items-center justify-center'>
@@ -99,8 +100,10 @@ export default function UsageRatio() {
               </Grid>
             </Grid>
           </CommonButton>
+          
         </Stack>
       </div>
+      <ScrollToTopButton/>
       <UsageRatioModal
         open={open}
         onClose={() => setOpen(false)}

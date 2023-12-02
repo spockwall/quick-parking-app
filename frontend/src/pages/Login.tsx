@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import LoginRegisterInputField from "../components/LoginRegisterInputField";
+import InputField from "../components/InputField";
 import { LoginService } from "../services/loginService";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-// import QuickParking from "../assets/Quick_Parking.svg";
-// import TiveSavedDaily from "../assets/Time_saved_daily.svg";
+
 import Logo from "../assets/logo.svg";
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 
@@ -32,8 +31,8 @@ export default function Login(): JSX.Element {
           // redirect to register page
           navigate('/register-car-owner', { state: { id: id } });
         } else {
-          // TODO: redirect to default page of car owner
-          navigate('/parkinglot');
+          // redirect to default page of car owner
+          navigate('/staff');
         }
       } else if (role === 'guard') {
         if (first === true) {
@@ -41,7 +40,7 @@ export default function Login(): JSX.Element {
           navigate('/register-guard', { state: { id: id } });
         }
         else {
-          // TODO: redirect to default page of guard
+          // redirect to default page of guard
           navigate('/guard');
         }
       } else if (role === 'admin') {
@@ -56,7 +55,6 @@ export default function Login(): JSX.Element {
   };
 
   const handleBack = () => {
-    // TODO: Back to ...?
     navigate('/checkrole');
   };
 
@@ -69,7 +67,7 @@ export default function Login(): JSX.Element {
           <div className="text-xl sm:text-3xl md:text-4xl text-blue-dark font-bold flex justify-start">Quick Parking</div>
           <div className="mt-2 text-md sm:text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow to-yellow-dark flex justify-start">Time saved daily.</div>
         </div>
-      </div>      
+      </div>
 
       {/* Log In */}
       <div className="flex flex-col items-center text-white text-3xl sm:text-4xl">
@@ -79,7 +77,7 @@ export default function Login(): JSX.Element {
       {/* Info */}
       <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col mt-6">
         <div className="w-10/12 flex flex-col mt-1 m-auto">
-          <LoginRegisterInputField
+          <InputField
             title="Your ID"
             value={id}
             placeholder="B09902123"
@@ -89,7 +87,7 @@ export default function Login(): JSX.Element {
           />
         </div>
         <div className="w-10/12  flex flex-col mt-5 m-auto">
-          <LoginRegisterInputField
+          <InputField
             title="Password"
             value={password}
             type="password"
@@ -125,7 +123,7 @@ export default function Login(): JSX.Element {
               className={`
         ${commonButtonClass} bg-blue-dark hover:bg-blue-exdark focus:ring-blue-exdark
       `}
-  
+
               onClick={handleLogin}
             >
               <span className="text-sm md:text-lg text-center">Log In</span>
