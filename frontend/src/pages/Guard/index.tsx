@@ -1,4 +1,3 @@
-// pages/Guard/index.tsx
 import { Outlet, useNavigate, useRoutes, useMatch } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
@@ -48,11 +47,6 @@ const Guard = () => {
   const navigate = useNavigate();
 
   const isGuardRoute = useMatch('/guard');
-
-  // const isusageduration = useMatch('/guard/usageduration');
-  // const isusageratio = useMatch('/guard/usageratio');
-  // const isusagehistory = useMatch('/guard/usagehistory');
-  // const isusagehistorydetail = (!isGuardRoute &!isusageduration & !isusageratio & !isusagehistory );
 
   const handleNavigate = (path: string) => {
     navigate(`/guard${path}`);
@@ -136,9 +130,6 @@ const Guard = () => {
                   </Grid>
                 </CommonButton>
               </Stack>
-              {/* <button onClick={() => handleNavigate('/usageratio')}>Usage Ratio</button>
-              <button onClick={() => handleNavigate('/usagehistory')}>Usage History</button>
-              <button onClick={() => handleNavigate('/usageduration')}>Usage Duration</button> */}
             </div>
           )}
           <Outlet />

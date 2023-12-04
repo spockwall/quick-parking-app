@@ -1,5 +1,3 @@
-// pages/LogOut/index.tsx
-
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 

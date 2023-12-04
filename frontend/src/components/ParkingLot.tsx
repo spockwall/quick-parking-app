@@ -3,7 +3,7 @@ import useParkingLotMap from "../hooks/UseParkingLotMap";
 import useParkingLotStatus from "../hooks/UseParkingLotStatus";
 import { useState } from "react";
 import type { ParkingSpaceStatus } from "../types";
-import StatusModal from "./modals/StatusModalcopy";
+import StatusModal from "./modals/StatusModal";
 import { useNavigate } from "react-router-dom";
 
 type ParkingLotPropsType = {

@@ -1,5 +1,3 @@
-// import { useState } from "react";
-
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -116,12 +114,7 @@ export default function UsageRatioModal(props: ModalProps) {
               </Typography>
               <span className='font-medium md:text-lg text-center'>0 %</span>
             </Grid>
-          </Grid>
-          {/* <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-            11/24
-          </Typography>
-          <span className='font-medium md:text-lg text-center'>0 %</span> */}
-          
+          </Grid>          
         </Box>
       </Fade>
     </Modal>

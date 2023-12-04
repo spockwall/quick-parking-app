@@ -1,5 +1,3 @@
-// usagehistorydetail.tsx
-
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
@@ -17,13 +15,12 @@ const UsageHistoryDetail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch data based on spaceId 
     console.log("Space ID:", spaceId);
   }, [spaceId]);
   
   if(!spaceId){
     navigate("/guard/usagehistory");
-    // toast error
+    // toast error??
     return;
   }
   const [lot, floor, space] = spaceId.split('-');
