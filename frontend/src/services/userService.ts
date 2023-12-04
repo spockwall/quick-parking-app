@@ -12,7 +12,7 @@ export class UserService {
       status: "common",
     };
   }
-  
+
   // Change Personal Info
   public updateUserInfo(newInfo: userInfo): boolean {
     // TODO: update user info    
@@ -32,7 +32,7 @@ export class UserService {
     return true;
   }
   public registerGuard(id: string, name: string, password: string): boolean {
-    // PATCH /staff/users/:id
+    // ?? PATCH /users/:id
     return true;
   }
 }

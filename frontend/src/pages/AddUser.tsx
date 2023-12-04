@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import InputField from "../components/InputField";
-import { AddUserService } from "../services/addUserService";
+import { UserService } from "../services/userService";
 import { useNavigate } from 'react-router-dom';
 
 import SuccessModal from "../components/modals/SuccessModal";
@@ -38,7 +38,7 @@ export default function AddUser(): JSX.Element {
   };
 
   const handleAdd = () => {
-    const addUserService = new AddUserService();
+    const addUserService = new UserService();
     const addUser = addUserService.addUser(id, password, role);
     if (addUser === true) {
       setShowModal(true);

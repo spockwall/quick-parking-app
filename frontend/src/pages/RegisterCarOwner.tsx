@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import InputField from "../components/InputField";
-import { RegisterService } from '../services/registerService';
+import { UserService } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ export default function Register(): JSX.Element {
   const navigate = useNavigate();
 
   const handleRegister = () => {
-    const registerService = new RegisterService();
+    const registerService = new UserService();
     const register = registerService.registerCarOwner(id, name, carId, phone, email, password);
 
     if (register === true) {
