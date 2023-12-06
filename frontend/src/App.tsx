@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import LogoAnimation from './components/LogoAnimation.tsx';
 import CheckRole from './pages/CheckRole/index.tsx';
@@ -23,22 +23,20 @@ const Home = () => {
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <div id="body">
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/checkrole" element={<CheckRole />} /> 
-                    <Route path="/logout" element={<LogOut />} />
-                    <Route path="/guard/*" element={<Guard />} />
+        <div id="body">
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/checkrole" element={<CheckRole />} /> 
+                <Route path="/logout" element={<LogOut />} />
+                <Route path="/guard/*" element={<Guard />} />
 
-                    <Route path={'/login/*'} element={<Login />} ></Route>
-                    <Route path={'/register-car-owner'} element={<RegisterCarOwner />} ></Route>
-                    <Route path={'/register-guard'} element={<RegisterGuard />} ></Route>
-                    <Route path={'/admin'} element={<AddUser />} ></Route>
+                <Route path={'/login/*'} element={<Login />} ></Route>
+                <Route path={'/register-car-owner'} element={<RegisterCarOwner />} ></Route>
+                <Route path={'/register-guard'} element={<RegisterGuard />} ></Route>
+                <Route path={'/admin'} element={<AddUser />} ></Route>
 
-                    <Route path="/staff/*" element={<Staff />} />
-                </Routes>
-            </div>
-        </BrowserRouter>
+                <Route path="/staff/*" element={<Staff />} />
+            </Routes>
+        </div>
     );
 }

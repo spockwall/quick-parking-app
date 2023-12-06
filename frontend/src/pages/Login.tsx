@@ -4,6 +4,8 @@ import { LoginService } from "../services/loginService";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
+import { useAuth } from '../hooks/UseAuth';
+
 import Logo from "../assets/logo.svg";
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 
@@ -15,6 +17,8 @@ export default function Login(): JSX.Element {
   const role = location.state?.role;
   // const role = 'staff';
 
+  const { login } = useAuth();
+
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [loginFail, setLoginFail] = useState(' ');
@@ -22,10 +26,11 @@ export default function Login(): JSX.Element {
 
   const handleLogin = () => {
     const loginService = new LoginService();
-    const login = loginService.login(id, password, role);
+    const [islogin, token] = loginService.login(id, password, role) as [boolean, string];
 
-    if (login === true) {
+    if (islogin === true) {
       const first = loginService.checkFirstLogin(id);
+      login(token, role);
       if (role === 'staff') {
         if (first === true) {
           // redirect to register page

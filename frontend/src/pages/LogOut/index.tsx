@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from '../../hooks/UseAuth';
 
 const LogOut = () => { 
   const navigate = useNavigate();
-
+  const { logout } = useAuth();
+  
   useEffect(() => {
+    logout();
     const animationTimeout = setTimeout(() => {
       navigate("/checkrole");
     }, 2000);
