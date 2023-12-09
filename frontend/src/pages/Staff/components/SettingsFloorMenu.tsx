@@ -7,7 +7,7 @@ import Menu from "@mui/material/Menu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const options = ["3 F", "2 F", "1 F", "B1 F", "B2 F", "B3 F"];
-
+// TODO: should be refactored withsetting Floor Menu
 export default function SettingsFloorMenu() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [selectedIndex, setSelectedIndex] = React.useState(1);

@@ -12,7 +12,7 @@ export default function Logout() {
             navigate("/checkrole");
         }, 2000);
         return () => clearTimeout(animationTimeout);
-    }, [navigate]);
+    }, [navigate, logout]);
 
     return (
         <div>

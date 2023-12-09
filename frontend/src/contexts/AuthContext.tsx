@@ -1,17 +1,23 @@
-import React, { useReducer, ReactNode } from "react";
 import Cookies from "js-cookie";
-import { authReducer } from "../reducers/authReducer";
-import type { authState } from "../types";
+import { createContext, useReducer, ReactNode, useEffect } from "react";
+import { AUTHACTION, authReducer, authActionType } from "../reducers/authReducer";
+import type { authState, roleType } from "../types";
 
-export const AuthContext = React.createContext({} as any);
-
-const initState: authState = {
-    token: Cookies.get("token") || "",
-    role: Cookies.get("role") || "",
+type authContextType = {
+    authState: authState;
+    authDispatch: React.Dispatch<authActionType>;
 };
+export const AuthContext = createContext({} as authContextType);
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-    const [authState, authDispatch] = useReducer(authReducer, initState);
+    const [authState, authDispatch] = useReducer(authReducer, {} as authState);
+
+    useEffect(() => {
+        const token = Cookies.get("token") || "";
+        const role = (Cookies.get("role") || "") as roleType;
+        authDispatch({ type: AUTHACTION.UNEXPIRED, payload: { token, role } });
+    }, []);
+
     return <AuthContext.Provider value={{ authState, authDispatch }}>{children}</AuthContext.Provider>;
 };
 

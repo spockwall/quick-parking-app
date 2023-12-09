@@ -5,14 +5,15 @@ import type { authState } from "../types";
 export enum AUTHACTION {
     LOGIN = "LOGIN",
     LOGOUT = "LOGOUT",
+    UNEXPIRED = "UNEXPIRED",
 }
-type authActionType = {
+export type authActionType = {
     type: AUTHACTION;
     payload: authState;
 };
 
-export const authReducer = (state: authState, action: authActionType) => {
-    switch (action?.type) {
+export const authReducer = (state: authState, action: authActionType): authState => {
+    switch (action.type) {
         case AUTHACTION.LOGIN:
             toast.success("Login successfully");
             Cookies.set("token", action.payload.token, {
@@ -23,13 +24,13 @@ export const authReducer = (state: authState, action: authActionType) => {
                 expires: 7,
                 secure: true,
             });
-            return { ...state, token: action.payload.token, role: action.payload.role };
-
+            return action.payload;
         case AUTHACTION.LOGOUT:
             Cookies.remove("token");
             Cookies.remove("role");
             return { ...state, token: "", role: "" };
-
+        case AUTHACTION.UNEXPIRED:
+            return action.payload;
         default:
             return state;
     }

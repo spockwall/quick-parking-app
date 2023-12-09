@@ -19,6 +19,6 @@ export interface userInfo {
 }
 export type authState = {
     token: string;
-    role: roleType;
+    role: roleType | ""; 
 };
 export type roleType = "staff" | "guard" | "admin";
