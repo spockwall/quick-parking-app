@@ -1,24 +1,15 @@
-import { Route, Routes } from 'react-router-dom';
-
-import LogoAnimation from './components/LogoAnimation.tsx';
-import CheckRole from './pages/CheckRole/index.tsx';
-import LogOut from './pages/LogOut/index.tsx';
+import Home from './pages/Home.tsx';
+import Staff from './pages/Staff/index.tsx';
 import Guard from './pages/Guard/index.tsx';
-
-import Login from './pages/Login.tsx'
-import RegisterCarOwner from './pages/RegisterCarOwner.tsx'
+import RegisterStaff from './pages/RegisterStaff.tsx';
 import RegisterGuard from './pages/RegisterGuard.tsx'
+import CheckRole from './pages/CheckRole/index.tsx';
+import Login from './pages/Login.tsx'
+import Logout from './pages/Logout/index.tsx';
 import AddUser from './pages/AddUser.tsx'
 
-import Staff from './pages/Staff/index.tsx';
+import { Route, Routes } from 'react-router-dom';
 
-const Home = () => {
-    return (
-        <div>
-            <LogoAnimation />
-        </div>
-    );
-};
 
 
 export default function App() {
@@ -27,11 +18,11 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/checkrole" element={<CheckRole />} /> 
-                <Route path="/logout" element={<LogOut />} />
+                <Route path="/logout" element={<Logout />} />
                 <Route path="/guard/*" element={<Guard />} />
 
                 <Route path={'/login/*'} element={<Login />} ></Route>
-                <Route path={'/register-car-owner'} element={<RegisterCarOwner />} ></Route>
+                <Route path={'/register-car-owner'} element={<RegisterStaff />} ></Route>
                 <Route path={'/register-guard'} element={<RegisterGuard />} ></Route>
                 <Route path={'/admin'} element={<AddUser />} ></Route>
 

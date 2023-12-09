@@ -21,6 +21,10 @@ export default function SettingsLotMenu() {
         setAnchorEl(null);
     };
 
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <div>
             <List component="nav" aria-label="Device settings" sx={{ bgcolor: "background.paper" }}>
@@ -59,7 +63,7 @@ export default function SettingsLotMenu() {
                 id="menu"
                 anchorEl={anchorEl}
                 open={open}
-                onClose={() => setAnchorEl(null)}
+                onClose={handleClose}
                 MenuListProps={{
                     "aria-labelledby": "button",
                     role: "listbox",

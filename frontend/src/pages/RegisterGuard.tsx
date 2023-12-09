@@ -8,7 +8,7 @@ import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 
 const commonButtonClass = "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle shadow-md";
 
-export default function Register(): JSX.Element {
+export default function RegisterGuard(): JSX.Element {
   const location = useLocation();
   const id = location.state?.id;
 
