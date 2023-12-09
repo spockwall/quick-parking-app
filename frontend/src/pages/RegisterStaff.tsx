@@ -24,7 +24,7 @@ export default function RegisterStaff(): JSX.Element {
 
     const handleRegister = () => {
         const registerService = new UserService();
-        const register = registerService.registerCarOwner(id, name, carId, phone, email, password);
+        const register = registerService.registerStaff(id, name, carId, phone, email, password);
 
         if (register) {
             // redirect to default page

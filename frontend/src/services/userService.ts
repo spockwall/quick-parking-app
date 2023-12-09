@@ -27,7 +27,7 @@ export class UserService {
   }
 
   // Register
-  public registerCarOwner(id: string, name: string, carId: string, phone: string, email: string, password: string): boolean {
+  public registerStaff(id: string, name: string, carId: string, phone: string, email: string, password: string): boolean {
     // PATCH /staff/users/:id
     return true;
   }

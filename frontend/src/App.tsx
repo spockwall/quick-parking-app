@@ -22,7 +22,7 @@ export default function App() {
                 <Route path="/guard/*" element={<Guard />} />
 
                 <Route path={'/login/*'} element={<Login />} ></Route>
-                <Route path={'/register-car-owner'} element={<RegisterStaff />} ></Route>
+                <Route path={'/register-staff'} element={<RegisterStaff />} ></Route>
                 <Route path={'/register-guard'} element={<RegisterGuard />} ></Route>
                 <Route path={'/admin'} element={<AddUser />} ></Route>
 

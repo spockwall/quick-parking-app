@@ -1,13 +1,13 @@
-import { useState } from "react";
 import InputField from "../components/InputField";
+import useAuth from "../hooks/useAuth";
+import { useCallback, useState } from "react";
 import { LoginService } from "../services/loginService";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
-import useAuth from "../hooks/useAuth";
-
-import Logo from "../assets/logo.svg";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+
+import { ROLE } from "../enums";
+import Logo from "../assets/logo.svg";
 
 const commonButtonClass =
     "text-white focus:outline-none focus:ring-2 rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle";
@@ -16,45 +16,45 @@ export default function Login(): JSX.Element {
     const { login } = useAuth("any");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
-    const [loginFail, setLoginFail] = useState(" ");
     const navigate = useNavigate();
     const location = useLocation();
     const role = location.state?.role;
+    const handleBack = useCallback(() => {
+        navigate("/checkrole");
+    }, [navigate]);
 
-    const handleLogin = () => {
+    const handleLogin = useCallback(() => {
+        // TODO: store to cookie
         const loginService = new LoginService();
-        const [islogin, token] = loginService.login(id, password, role) as [boolean, string];
+        const [token, user] = loginService.login(id, password, role);
+        console.log(user);
 
-        if (islogin === true) {
+        if (token !== "") {
             const isFirstLogin = loginService.checkFirstLogin(id);
+            // toast.success(`Welcome back, ${user.name}!`);
             login(token, role);
-            if (role === "staff") {
+            if (role === ROLE.STAFF) {
+                // If first time login, redirect to register page, or redirect to default page of car owner
                 if (isFirstLogin) {
-                    // redirect to register page
-                    navigate("/register-car-owner", { state: { id: id } });
+                    navigate("/register-staff", { state: { id } });
                 } else {
-                    // redirect to default page of car owner
                     navigate("/staff");
                 }
-            } else if (role === "guard") {
+            } else if (role === ROLE.GUARD) {
+                // If first time login, redirect to register page, or redirect to default page of guard
                 if (isFirstLogin) {
-                    // redirect to register page
-                    navigate("/register-guard", { state: { id: id } });
+                    navigate("/register-guard", { state: { id } });
                 } else {
-                    // redirect to default page of guard
                     navigate("/guard");
                 }
-            } else if (role === "admin") {
+            } else if (role === ROLE.ADMIN) {
                 navigate("/admin");
             }
         } else {
-            setLoginFail("ID hasn't been registered or password is incorrect");
+            handleBack();
+            // toast.error("ID hasn't been registered or password is incorrect");
         }
-    };
-
-    const handleBack = () => {
-        navigate("/checkrole");
-    };
+    }, [id, password, role, login, navigate, handleBack]);
 
     return (
         <div className="flex flex-col justify-center items-center h-screen bg-blue-light">
@@ -101,19 +101,12 @@ export default function Login(): JSX.Element {
                 </div>
             </div>
 
-            {/* Login Failed */}
-            <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex items-center justify-center text-red-600 text-sm font-bold mt-2">
-                {loginFail}
-            </div>
-
             {/* Button */}
             <div className="w-10/12 sm:w-3/5 md:w-1/2 lg:w-2/5 flex flex-col mt-12">
                 <div className="w-10/12 flex m-auto justify-between">
                     <button
                         type="button"
-                        className={`
-        ${commonButtonClass} bg-red hover:bg-red-dark focus:ring-red-dark
-      text-sm md:text-lg`}
+                        className={`${commonButtonClass} bg-red hover:bg-red-dark focus:ring-red-dark text-sm md:text-lg`}
                         onClick={handleBack}
                     >
                         <ArrowBackIosRoundedIcon fontSize="small" className="mr-1" />
@@ -122,9 +115,7 @@ export default function Login(): JSX.Element {
                     <div className="w-5/12 flex justify-end">
                         <button
                             type="button"
-                            className={`
-        ${commonButtonClass} bg-blue-dark hover:bg-blue-exdark focus:ring-blue-exdark
-      `}
+                            className={`${commonButtonClass} bg-blue-dark hover:bg-blue-exdark focus:ring-blue-exdark`}
                             onClick={handleLogin}
                         >
                             <span className="text-sm md:text-lg text-center">Log In</span>
