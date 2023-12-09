@@ -7,13 +7,13 @@ import Settings from "./components/Settings";
 import Occupied from "./components/Occupied";
 import OccupiedDetail from "./components/OccupiedDetail";
 import ParkingLot from "../../components/ParkingLot";
+import { floors, slots } from "../../data/parkingSlots";
 
-import SelectedLotMenu from "../../components/SelectedLotMenu";
-import SelectedFloorMenu from "../../components/SelectedFloorMenu";
+import SelectMenu from "../../components/SelectMenu";
 
 const Staff = () => {
     useAuth("staff");
-    
+
     const isStaffRoute = useMatch("/staff");
     const routes = useRoutes([
         {
@@ -31,8 +31,8 @@ const Staff = () => {
               justify-center sm:justify-around align-middle items-center w-4/5 sm:mb-2"
                             >
                                 <div className="flex gap-2">
-                                    <SelectedLotMenu />
-                                    <SelectedFloorMenu />
+                                    <SelectMenu options={floors} />
+                                    <SelectMenu options={slots} />
                                 </div>
                                 <div className="flex flex-col justify-center items-center sm:flex-row gap-1 sm:gap-5 text-center sm:ml-1">
                                     <div>

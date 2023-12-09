@@ -6,9 +6,38 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-const options = ["3 F", "2 F", "1 F", "B1 F", "B2 F", "B3 F"];
-// TODO: should be refactored withsetting Floor Menu
-export default function SettingsFloorMenu() {
+// const options = ["3 F", "2 F", "1 F", "B1 F", "B2 F", "B3 F"];
+interface SelectMenuProps {
+    options: string[];
+    style?: "white" | "black";
+}
+const styleWhite = {
+    color: "white",
+    background: "#6FC2DD",
+    textAlign: "center",
+    borderRadius: "8px",
+    boxShadow: "inset 1px 1px 5px 1px #3B88C3",
+    paddingBottom: "6px",
+    paddingTop: "6px",
+};
+const styleBlack = {
+    color: "black",
+    background: "white",
+    textAlign: "center",
+    borderRadius: "8px",
+    boxShadow: "0px 0px 2px 0.03rem #3B88C3",
+    paddingBottom: "12px",
+    paddingTop: "12px",
+    border: 2,
+    borderColor: "#3B88C3",
+    fontWeight: "bold",
+    fontSize: 14,
+    "&:hover": {
+        boxShadow: "0px 0px 5px 0.05rem #3B88C3",
+    },
+};
+export default function SelectMenu(props: SelectMenuProps) {
+    const { options } = props;
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const open = Boolean(anchorEl);
@@ -34,22 +63,7 @@ export default function SettingsFloorMenu() {
                     aria-controls="menu"
                     aria-expanded={open ? "true" : undefined}
                     onClick={handleClickListItem}
-                    sx={{
-                        color: "black",
-                        background: "white",
-                        textAlign: "center",
-                        borderRadius: "8px",
-                        boxShadow: "0px 0px 2px 0.03rem #3B88C3",
-                        paddingBottom: "12px",
-                        paddingTop: "12px",
-                        border: 2,
-                        borderColor: "#3B88C3",
-                        fontWeight: "bold",
-                        fontSize: 14,
-                        "&:hover": {
-                            boxShadow: "0px 0px 5px 0.05rem #3B88C3",
-                        },
-                    }}
+                    sx={props.style === "black" ? styleBlack : styleWhite}
                 >
                     <ListItemText primary={options[selectedIndex]} sx={{ margin: "0 2px 0 2px" }} />
                     <KeyboardArrowDownIcon />
@@ -64,7 +78,6 @@ export default function SettingsFloorMenu() {
                     "aria-labelledby": "button",
                     role: "listbox",
                 }}
-                sx={{ width: 1 }}
             >
                 {options.map((option, index) => (
                     <MenuItem
