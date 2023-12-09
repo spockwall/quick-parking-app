@@ -1,15 +1,16 @@
 import { useContext } from "react";
-import { UserContext } from "../contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
+import type { roleType } from "@/types";
 
-export const useAuth = () => {
-  let { userState, userDispatch } = useContext(UserContext);
+export default function useAuth() {
+    const { authState, authDispatch } = useContext(AuthContext);
 
-  const login = (token: string, role: string) => {
-    userDispatch({ type: "LOGIN", payload: { token, role } });
-  };
+    const login = (token: string, role: roleType) => {
+        authDispatch({ type: "LOGIN", payload: { token, role } });
+    };
 
-  const logout = () => {
-    userDispatch({ type: "LOGOUT" });
-  };
-	return { userState, login, logout };
-};
+    const logout = () => {
+        authDispatch({ type: "LOGOUT" });
+    };
+    return { authState, login, logout };
+}

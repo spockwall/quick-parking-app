@@ -4,7 +4,7 @@ import { LoginService } from "../services/loginService";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
-import { useAuth } from '../hooks/UseAuth';
+import { useAuth } from '../hooks/useAuth';
 
 import Logo from "../assets/logo.svg";
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';

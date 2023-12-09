@@ -1,6 +1,6 @@
 import ParkingSpace from "./ParkingSpace";
-import useParkingLotMap from "../hooks/UseParkingLotMap";
-import useParkingLotStatus from "../hooks/UseParkingLotStatus";
+import useParkingLotMap from "../hooks/useParkingLotMap";
+import useParkingLotStatus from "../hooks/useParkingLotStatus";
 import { useState } from "react";
 import type { ParkingSpaceStatus } from "../types";
 import StatusModal from "./modals/StatusModal";

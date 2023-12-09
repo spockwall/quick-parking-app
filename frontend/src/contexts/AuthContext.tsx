@@ -1,54 +1,18 @@
 import React, { useReducer, ReactNode } from "react";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
-export const UserContext = React.createContext({} as any);
+import { authReducer } from "../reducers/authReducer";
+import type { authState } from "../types";
 
-export interface UserState {
-  token: string;
-  role: string;
-}
+export const AuthContext = React.createContext({} as any);
 
-const initState: UserState = {
-  token: Cookies.get('token') || '',
-  role: Cookies.get('role') || '',
+const initState: authState = {
+    token: Cookies.get("token") || "",
+    role: Cookies.get("role") || "",
 };
 
-const UserContextProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
-  const UserReducer = (state: UserState, action: any) => {
-    switch (action?.type) {
-      case "LOGIN":
-        toast.success("Login successfully");
-        Cookies.set('token', action.payload.token, {
-          expires: 7,
-          secure: true,
-        });
-        Cookies.set('role', action.payload.role, {
-          expires: 7,
-          secure: true,
-        });
-        return { ...state, token: action.payload.token, role: action.payload.role };
-
-      case "LOGOUT":
-        Cookies.remove("token");
-        Cookies.remove("role");
-        return { ...state, token: '', role: '' };
-
-      default:
-        return state;
-    }
-  };
-
-  const [userState, userDispatch] = useReducer(UserReducer, initState);
-
-  return (
-    <UserContext.Provider value={{ userState, userDispatch }}>
-      {children}
-    </UserContext.Provider>
-  );
+const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+    const [authState, authDispatch] = useReducer(authReducer, initState);
+    return <AuthContext.Provider value={{ authState, authDispatch }}>{children}</AuthContext.Provider>;
 };
 
-export default UserContextProvider;
+export default AuthContextProvider;
