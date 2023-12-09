@@ -4,7 +4,7 @@ import InputField from "../../../components/InputField";
 import InputLPN from "../../../components/InputLPN";
 import { useState } from "react";
 import { UserService } from "../../../services/userService";
-import { userActionType } from "../../../reducers/userReducer";
+import { USERACTION } from "../../../reducers/userReducer";
 
 export default function Profile(): JSX.Element {
   const id = "qwe-123-qwe";
@@ -36,7 +36,7 @@ export default function Profile(): JSX.Element {
               disabled={disabled}
               onChange={(e) => {
                 userDispatch({
-                  type: userActionType.CHANGE_NAME,
+                  type: USERACTION.CHANGE_NAME,
                   payload: { ...user, name: e.target.value },
                 });
               }}
@@ -49,7 +49,7 @@ export default function Profile(): JSX.Element {
               disabled={disabled}
               onChange={(e) => {
                 userDispatch({
-                  type: userActionType.CHANGE_PHONE,
+                  type: USERACTION.CHANGE_PHONE,
                   payload: { ...user, phone: e.target.value },
                 });
               }}
@@ -62,7 +62,7 @@ export default function Profile(): JSX.Element {
               disabled={disabled}
               onChange={(e) => {
                 userDispatch({
-                  type: userActionType.CHANGE_EMAIL,
+                  type: USERACTION.CHANGE_EMAIL,
                   payload: { ...user, email: e.target.value },
                 });
               }}
@@ -75,7 +75,7 @@ export default function Profile(): JSX.Element {
               disabled={disabled}
               action={(newLPN: string) => {
                 userDispatch({
-                  type: userActionType.CHANGE_LICENSE_PLATE_NUMRER,
+                  type: USERACTION.CHANGE_LICENSE_PLATE_NUMRER,
                   payload: { ...user, licensePlateNumber: [...user.licensePlateNumber, newLPN] },
                 });
               }}
