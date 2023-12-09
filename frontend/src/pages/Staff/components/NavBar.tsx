@@ -6,14 +6,8 @@ import DirectionsCarFilledOutlinedIcon from "@mui/icons-material/DirectionsCarFi
 //route
 import { useNavigate, useLocation } from "react-router-dom";
 
-
 export default function NavBar() {
-    // const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
     const navigate = useNavigate();
-    // const handleClickLogout = () => {
-    //   navigate("/logout");
-    // };
     const location = useLocation();
     const currentRoute = location.pathname.split("/").pop();
     let routeText;
