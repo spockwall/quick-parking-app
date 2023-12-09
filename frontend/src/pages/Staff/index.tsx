@@ -1,5 +1,6 @@
 import { Outlet, useRoutes, useMatch } from "react-router-dom";
 
+import useAuth from "../../hooks/useAuth";
 import NavBar from "./components/NavBar";
 import Profile from "./components/Profile";
 import Settings from "./components/Settings";
@@ -11,8 +12,9 @@ import SelectedLotMenu from "../../components/SelectedLotMenu";
 import SelectedFloorMenu from "../../components/SelectedFloorMenu";
 
 const Staff = () => {
+    useAuth("staff");
+    
     const isStaffRoute = useMatch("/staff");
-
     const routes = useRoutes([
         {
             path: "/",

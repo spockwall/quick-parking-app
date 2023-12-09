@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
+import useAuth from '../hooks/useAuth';
 
 const commonButtonClass = "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle shadow-md";
 
 export default function RegisterGuard(): JSX.Element {
+  useAuth('guard');
   const location = useLocation();
   const id = location.state?.id;
 
@@ -20,8 +22,7 @@ export default function RegisterGuard(): JSX.Element {
     const registerService = new UserService();
     const register = registerService.registerGuard(id, name, password);
 
-    if (register === true) {
-      // redirect to default page
+    if (register) {
       navigate('/guard');
     } else {
       // register failed...??

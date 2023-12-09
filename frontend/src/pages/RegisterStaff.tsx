@@ -4,12 +4,14 @@ import { useState } from "react";
 import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 
 const commonButtonClass =
     "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle shadow-md";
 
 export default function RegisterStaff(): JSX.Element {
+    useAuth("staff");
     const location = useLocation();
     const id = location.state?.id;
 

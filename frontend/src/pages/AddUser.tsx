@@ -2,6 +2,7 @@ import InputField from "../components/InputField";
 import SuccessModal from "../components/modals/SuccessModal";
 import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/userRole";
 import { useState } from "react";
 import { UserService } from "../services/userService";
@@ -11,6 +12,7 @@ const commonButtonClass =
     "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle font-bold";
 
 export default function AddUser(): JSX.Element {
+    useAuth("admin");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [showModal, setShowModal] = useState(false);

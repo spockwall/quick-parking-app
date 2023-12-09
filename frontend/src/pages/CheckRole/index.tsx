@@ -6,9 +6,9 @@ import type { roleType } from "../../types";
 const commonButtonClass =
     "text-white bg-blue-dark hover:bg-blue-exdark focus:outline-none focus:ring-2 focus:ring-blue-exdark rounded-full text-md md:text-xl px-5 py-3.5 text-center me-2 w-full my-5 mx-auto";
 
-const CheckRole = () => {
+export default function CheckRole() {
+    const { authState } = useAuth("any");
     const navigate = useNavigate();
-    const { authState } = useAuth();
     const handleButtonClick = (role: roleType) => {
         if (authState && authState?.role === role) {
             return navigate(`/${role}`);
@@ -49,6 +49,4 @@ const CheckRole = () => {
             </div>
         </div>
     );
-};
-
-export default CheckRole;
+}

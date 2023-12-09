@@ -13,27 +13,23 @@ const commonButtonClass =
     "text-white focus:outline-none focus:ring-2 rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle";
 
 export default function Login(): JSX.Element {
-    const location = useLocation();
-
-    const role = location.state?.role;
-    // const role = 'staff';
-
-    const { login } = useAuth();
-
+    const { login } = useAuth("any");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [loginFail, setLoginFail] = useState(" ");
     const navigate = useNavigate();
+    const location = useLocation();
+    const role = location.state?.role;
 
     const handleLogin = () => {
         const loginService = new LoginService();
         const [islogin, token] = loginService.login(id, password, role) as [boolean, string];
 
         if (islogin === true) {
-            const first = loginService.checkFirstLogin(id);
+            const isFirstLogin = loginService.checkFirstLogin(id);
             login(token, role);
             if (role === "staff") {
-                if (first === true) {
+                if (isFirstLogin) {
                     // redirect to register page
                     navigate("/register-car-owner", { state: { id: id } });
                 } else {
@@ -41,7 +37,7 @@ export default function Login(): JSX.Element {
                     navigate("/staff");
                 }
             } else if (role === "guard") {
-                if (first === true) {
+                if (isFirstLogin) {
                     // redirect to register page
                     navigate("/register-guard", { state: { id: id } });
                 } else {
