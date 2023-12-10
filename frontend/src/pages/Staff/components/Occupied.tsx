@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
 
 import { useNavigate } from "react-router-dom";
-import { CommonButton } from "./CommonButton";
+import { CommonButton } from "../../../components/CommonButton";
 
 export default function Occupied(): JSX.Element {
     const navigate = useNavigate();

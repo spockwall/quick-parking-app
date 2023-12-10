@@ -3,7 +3,7 @@ import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftR
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { commondivClass } from "../../../styles/commonStyles";
+import { commonDivClass } from "../../../styles/commonStyles";
 
 const OccupiedDetail = () => {
     const { carlicense } = useParams();
@@ -38,9 +38,9 @@ const OccupiedDetail = () => {
                 </div>
 
                 <div className="flex justify-center mt-6 ml-4 md:ml-20 lg:ml-32">
-                    <div className={`${commondivClass}`}>Lot 1</div>
-                    <div className={`${commondivClass}`}>1 F</div>
-                    <div className={`${commondivClass}`}>1</div>
+                    <div className={`${commonDivClass}`}>Lot 1</div>
+                    <div className={`${commonDivClass}`}>1 F</div>
+                    <div className={`${commonDivClass}`}>1</div>
                 </div>
             </div>
 

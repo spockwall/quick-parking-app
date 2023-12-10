@@ -1,38 +1,33 @@
-import { useState } from "react";
 import SelectMenu from "../../../components/SelectMenu";
 import ScrollToTopButton from "../../../components/ScrollToTopButton";
-import { slots, floors } from "../../../data/parkingSlots";
-
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 import UsageDurationModal from "./modals/UsageDurationModal";
-import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
 
-import { styled } from "@mui/material/styles";
-
-const CommonButton = styled(Button)`
-    text-transform: none;
-    font-size: 16px;
-    padding: 8px 10px;
-    border: 2px solid;
-    border-radius: 12px;
-    line-height: 1;
-    background-color: #ffffff;
-    border-color: #3b88c3;
-    &:hover {
-        border-color: blue-dark;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 0.1rem #3b88c3;
-    }
-    &:focus {
-        box-shadow: 0 0 0 0.1rem #3b88c3;
-    }
-    font-family: "Lexend", sans-serif;
-`;
+import { useState } from "react";
+import { slots, floors } from "../../../data/parkingSlots";
+import { GridItem, GridItemList } from "./GridItem";
+const DurationData = [
+    {
+        parkingSpaceId: "1-1-1",
+        state: "occupied", //available | occupied | error,
+        type: "general", // general | disabledOnly,
+        startTime: 1700000000,
+        duration: 3600,
+    },
+    {
+        parkingSpaceId: "1-1-2",
+        state: "occupied", //available | occupied | error,
+        type: "general", // general | disabledOnly,
+        startTime: 1700000120,
+        duration: 3600,
+    },
+];
 
 export default function UsageDuration() {
+    // TODO: Fetch data from backend
+    // TODO: Show correct data in modal
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -55,50 +50,20 @@ export default function UsageDuration() {
             />
             <div className="mt-6 w-3/4 md:w-1/2 sm:max-h-80">
                 <Stack direction="column" spacing={2.5}>
-                    <Grid container spacing={1} className="flex justify-center align-middle text-center text-black">
-                        <Grid item xs={1.4} className="flex align-middle items-center justify-center">
-                            Order
-                        </Grid>
-                        <Grid item xs={6} className="flex align-middle items-center justify-center">
-                            Time
-                        </Grid>
-                        <Grid item xs={2.6} className="flex align-middle items-center justify-center">
-                            Space
-                        </Grid>
-                        <Grid item xs className="flex align-middle items-center justify-center"></Grid>
+                    <Grid container spacing={1} className="flex justify-start align-middle text-center text-black">
+                        <GridItem xs={1.4}>Order</GridItem>
+                        <GridItem xs={6}>Space ID</GridItem>
+                        <GridItem xs={2.6}>Duration</GridItem>
                     </Grid>
-                    <CommonButton variant="contained" onClick={handleClickOpen}>
-                        <Grid container spacing={0} className="flex justify-center align-middle text-center text-black">
-                            <Grid item xs={1} className="flex align-middle items-center justify-center text-red">
-                                1
-                            </Grid>
-                            <Grid item xs={7} className="flex align-middle items-center justify-center text-center">
-                                12:30
-                            </Grid>
-                            <Grid item xs={2} className="flex align-middle items-center justify-center">
-                                123
-                            </Grid>
-                            <Grid item xs className="flex align-middle items-center justify-center">
-                                <NavigateNextOutlinedIcon className="text-blue-dark" style={{ fontSize: "2rem" }} />
-                            </Grid>
-                        </Grid>
-                    </CommonButton>
-                    <CommonButton variant="contained" onClick={handleClickOpen}>
-                        <Grid container spacing={0} className="flex justify-center align-middle text-center text-black">
-                            <Grid item xs={1} className="flex align-middle items-center justify-center text-red">
-                                2
-                            </Grid>
-                            <Grid item xs={7} className="flex align-middle items-center justify-center">
-                                10:20
-                            </Grid>
-                            <Grid item xs={2} className="flex align-middle items-center justify-center">
-                                12
-                            </Grid>
-                            <Grid item xs className="flex align-middle items-center justify-center">
-                                <NavigateNextOutlinedIcon className="text-blue-dark" style={{ fontSize: "2rem" }} />
-                            </Grid>
-                        </Grid>
-                    </CommonButton>
+                    {DurationData.map((data, index) => (
+                        <GridItemList
+                            key={data.parkingSpaceId}
+                            index={index + 1}
+                            data={data.duration.toString()}
+                            parkingSpaceId={data.parkingSpaceId}
+                            onClick={handleClickOpen}
+                        />
+                    ))}
                 </Stack>
             </div>
             <ScrollToTopButton />

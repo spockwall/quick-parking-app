@@ -2,9 +2,22 @@ import Logo from "../../assets/logo.svg";
 import useAuth from "../../hooks/useAuth";
 import { ROLE } from "../../enums";
 import { useNavigate } from "react-router-dom";
+import { commonButtonClass2 } from "../../styles/commonStyles";
 import type { roleType } from "../../types";
-const commonButtonClass =
-    "text-white bg-blue-dark hover:bg-blue-exdark focus:outline-none focus:ring-2 focus:ring-blue-exdark rounded-full text-md md:text-xl px-5 py-3.5 text-center me-2 w-full my-5 mx-auto";
+
+interface SelectRoleButtonProps {
+    role: roleType;
+    onClick: (role: roleType) => void;
+}
+
+const SelectRoleButton = (props: SelectRoleButtonProps) => {
+    const role = props.role;
+    return (
+        <button type="button" onClick={() => props.onClick(role)} className={commonButtonClass2}>
+            {role.toLocaleUpperCase()}
+        </button>
+    );
+};
 
 export default function CheckRole() {
     const { authState } = useAuth("any");
@@ -13,9 +26,8 @@ export default function CheckRole() {
         if (authState && authState?.role === role) {
             return navigate(`/${role}`);
         }
-        return navigate(`/login/${role}`, { state: { role: role } });
+        return navigate(`/login/${role}`, { state: { role } });
     };
-
     return (
         <div
             className="bg-blue-light flex flex-col items-center align-middle justify-center"
@@ -37,15 +49,9 @@ export default function CheckRole() {
             </div>
 
             <div className="flex flex-col items-center align-middle justify-center mt-3 w-1/2 sm:w-2/5 md:w-1/3 lg:w-1/4">
-                <button type="button" onClick={() => handleButtonClick(ROLE.STAFF)} className={`${commonButtonClass}`}>
-                    Car Owner
-                </button>
-                <button type="button" onClick={() => handleButtonClick(ROLE.GUARD)} className={`${commonButtonClass}`}>
-                    Guard
-                </button>
-                <button type="button" onClick={() => handleButtonClick(ROLE.ADMIN)} className={`${commonButtonClass}`}>
-                    Admin
-                </button>
+                <SelectRoleButton role={ROLE.STAFF} onClick={handleButtonClick} />
+                <SelectRoleButton role={ROLE.GUARD} onClick={handleButtonClick} />
+                <SelectRoleButton role={ROLE.ADMIN} onClick={handleButtonClick} />
             </div>
         </div>
     );

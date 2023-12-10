@@ -3,6 +3,7 @@ import SelectMenu from "../../../components/SelectMenu";
 import { floors, slots } from "../../../data/parkingSlots";
 
 export default function CurrentStatus() {
+    // TODO: State change when select menu changes
     // const navigate = useNavigate();
     return (
         <div className="flex flex-col items-center justify-start">
