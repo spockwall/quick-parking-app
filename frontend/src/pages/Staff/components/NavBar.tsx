@@ -6,24 +6,23 @@ import DirectionsCarFilledOutlinedIcon from "@mui/icons-material/DirectionsCarFi
 //route
 import { useNavigate, useLocation } from "react-router-dom";
 
+const selectRouteText = (currentRoute?: string) => {
+    switch (currentRoute) {
+        case "profile":
+            return "Personal Profile";
+        case "occupied":
+            return "Occupied Spaces";
+        case "settings":
+            return "Settings";
+        default:
+            return "Parking Status";
+    }
+};
 export default function NavBar() {
     const navigate = useNavigate();
     const location = useLocation();
     const currentRoute = location.pathname.split("/").pop();
-    let routeText;
-    switch (currentRoute) {
-        case "profile":
-            routeText = "Personal Profile";
-            break;
-        case "occupied":
-            routeText = "Occupied Spaces";
-            break;
-        case "settings":
-            routeText = "Settings";
-            break;
-        default:
-            routeText = "Parking Status";
-    }
+    const routeText = selectRouteText(currentRoute);
 
     return (
         <>

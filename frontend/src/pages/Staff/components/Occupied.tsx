@@ -3,31 +3,10 @@ import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import { styled } from "@mui/material/styles";
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
-import MUIButton from "@mui/material/Button";
 
 import { useNavigate } from "react-router-dom";
-
-const CommonButton = styled(MUIButton)`
-    text-transform: none;
-    font-size: 16px;
-    padding: 8px 10px;
-    border: 2px solid;
-    border-radius: 12px;
-    line-height: 1;
-    background-color: #ffffff;
-    border-color: #3b88c3;
-    &:hover {
-        border-color: blue-dark;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 0.1rem #3b88c3;
-    }
-    &:focus {
-        box-shadow: 0 0 0 0.1rem #3b88c3;
-    }
-    font-family: "Lexend", sans-serif;
-`;
+import { CommonButton } from "./CommonButton";
 
 export default function Occupied(): JSX.Element {
     const navigate = useNavigate();

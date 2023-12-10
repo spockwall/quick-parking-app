@@ -1,19 +1,16 @@
+import ParkingLot from "../../../components/ParkingLot";
+import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import { useNavigate } from "react-router-dom";
-
-import ParkingLot from "../../../components/ParkingLot";
-
-const commondivClass =
-    "text-white bg-blue-light rounded-lg px-6 py-2 font-bold text-center flex shadow-inner text-center justify-center h-3/5 mr-4 md:mr-6 text-sm md:text-md text-center";
+import { commondivClass } from "../../../styles/commonStyles";
 
 const OccupiedDetail = () => {
     const { carlicense } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch data based on spaceId
+        // TODO: Fetch data based on spaceId
         console.log("Car License:", carlicense);
     }, [carlicense]);
 
