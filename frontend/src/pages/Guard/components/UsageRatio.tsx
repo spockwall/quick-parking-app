@@ -3,8 +3,7 @@ import UsageRatioModal from "./modals/UsageRatioModal";
 import ScrollToTopButton from "../../../components/ScrollToTopButton";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
-import { GridItem, GridItemList } from "./GridItem";
+import { GridItemHeader, GridItemList } from "./GridItem";
 import { useState } from "react";
 import { RatioData } from "../../../data/fakeData";
 import { slots, floors } from "../../../data/parkingSlots";
@@ -32,11 +31,7 @@ export default function UsageRatio() {
             />
             <div className="mt-6 w-3/4 md:w-1/2">
                 <Stack direction="column" spacing={2.5}>
-                    <Grid container spacing={1} className="flex justify-start align-middle text-center text-black">
-                        <GridItem xs={1.4}>Order</GridItem>
-                        <GridItem xs={6}>Space ID</GridItem>
-                        <GridItem xs={2.6}>Ratio</GridItem>
-                    </Grid>
+                    <GridItemHeader dataName="Duration"></GridItemHeader>
                     {RatioData.map((data, index) => (
                         <GridItemList
                             key={data.parkingSpaceId}

@@ -2,12 +2,11 @@ import SelectMenu from "../../../components/SelectMenu";
 import ScrollToTopButton from "../../../components/ScrollToTopButton";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
 import UsageDurationModal from "./modals/UsageDurationModal";
 
 import { useState } from "react";
 import { slots, floors } from "../../../data/parkingSlots";
-import { GridItem, GridItemList } from "./GridItem";
+import { GridItemHeader, GridItemList } from "./GridItem";
 const DurationData = [
     {
         parkingSpaceId: "1-1-1",
@@ -50,11 +49,7 @@ export default function UsageDuration() {
             />
             <div className="mt-6 w-3/4 md:w-1/2 sm:max-h-80">
                 <Stack direction="column" spacing={2.5}>
-                    <Grid container spacing={1} className="flex justify-start align-middle text-center text-black">
-                        <GridItem xs={1.4}>Order</GridItem>
-                        <GridItem xs={6}>Space ID</GridItem>
-                        <GridItem xs={2.6}>Duration</GridItem>
-                    </Grid>
+                    <GridItemHeader dataName="Duration"></GridItemHeader>
                     {DurationData.map((data, index) => (
                         <GridItemList
                             key={data.parkingSpaceId}

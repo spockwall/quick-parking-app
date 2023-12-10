@@ -6,11 +6,9 @@ import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftR
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { UsageHistoryData } from "../../../data/fakeData";
+import { commonDivClass2 } from "../../../styles/commonStyles";
 
-// import { commonDivClass } from "../../../styles/commonStyles";
-
-const commonDivClass =
-    "text-white bg-blue-light rounded-lg px-4 py-2 font-bold flex shadow-inner text-center justify-center mr-4 md:mr-6 text-sm md:text-md";
 
 interface TitleGridProps {
     title: string;
@@ -37,10 +35,6 @@ function TitledGrid(props: TitleGridProps) {
         </Grid>
     );
 }
-const UsageHistoryData = [
-    { carId: "A1234567890", period: "11:00 AM - 8:00 PM" },
-    { carId: "A1231231210", period: "11:00 AM - 8:00 PM" },
-];
 
 const UsageHistoryDetail = () => {
     // TODO: there is no api for this page.
@@ -85,9 +79,9 @@ const UsageHistoryDetail = () => {
                 </div>
 
                 <div className="flex justify-center mt-8 sm:mt-4 ml-4 md:ml-0 ">
-                    <div className={`${commonDivClass}`}>Lot {lot}</div>
-                    <div className={`${commonDivClass}`}>{floor} F</div>
-                    <div className={`${commonDivClass}`}>{space}</div>
+                    <div className={`${commonDivClass2}`}>Lot {lot}</div>
+                    <div className={`${commonDivClass2}`}>{floor} F</div>
+                    <div className={`${commonDivClass2}`}>{space}</div>
                 </div>
             </div>
 
