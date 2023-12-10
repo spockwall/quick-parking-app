@@ -24,6 +24,7 @@ export default function RegisterStaff(): JSX.Element {
     const navigate = useNavigate();
 
     const handleRegister = () => {
+        // TODO: handle register
         const registerService = new UserService();
         const register = registerService.registerStaff(id, name, carId, phone, email, password);
 

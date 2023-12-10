@@ -1,9 +1,9 @@
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { AUTHACTION } from "../reducers/authReducer";
-import type { roleType } from "../types";
-import type { authState } from "../types";
+import type { roleType, userInfo, authState } from "../types";
 
 export default function useAuth(permission: roleType | "any") {
     const { authState, authDispatch } = useContext(AuthContext);
@@ -14,8 +14,8 @@ export default function useAuth(permission: roleType | "any") {
     }, [authDispatch]);
 
     const login = useCallback(
-        (token: string, role: roleType) => {
-            authDispatch({ type: AUTHACTION.LOGIN, payload: { token, role } });
+        (token: string, role: roleType, user: userInfo) => {
+            authDispatch({ type: AUTHACTION.LOGIN, payload: { token, role, user } });
         },
         [authDispatch]
     );
