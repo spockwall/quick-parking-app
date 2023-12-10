@@ -7,22 +7,7 @@ import UsageDurationModal from "./modals/UsageDurationModal";
 import { useState } from "react";
 import { slots, floors } from "../../../data/parkingSlots";
 import { GridItemHeader, GridItemList } from "./GridItem";
-const DurationData = [
-    {
-        parkingSpaceId: "1-1-1",
-        state: "occupied", //available | occupied | error,
-        type: "general", // general | disabledOnly,
-        startTime: 1700000000,
-        duration: 3600,
-    },
-    {
-        parkingSpaceId: "1-1-2",
-        state: "occupied", //available | occupied | error,
-        type: "general", // general | disabledOnly,
-        startTime: 1700000120,
-        duration: 3600,
-    },
-];
+import { DurationData } from "../../../data/fakeData";
 
 export default function UsageDuration() {
     // TODO: Fetch data from backend
