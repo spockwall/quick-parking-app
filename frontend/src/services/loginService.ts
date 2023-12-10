@@ -1,3 +1,4 @@
+import { ROLE } from "../enums";
 import type { userInfo } from "../types";
 export class LoginService {
     public login(id: string, password: string, role: string): [string, userInfo] {
@@ -9,7 +10,7 @@ export class LoginService {
             name: "John Doe",
             email: "123@gmail.com",
             licensePlateNumber: ["1234"],
-            role: "staff",
+            role: ROLE.STAFF,
             status: "common",
         };
         return ["token", user];

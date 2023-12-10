@@ -3,3 +3,9 @@ export enum ROLE {
     GUARD = "guard",
     ADMIN = "admin",
 }
+
+export enum ParkingSpaceState {
+    OCCUPIED = "occupied",
+    AVAILABLE = "available",
+    ERROR = "error",
+}

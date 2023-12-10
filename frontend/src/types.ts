@@ -1,3 +1,4 @@
+import { ROLE } from "./enums";
 export interface ParkingSpaceStatus {
     id: string;
     spaceId: string;
@@ -14,11 +15,11 @@ export interface userInfo {
     phone: string;
     email: string;
     licensePlateNumber: string[];
-    role: "staff" | "guard" | "admin";
+    role: ROLE;
     status: "common" | "difficulty" | "disability";
 }
 export type authState = {
     token: string;
-    role: roleType | ""; 
+    role: roleType | "";
 };
-export type roleType = "staff" | "guard" | "admin";
+export type roleType = ROLE.STAFF | ROLE.GUARD | ROLE.ADMIN;

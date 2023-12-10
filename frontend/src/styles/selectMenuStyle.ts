@@ -1,4 +1,4 @@
-export const styleWhite = {
+export const styleBlue = {
     color: "white",
     background: "#6FC2DD",
     textAlign: "center",
@@ -8,7 +8,7 @@ export const styleWhite = {
     paddingTop: "6px",
 };
 
-export const styleBlack = {
+export const styleWhite = {
     color: "black",
     background: "white",
     textAlign: "center",

@@ -7,12 +7,13 @@ import useRole from "../hooks/userRole";
 import { useState } from "react";
 import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import { ROLE } from "../enums";
 
 const commonButtonClass =
     "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle font-bold";
 
 export default function AddUser(): JSX.Element {
-    useAuth("admin");
+    useAuth(ROLE.ADMIN);
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [showModal, setShowModal] = useState(false);
@@ -47,11 +48,11 @@ export default function AddUser(): JSX.Element {
                     <div className="">
                         <button
                             className={`${commonButtonClass}focus:ring-yellow-dark ${
-                                role === "staff"
+                                role === ROLE.STAFF
                                     ? "bg-yellow-dark text-white"
                                     : "bg-transparent   hover:bg-yellow  text-white"
                             }`}
-                            onClick={() => setRole("staff")}
+                            onClick={() => setRole(ROLE.STAFF)}
                         >
                             Car Owner
                         </button>
@@ -60,11 +61,11 @@ export default function AddUser(): JSX.Element {
                     <div className="flex justify-end">
                         <button
                             className={`${commonButtonClass} focus:ring-yellow-dark ${
-                                role === "guard"
+                                role === ROLE.GUARD
                                     ? "bg-yellow-dark text-white"
                                     : "bg-transparent   hover:bg-yellow  text-white"
                             }`}
-                            onClick={() => setRole("guard")}
+                            onClick={() => setRole(ROLE.GUARD)}
                         >
                             Guard
                         </button>

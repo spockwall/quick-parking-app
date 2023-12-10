@@ -1,9 +1,10 @@
 import ParkingSpace from "./ParkingSpace";
 import useParkingLotMap from "../hooks/useParkingLotMap";
 import useParkingLotStatus from "../hooks/useParkingLotStatus";
-import { useState } from "react";
 import StatusModal from "./modals/StatusModal";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ParkingSpaceState } from "../enums";
 import type { ParkingSpaceStatus } from "../types";
 
 type ParkingLotPropsType = {
@@ -13,11 +14,6 @@ type ParkingLotPropsType = {
     carlicense?: string | null;
     usagehistory: boolean;
 };
-enum ParkingSpaceState {
-    OCCUPIED = "occupied",
-    AVAILABLE = "available",
-    ERROR = "error",
-}
 
 export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
     const navigate = useNavigate();

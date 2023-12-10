@@ -4,12 +4,13 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { styleBlack, styleWhite } from "../styles/selectMenuStyle.ts";
+import { styleBlue, styleWhite } from "../styles/selectMenuStyle.ts";
 import { useState } from "react";
 
+// TODO: pass states as arguements to change the floors and slots
 interface SelectMenuProps {
     options: string[];
-    style?: "white" | "black";
+    style?: "white" | "blue";
 }
 export default function SelectMenu(props: SelectMenuProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -27,7 +28,7 @@ export default function SelectMenu(props: SelectMenuProps) {
                     onClick={(e) => {
                         setAnchorEl(e.currentTarget);
                     }}
-                    sx={props.style === "black" ? styleBlack : styleWhite}
+                    sx={props.style === "blue" ? styleWhite : styleBlue}
                 >
                     <ListItemText primary={options[selectedIndex]} sx={{ margin: "0 2px 0 2px" }} />
                     <KeyboardArrowDownIcon />

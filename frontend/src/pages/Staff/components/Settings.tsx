@@ -8,11 +8,11 @@ export default function Settings(): JSX.Element {
                 <div className="w-full">
                     <div className="mb-2 text-lg md:text-2xl text-blue-dark font-bold">Parking Lot</div>
 
-                    <SelectMenu options={slots} style="black" />
+                    <SelectMenu options={slots} style="blue" />
                 </div>
                 <div className="w-full mt-16">
                     <div className="mb-2 text-lg md:text-2xl  text-blue-dark font-bold">Parking Floor</div>
-                    <SelectMenu options={floors} style="black" />
+                    <SelectMenu options={floors} style="blue" />
                 </div>
             </div>
         </div>

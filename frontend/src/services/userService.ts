@@ -1,4 +1,5 @@
 import { userInfo } from "../types";
+import { ROLE } from "../enums";
 
 export class UserService {
     public getUserInfo(id: string): userInfo {
@@ -8,7 +9,7 @@ export class UserService {
             name: "John Doe",
             email: "123@gmail.com",
             licensePlateNumber: ["1234"],
-            role: "staff",
+            role: ROLE.STAFF,
             status: "common",
         };
     }

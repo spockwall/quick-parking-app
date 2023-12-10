@@ -1,8 +1,8 @@
 import Logo from "../../assets/logo.svg";
 import useAuth from "../../hooks/useAuth";
+import { ROLE } from "../../enums";
 import { useNavigate } from "react-router-dom";
 import type { roleType } from "../../types";
-
 const commonButtonClass =
     "text-white bg-blue-dark hover:bg-blue-exdark focus:outline-none focus:ring-2 focus:ring-blue-exdark rounded-full text-md md:text-xl px-5 py-3.5 text-center me-2 w-full my-5 mx-auto";
 
@@ -37,13 +37,13 @@ export default function CheckRole() {
             </div>
 
             <div className="flex flex-col items-center align-middle justify-center mt-3 w-1/2 sm:w-2/5 md:w-1/3 lg:w-1/4">
-                <button type="button" onClick={() => handleButtonClick("staff")} className={`${commonButtonClass}`}>
+                <button type="button" onClick={() => handleButtonClick(ROLE.STAFF)} className={`${commonButtonClass}`}>
                     Car Owner
                 </button>
-                <button type="button" onClick={() => handleButtonClick("guard")} className={`${commonButtonClass}`}>
+                <button type="button" onClick={() => handleButtonClick(ROLE.GUARD)} className={`${commonButtonClass}`}>
                     Guard
                 </button>
-                <button type="button" onClick={() => handleButtonClick("admin")} className={`${commonButtonClass}`}>
+                <button type="button" onClick={() => handleButtonClick(ROLE.ADMIN)} className={`${commonButtonClass}`}>
                     Admin
                 </button>
             </div>

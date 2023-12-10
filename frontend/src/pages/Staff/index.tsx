@@ -1,5 +1,3 @@
-import { Outlet, useRoutes, useMatch } from "react-router-dom";
-
 import useAuth from "../../hooks/useAuth";
 import NavBar from "./components/NavBar";
 import Profile from "./components/Profile";
@@ -7,12 +5,13 @@ import Settings from "./components/Settings";
 import Occupied from "./components/Occupied";
 import OccupiedDetail from "./components/OccupiedDetail";
 import ParkingLot from "../../components/ParkingLot";
-import { floors, slots } from "../../data/parkingSlots";
-
 import SelectMenu from "../../components/SelectMenu";
+import { floors, slots } from "../../data/parkingSlots";
+import { Outlet, useRoutes, useMatch } from "react-router-dom";
+import { ROLE } from "../../enums";
 
 const Staff = () => {
-    useAuth("staff");
+    useAuth(ROLE.STAFF);
 
     const isStaffRoute = useMatch("/staff");
     const routes = useRoutes([
