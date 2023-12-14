@@ -15,8 +15,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const token = Cookies.get("token") || "";
         const role = (Cookies.get("role") || "") as roleType;
-        authDispatch({ type: AUTHACTION.UNEXPIRED, payload: { token, role } });
-    }, []);
+        authDispatch({ type: AUTHACTION.UNEXPIRED, payload: { token, role, user: authState.user } });
+    }, [authState.user]);
 
     return <AuthContext.Provider value={{ authState, authDispatch }}>{children}</AuthContext.Provider>;
 };

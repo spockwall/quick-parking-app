@@ -6,11 +6,11 @@ import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
-import type { ParkingSpaceStatus } from "../../types";
+import type { parkingSpaceStatus } from "../../types";
 
 
 type statusModalProps = {
-  status?: ParkingSpaceStatus;
+  status?: parkingSpaceStatus;
   openModal: boolean;
   onClose: () => void;
 };
@@ -70,7 +70,7 @@ export default function statusModal(props: statusModalProps) {
               {Object.keys(status ?? {}).map((val, i) => (
                 <tr key={i}>
                   <td className="w-2/5 text-left text-blue-dark ">{val.toUpperCase()} </td>
-                  <td className="w-3/5 text-right text-black font-bold">{status?.[val as keyof ParkingSpaceStatus]}</td>
+                  <td className="w-3/5 text-right text-black font-bold">{status?.[val as keyof parkingSpaceStatus]}</td>
                 </tr>
               ))}
             </tbody>

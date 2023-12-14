@@ -82,7 +82,6 @@ export default function RegisterGuard(): JSX.Element {
                         type="button"
                         className={`${commonButtonClass3} bg-red hover:bg-red-dark focus:ring-red-dark text-sm md:text-lg`}
                         onClick={handleBack}
-                        // style={{ boxShadow: '1 1 8 0.1rem #D54D40' }}
                     >
                         <ArrowBackIosRoundedIcon fontSize="small" className="mr-1" />
                         <span className="text-center ">Back</span>

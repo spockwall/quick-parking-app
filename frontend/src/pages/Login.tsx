@@ -27,10 +27,10 @@ export default function Login(): JSX.Element {
         const loginService = new LoginService();
         const userService = new UserService();
         const token = await loginService.login(id, password);
-        const user = await userService.getUserInfo(id);
-        console.log(user);
+        console.log(token);
 
-        if (token !== "") {
+        if (token !== null) {
+            const user = await userService.getUserInfo(id);
             const isFirstLogin = await loginService.checkFirstLogin(user);
             login(token, role, user);
             // If first time login, redirect to register page,
@@ -51,6 +51,7 @@ export default function Login(): JSX.Element {
                 navigate("/admin");
             }
         } else {
+            window.alert("ID hasn't been registered or password is incorrect");
             handleBack();
             // toast.error("ID hasn't been registered or password is incorrect");
         }

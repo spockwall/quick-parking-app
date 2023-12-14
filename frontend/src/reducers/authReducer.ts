@@ -16,7 +16,7 @@ export const authReducer = (state: authState, action: authActionType): authState
     switch (action.type) {
         case AUTHACTION.LOGIN:
             toast.success("Login successfully");
-            Cookies.set("token", action.payload.token, {
+            Cookies.set("jwt", action.payload.token, {
                 expires: 7,
                 secure: true,
             });
@@ -26,7 +26,7 @@ export const authReducer = (state: authState, action: authActionType): authState
             });
             return action.payload;
         case AUTHACTION.LOGOUT:
-            Cookies.remove("token");
+            Cookies.remove("jwt");
             Cookies.remove("role");
             return { ...state, token: "", role: "" };
         case AUTHACTION.UNEXPIRED:

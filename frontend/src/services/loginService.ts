@@ -1,27 +1,31 @@
 import { userInfo } from "../types";
 import Cookies from "js-cookie";
 export class LoginService {
-    public async login(userId: string, password: string): Promise<string> {
+    public async login(userId: string, password: string): Promise<string | null> {
         // POST /auth/login
-        return await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                userId,
-                password,
-            }),
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                Cookies.set("jwt", res.token);
-                return res.token;
-            })
-            .catch((err) => {
-                console.log(err);
-                return "";
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId,
+                    password,
+                }),
             });
+            const { token } = await res.json();
+            if (token) {
+                Cookies.set("jwt", token, {
+                    expires: 7,
+                    secure: true,
+                });
+            }
+            return token || null;
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
     }
 
     public async checkFirstLogin(user: userInfo): Promise<boolean> {

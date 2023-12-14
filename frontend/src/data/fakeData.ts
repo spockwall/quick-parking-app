@@ -1,3 +1,5 @@
+import { parkingSpaceStatus } from "../types";
+import uuid from "react-uuid";
 export const RatioData = [
     {
         parkingSpaceId: "1-1-1",
@@ -36,3 +38,23 @@ export const UsageHistoryData = [
     { carId: "A1234567890", period: "11:00 AM - 8:00 PM" },
     { carId: "A1231231210", period: "11:00 AM - 8:00 PM" },
 ];
+export const ParkingSpaceData = (slot: number, floor: number) => {
+    const results: parkingSpaceStatus[] = [];
+    for (let i = 1; i <= 25; i++) {
+        // Fake data without backend
+        const isOccupied = Math.floor(Math.random() * 100) % 3 === 0;
+        const disabledOnly = Math.floor(Math.random() * 100) % 10 === 0;
+        const data: parkingSpaceStatus = {
+            id: uuid().slice(0, 8),
+            spaceId: slot + "-" + floor + "-" + i,
+            state: isOccupied ? "occupied" : "available",
+            type: disabledOnly ? "disabledOnly" : "general",
+            startTime: isOccupied ? Date.now() - 1000 * 60 * 60 * 2 : 0,
+            occupant: isOccupied ? "qwe-1234" : "None",
+            floor: floor,
+            slot: slot,
+        };
+        results.push(data);
+    }
+    return results;
+};

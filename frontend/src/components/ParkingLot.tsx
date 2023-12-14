@@ -5,7 +5,7 @@ import StatusModal from "./modals/StatusModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ParkingSpaceState } from "../enums";
-import type { ParkingSpaceStatus } from "../types";
+import type { parkingSpaceStatus } from "../types";
 
 type ParkingLotPropsType = {
     floor: number;
@@ -20,11 +20,11 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
 
     const { floor, slot, modal, carlicense, usagehistory } = props;
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [status, setStatus] = useState<ParkingSpaceStatus>();
+    const [status, setStatus] = useState<parkingSpaceStatus>();
 
     const map = useParkingLotMap(floor, slot);
     const statusList = useParkingLotStatus(floor, slot);
-    const handleParkingSpaceClick = (currentStatus: ParkingSpaceStatus) => {
+    const handleParkingSpaceClick = (currentStatus: parkingSpaceStatus) => {
         setOpenModal(true);
         setStatus(currentStatus);
         if (usagehistory) {
