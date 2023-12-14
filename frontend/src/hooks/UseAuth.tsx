@@ -1,15 +1,31 @@
-import { useContext } from "react";
-import { UserContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useCallback, useContext, useEffect } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { AUTHACTION } from "../reducers/authReducer";
+import type { roleType, userInfo, authState } from "../types";
 
-export const useAuth = () => {
-  let { userState, userDispatch } = useContext(UserContext);
+export default function useAuth(permission: roleType | "any") {
+    const { authState, authDispatch } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-  const login = (token: string, role: string) => {
-    userDispatch({ type: "LOGIN", payload: { token, role } });
-  };
+    const logout = useCallback(() => {
+        authDispatch({ type: AUTHACTION.LOGOUT, payload: {} as authState });
+    }, [authDispatch]);
 
-  const logout = () => {
-    userDispatch({ type: "LOGOUT" });
-  };
-	return { userState, login, logout };
-};
+    const login = useCallback(
+        (token: string, role: roleType, user: userInfo) => {
+            authDispatch({ type: AUTHACTION.LOGIN, payload: { token, role, user } });
+        },
+        [authDispatch]
+    );
+    useEffect(() => {
+        if (permission === "any") {
+            console.log("hi");
+        } else if (authState.role && authState.role !== permission) {
+            logout();
+            navigate("/checkrole");
+        }
+    }, [navigate, authState.role, permission, logout]);
+
+    return { authState, login, logout };
+}

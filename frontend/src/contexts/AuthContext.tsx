@@ -1,54 +1,24 @@
-import React, { useReducer, ReactNode } from "react";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
-export const UserContext = React.createContext({} as any);
+import { createContext, useReducer, ReactNode, useEffect } from "react";
+import { AUTHACTION, authReducer, authActionType } from "../reducers/authReducer";
+import type { authState, roleType } from "../types";
 
-export interface UserState {
-  token: string;
-  role: string;
-}
+type authContextType = {
+    authState: authState;
+    authDispatch: React.Dispatch<authActionType>;
+};
+export const AuthContext = createContext({} as authContextType);
 
-const initState: UserState = {
-  token: Cookies.get('token') || '',
-  role: Cookies.get('role') || '',
+const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+    const [authState, authDispatch] = useReducer(authReducer, {} as authState);
+
+    useEffect(() => {
+        const token = Cookies.get("token") || "";
+        const role = (Cookies.get("role") || "") as roleType;
+        authDispatch({ type: AUTHACTION.UNEXPIRED, payload: { token, role } });
+    }, []);
+
+    return <AuthContext.Provider value={{ authState, authDispatch }}>{children}</AuthContext.Provider>;
 };
 
-const UserContextProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
-  const UserReducer = (state: UserState, action: any) => {
-    switch (action?.type) {
-      case "LOGIN":
-        toast.success("Login successfully");
-        Cookies.set('token', action.payload.token, {
-          expires: 7,
-          secure: true,
-        });
-        Cookies.set('role', action.payload.role, {
-          expires: 7,
-          secure: true,
-        });
-        return { ...state, token: action.payload.token, role: action.payload.role };
-
-      case "LOGOUT":
-        Cookies.remove("token");
-        Cookies.remove("role");
-        return { ...state, token: '', role: '' };
-
-      default:
-        return state;
-    }
-  };
-
-  const [userState, userDispatch] = useReducer(UserReducer, initState);
-
-  return (
-    <UserContext.Provider value={{ userState, userDispatch }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
-
-export default UserContextProvider;
+export default AuthContextProvider;
