@@ -22,7 +22,7 @@ export default function Profile(): JSX.Element {
                     }}
                 >
                     <div>
-                        <InputField title="Your ID" value={user?.id} disabled />
+                        <InputField title="Your ID" value={user?.userId} disabled />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField

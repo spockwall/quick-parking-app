@@ -3,6 +3,7 @@ import { AppError } from "../err/errorHandler";
 import { authenticateUser } from "../auth/authService";
 
 export const login = async (req: Request, res: Response): Promise<void> => {
+  console.log(req.body);
   const { userId, password } = req.body;
   if (!userId || !password) {
     throw new AppError("Both ID and password are required.", 400);

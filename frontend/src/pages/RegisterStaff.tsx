@@ -7,7 +7,6 @@ import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-
 const commonButtonClass =
     "text-white focus:outline-none rounded-full text-sm md:text-lg px-5 md:px-8 py-2.5 text-center flex items-center justify-center align-middle shadow-md";
 
@@ -23,21 +22,22 @@ export default function RegisterStaff(): JSX.Element {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         // TODO: handle register
         const registerService = new UserService();
-        const register = registerService.registerStaff(id, name, carId, phone, email, password);
+        const success = await registerService.registerStaff(id, name, carId, phone, email, password);
 
-        if (register) {
+        if (success) {
             // redirect to default page
             navigate("/staff");
         } else {
-            // register failed...??
+            window.alert("Register failed");
+            window.location.reload();
         }
     };
 
     const handleBack = () => {
-        navigate("/login", { state: { role: ROLE.STAFF} });
+        navigate("/login", { state: { role: ROLE.STAFF } });
     };
 
     return (

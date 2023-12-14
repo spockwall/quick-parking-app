@@ -20,10 +20,10 @@ export default function AddUser(): JSX.Element {
     const { role, setRole } = useRole(); // role:
     const navigate = useNavigate();
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         const addUserService = new UserService();
-        const addUser = addUserService.addUser(id, password, role);
-        if (addUser === true) {
+        const success = await addUserService.createUser(id, password, role);
+        if (success) {
             setShowModal(true);
         } else {
             window.alert("Add user failed");

@@ -10,7 +10,7 @@ export interface ParkingSpaceStatus {
     slot: number;
 }
 export interface userInfo {
-    id: string;
+    userId: string;
     name: string;
     phone: string;
     email: string;

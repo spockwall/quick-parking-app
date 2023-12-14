@@ -1,49 +1,117 @@
-import { userInfo } from "../types";
-import { ROLE } from "../enums";
+import { roleType, userInfo } from "../types";
 
 export class UserService {
-    public getUserInfo(id: string): userInfo {
-        return {
-            id,
-            phone: "1234567890",
-            name: "John Doe",
-            email: "123@gmail.com",
-            licensePlateNumber: ["1234"],
-            role: ROLE.STAFF,
-            status: "common",
-        };
+    public async getUserInfo(id: string): Promise<userInfo> {
+        // GET /staff/users/:id
+        try {
+            const response = await fetch(`/api/staff/users/${id}`, {
+                method: "GET",
+                credentials: "include",
+            });
+            return await response.json();
+        } catch (err) {
+            console.log(err);
+            return {} as userInfo;
+        }
     }
 
-    // Change Personal Info
-    public updateUserInfo(newInfo: userInfo): boolean {
-        // TODO: update user info
+    public async updateUserInfo(newInfo: userInfo): Promise<boolean> {
         // PATCH /staff/users/:id
-        return newInfo.id !== "";
+        // TODO : need test
+        try {
+            const response = await fetch(`/api/staff/users/${newInfo.userId}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newInfo),
+            });
+            console.log(await response.json());
+            return true;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
     }
 
-    // Add user
-    public addUser(id: string, password: string, role: string): boolean {
-        console.log(id, password, role);
+    public async createUser(id: string, password: string, role: roleType): Promise<boolean> {
         // POST /users
-        return true;
+        try {
+            const response = await fetch("/api/users", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: id,
+                    password,
+                    role,
+                }),
+            });
+            console.log(await response.json());
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     }
 
     // Register
-    public registerStaff(
-        id: string,
+    public async registerStaff(
+        userId: string,
         name: string,
-        carId: string,
+        licensePlateNumber: string,
         phone: string,
         email: string,
         password: string
-    ): boolean {
-        console.log(id, name, carId, phone, email, password);
+    ): Promise<boolean> {
         // PATCH /staff/users/:id
-        return true;
+        // TODO : need test
+        try {
+            const response = await fetch(`/api/staff/users/${userId}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    phone,
+                    email,
+                    password,
+                    licensePlateNumber: [licensePlateNumber],
+                }),
+            });
+            console.log(await response.json());
+            return true;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
     }
-    public registerGuard(id: string, name: string, password: string): boolean {
+    public async registerGuard(id: string, name: string, password: string): Promise<boolean> {
         console.log(id, name, password);
-        // ?? PATCH /users/:id
-        return true;
+        // PATCH /users/:id
+        // TODO : need test
+        try {
+            const response = await fetch(`/api/users/${id}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    password,
+                }),
+            });
+            console.log(await response.json());
+            return true;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
     }
 }

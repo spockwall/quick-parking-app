@@ -4,6 +4,7 @@ import InputField from "../components/InputField";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import { useCallback, useState } from "react";
 import { LoginService } from "../services/loginService";
+import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { commonButtonClass4 } from "../styles/commonStyles";
@@ -21,16 +22,18 @@ export default function Login(): JSX.Element {
         navigate("/checkrole");
     }, [navigate]);
 
-    const handleLogin = useCallback(() => {
+    const handleLogin = useCallback(async () => {
         // TODO: store to cookie
         const loginService = new LoginService();
-        const [token, user] = loginService.login(id, password, role);
+        const userService = new UserService();
+        const token = await loginService.login(id, password);
+        const user = await userService.getUserInfo(id);
         console.log(user);
 
         if (token !== "") {
-            const isFirstLogin = loginService.checkFirstLogin(id);
+            const isFirstLogin = await loginService.checkFirstLogin(user);
             login(token, role, user);
-            // If first time login, redirect to register page, 
+            // If first time login, redirect to register page,
             // or redirect to default page of the role
             if (role === ROLE.STAFF) {
                 if (isFirstLogin) {

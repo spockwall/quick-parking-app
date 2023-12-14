@@ -17,20 +17,21 @@ export default function RegisterGuard(): JSX.Element {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         // TODO: handle register
         const registerService = new UserService();
-        const register = registerService.registerGuard(id, name, password);
+        const success = await registerService.registerGuard(id, name, password);
 
-        if (register) {
+        if (success) {
             navigate("/guard");
         } else {
-            // register failed...??
+            window.alert("Register failed");
+            window.location.reload();
         }
     };
 
     const handleBack = () => {
-        navigate("/login", { state: { role: "guard" } });
+        navigate("/login", { state: { role: ROLE.GUARD } });
     };
 
     return (
