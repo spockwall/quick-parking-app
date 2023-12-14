@@ -11,10 +11,12 @@ import { useState } from "react";
 interface SelectMenuProps {
     options: string[];
     style?: "white" | "blue";
+    selectedIndex: number;
+    onSelectedIndexChanged: (index: number) => void;
 }
 export default function SelectMenu(props: SelectMenuProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedIndex, setSelectedIndex] = useState(1);
+    // const [selectedIndex, setSelectedIndex] = useState(1);
     const { options } = props;
     const open = Boolean(anchorEl);
     return (
@@ -30,7 +32,7 @@ export default function SelectMenu(props: SelectMenuProps) {
                     }}
                     sx={props.style === "blue" ? styleWhite : styleBlue}
                 >
-                    <ListItemText primary={options[selectedIndex]} sx={{ margin: "0 2px 0 2px" }} />
+                    <ListItemText primary={options[props.selectedIndex]} sx={{ margin: "0 2px 0 2px" }} />
                     <KeyboardArrowDownIcon />
                 </ListItem>
             </List>
@@ -50,9 +52,15 @@ export default function SelectMenu(props: SelectMenuProps) {
                     <MenuItem
                         key={option}
                         // disabled={index === 0}
-                        selected={index === selectedIndex}
+                        // selected={index === selectedIndex}
+                        // onClick={() => {
+                        //     setSelectedIndex(index);
+                        //     setAnchorEl(null);
+                        // }}
+
+                        selected={index === props.selectedIndex}
                         onClick={() => {
-                            setSelectedIndex(index);
+                            props.onSelectedIndexChanged(index);
                             setAnchorEl(null);
                         }}
                     >
