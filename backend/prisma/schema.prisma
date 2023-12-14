@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ParkingSpace {
+  spaceId String   @id @unique
+  state   State
+  status  Status
+  floor   Int
+  lot    Int
+  records Record[]
+}
+
+model Record {
+  id                 Int          @id @default(autoincrement())
+  spaceId            String
+  userId             String
+  licensePlateNumber String
+  enterTime          Int
+  exitTime           Int?
+  parkingSpace       ParkingSpace @relation(fields: [spaceId], references: [spaceId])
+  user               User         @relation(fields: [userId], references: [userId])
+}
+
+model User {
+  userId        String         @id
+  name          String?
+  password      String
+  phone         String?
+  email         String?
+  role          Role
+  status        Status? 
+  records       Record[]
+  licensePlates LicensePlate[]
+}
+
+model LicensePlate {
+  licensePlateNumber String   @id
+  userId             String
+  user               User     @relation(fields: [userId], references: [userId])
+
+}
+
+enum Role {
+  staff
+  admin
+  guard
+}
+
+enum Status {
+  common
+  difficulty
+  disability
+}
+
+enum State {
+  available
+  occupied
+  error
+}
