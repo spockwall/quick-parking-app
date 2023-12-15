@@ -1,5 +1,6 @@
 import car from "../assets/car.svg";
 import wheelchair from "../assets/wheelchair.svg";
+import priority from "../assets/priority.svg";
 import mapSignTrans from "../utils/mapSignTrans";
 
 type ParkingSpacePropsType = {
@@ -13,6 +14,7 @@ type ParkingSpacePropsType = {
 export default function ParkingSpace(props: ParkingSpacePropsType): JSX.Element {
     const { serial, occupied, type} = props; // fix: hover deprecated
     const wheelchairImg = <img src={wheelchair} className="-mt-2 -mb-2" alt="Wheelchair"></img>;
+    const priorityImg = <img src={priority} className="-mt-2 -mb-2" alt="priority"></img>;
     const carImg = <img src={car} className="w-12 -mt-2 -mb-2" alt="Car"></img>;
 
     return serial <= 0 ? (
@@ -27,7 +29,8 @@ export default function ParkingSpace(props: ParkingSpacePropsType): JSX.Element 
                 onClick={props.onClick}
             >
                 {occupied && carImg}
-                {type === "disabledOnly" && wheelchairImg}
+                {type === "disability" && wheelchairImg}
+                {type === "difficulty" && priorityImg}
             </button>
         </>
     );

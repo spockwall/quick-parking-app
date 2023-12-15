@@ -4,18 +4,18 @@ export interface parkingSpaceStatus {
     id: string;
     spaceId: string;
     state: "available" | "occupied" | "error";
-    type: "general" | "disabledOnly";
+    status: "common" | "disability" | "difficulty";
     startTime: number;
     occupant: string;
     floor: number;
-    slot: number;
+    lot: number;
 }
 export interface userInfo {
     userId: string;
     name: string;
     phone: string;
     email: string;
-    licensePlateNumber: string[];
+    licensePlateNumbers: string[];
     role: ROLE;
     status: "common" | "difficulty" | "disability";
 }

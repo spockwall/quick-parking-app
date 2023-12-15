@@ -66,12 +66,12 @@ export default function Profile(): JSX.Element {
                     <div className="mt-2 sm:mt-0">
                         <InputLPN
                             title="License Plate Number"
-                            value={user?.licensePlateNumber}
+                            value={user?.licensePlateNumbers}
                             disabled={disabled}
                             action={(newLPN: string) => {
                                 userDispatch({
                                     type: USERACTION.CHANGE_LICENSE_PLATE_NUMRER,
-                                    payload: { ...user, licensePlateNumber: [...user.licensePlateNumber, newLPN] },
+                                    payload: { ...user, licensePlateNumbers: [...user.licensePlateNumbers, newLPN] },
                                 });
                             }}
                         />

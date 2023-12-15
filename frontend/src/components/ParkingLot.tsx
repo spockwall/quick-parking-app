@@ -19,6 +19,8 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
     const navigate = useNavigate();
 
     const { floor, slot, modal, carlicense, usagehistory } = props;
+    console.log(floor);
+    console.log(slot);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [status, setStatus] = useState<parkingSpaceStatus>();
 
@@ -46,7 +48,7 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
                                 {row.map((col, j) => {
                                     const currentStatus = statusList[col - 1];
                                     const curState = currentStatus?.state;
-                                    const curType = currentStatus?.type;
+                                    const curType = currentStatus?.status;
                                     return (
                                         <td key={j}>
                                             <ParkingSpace

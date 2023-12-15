@@ -25,7 +25,13 @@ export class UserService {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(newInfo),
+                body: JSON.stringify({
+                    userId: newInfo.userId,
+                    name: newInfo.name,
+                    phone: newInfo.phone,
+                    email: newInfo.email,
+                    licensePlates: newInfo.licensePlateNumbers,
+                }),
             });
             console.log(await response.json());
             return true;

@@ -30,6 +30,6 @@ export class LoginService {
 
     public async checkFirstLogin(user: userInfo): Promise<boolean> {
         // GET /staff/users/:id
-        return user.phone === "" && user.email === null && user.licensePlateNumber === undefined;
+        return user.phone === "" && user.email === null && user.licensePlateNumbers === undefined;
     }
 }

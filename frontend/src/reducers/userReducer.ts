@@ -33,7 +33,7 @@ export const userReducer = (state: userInfo, action: userActionType) => {
         case USERACTION.CHANGE_LICENSE_PLATE_NUMRER:
             return {
                 ...state,
-                licensePlateNumber: action.payload?.licensePlateNumber,
+                licensePlateNumber: action.payload?.licensePlateNumbers,
             };
         case USERACTION.CHANGE_ALL:
             return {

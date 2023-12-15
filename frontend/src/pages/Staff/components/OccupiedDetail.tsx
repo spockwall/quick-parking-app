@@ -46,7 +46,7 @@ const OccupiedDetail = () => {
 
             <div className="flex justify-center align-middle items-center text-center mt-6 sm:mt-2 w-full">
                 <div className="flex w-full max-h-full mt-2  justify-center">
-                    <ParkingLot floor={1} slot={1} modal={false} carlicense={carlicense} usagehistory={false} />
+                    <ParkingLot floor={0} slot={0} modal={false} carlicense={carlicense} usagehistory={false} />
                 </div>
             </div>
         </div>

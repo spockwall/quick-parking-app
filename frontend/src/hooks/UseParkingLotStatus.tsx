@@ -8,6 +8,7 @@ export default function useParkingLotStatus(floor: number, slot: number): parkin
         const getStatus = async () => {
             const parkingService = new ParkingService();
             const status = await parkingService.getLotStatus(floor, slot);
+            status.sort((a, b) => a.spaceId.localeCompare(b.spaceId, undefined, { numeric: true }));
             setStatus(status ?? []);
         };
         getStatus();

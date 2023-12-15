@@ -9,9 +9,12 @@ import SelectMenu from "../../components/SelectMenu";
 import { floors, slots } from "../../data/parkingSlots";
 import { Outlet, useRoutes, useMatch } from "react-router-dom";
 import { ROLE } from "../../enums";
+import { useState } from "react";
 
 const Staff = () => {
     useAuth(ROLE.STAFF);
+    const [selectedFloorIndex, setSelectedFloorIndex] = useState(0);
+    const [selectedSlotIndex, setSelectedSlotIndex] = useState(0);
 
     const isStaffRoute = useMatch("/staff");
     const routes = useRoutes([
@@ -30,8 +33,12 @@ const Staff = () => {
               justify-center sm:justify-around align-middle items-center w-4/5 sm:mb-2"
                             >
                                 <div className="flex gap-2">
-                                    <SelectMenu options={floors} />
-                                    <SelectMenu options={slots} />
+                                <SelectMenu options={floors} 
+                                    selectedIndex={selectedFloorIndex}
+                                    onSelectedIndexChanged={setSelectedFloorIndex} />
+                                <SelectMenu options={slots} 
+                                    selectedIndex={selectedSlotIndex}
+                                    onSelectedIndexChanged={setSelectedSlotIndex}/>
                                 </div>
                                 <div className="flex flex-col justify-center items-center sm:flex-row gap-1 sm:gap-5 text-center sm:ml-1">
                                     <div>
@@ -51,7 +58,7 @@ const Staff = () => {
                                 </div>
                             </div>
                             <div className="flex w-full max-h-full mt-2  justify-center">
-                                <ParkingLot floor={1} slot={1} modal={false} carlicense={null} usagehistory={false} />
+                            <ParkingLot floor={selectedFloorIndex} slot={selectedSlotIndex} modal={false} carlicense={null} usagehistory={false} />
                             </div>
                         </div>
                     )}

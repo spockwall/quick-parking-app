@@ -22,7 +22,7 @@ export class ParkingService {
     public async getLotStatus(slot: number, floor: number): Promise<parkingSpaceStatus[]> {
         // TODO - backend need query
         try {
-            const res = await fetch(`/api/staff/parking_spaces?slot=${slot}&floor=${floor}`, {
+            const res = await fetch(`/api/staff/parking_spaces?lot=${slot}&floor=${floor}&limit=25`, {
                 method: "GET",
                 credentials: "include",
             });
