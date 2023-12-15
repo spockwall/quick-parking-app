@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, State, Status } from "@prisma/client";
 import { Request, Response } from "express";
 import { AppError } from "../err/errorHandler";
 import "express-async-errors";
@@ -8,6 +8,13 @@ import { parsePaginationParams } from "../utils/pagination";
 import redis from "../config/redisconfig";
 
 const prisma = new PrismaClient();
+
+type WhereClause = {
+  status?: Status;
+  floor?: number;
+  lot?: number;
+  state?: State;
+};
 
 export const createParkingSpace = async (
   req: Request,
@@ -34,13 +41,14 @@ export const getParkingSpaces = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { offset, limit } = req.query as QueryParams;
+  const { offset, limit, floor, lot, state, status } = req.query as QueryParams;
   const { skipValue, takeValue } = parsePaginationParams(
     offset ?? "0",
     limit ?? "10"
   );
 
-  const cacheKey = `publicParkingSpaces:offset:${offset}:limit:${limit}`;
+  const cacheKey = `publicParkingSpaces:offset:${offset}:limit:${limit}:floor:${floor}:lot:${lot}:state:${state}status:${status}`;
+  // console.log(cacheKey);
 
   const cachedParkingSpaces = await redis.get(cacheKey);
   if (cachedParkingSpaces) {
@@ -48,9 +56,16 @@ export const getParkingSpaces = async (
     return;
   }
 
+  const whereClause: WhereClause = {};
+  if (floor !== undefined) whereClause.floor = Number(floor);
+  if (lot !== undefined) whereClause.lot = Number(lot);
+  if (state !== undefined) whereClause.state = state as State;
+  if (status !== undefined) whereClause.status = status as Status;
+
   const parkingSpaces = await prisma.parkingSpace.findMany({
     skip: skipValue,
     take: takeValue,
+    where: whereClause,
     select: {
       spaceId: true,
       state: true,
@@ -128,13 +143,13 @@ export const staffGetParkingSpaces = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { offset, limit } = req.query as QueryParams;
+  const { offset, limit, floor, lot, state, status } = req.query as QueryParams;
   const { skipValue, takeValue } = parsePaginationParams(
     offset ?? "0",
     limit ?? "10"
   );
 
-  const cacheKey = `staffParkingSpaces:offset:${offset}:limit:${limit}`;
+  const cacheKey = `publicParkingSpaces:offset:${offset}:limit:${limit}:floor:${floor}:lot:${lot}:state:${state}status:${status}`;
 
   const cachedParkingSpaces = await redis.get(cacheKey);
   if (cachedParkingSpaces) {
@@ -142,9 +157,16 @@ export const staffGetParkingSpaces = async (
     return;
   }
 
+  const whereClause: WhereClause = {};
+  if (floor !== undefined) whereClause.floor = Number(floor);
+  if (lot !== undefined) whereClause.lot = Number(lot);
+  if (state !== undefined) whereClause.state = state as State;
+  if (status !== undefined) whereClause.status = status as Status;
+
   const parkingSpaces = await prisma.parkingSpace.findMany({
     skip: skipValue,
     take: takeValue,
+    where: whereClause,
     select: {
       spaceId: true,
       state: true,
