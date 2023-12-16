@@ -26,9 +26,7 @@ export const userSchema = Joi.object({
 
 export const parkingSpaceSchema = Joi.object({
   spaceId: Joi.string().required(),
-  state: Joi.string()
-    .valid(...Object.values(State))
-    .required(),
+  state: Joi.string().valid(...Object.values(State)),
   status: Joi.string()
     .valid(...Object.values(Status))
     .required(),

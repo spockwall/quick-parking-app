@@ -21,6 +21,7 @@ export const getParkingSpacesDuration = async (
 ): Promise<void> => {
   const queryParams = req.query as Partial<QueryParams>;
   const whereCondition = processQueryParams(queryParams);
+  // console.log(whereCondition);
   const cacheKey = JSON.stringify(whereCondition);
 
   const cachedData = await redis.get(cacheKey);
@@ -51,6 +52,8 @@ export const getParkingSpacesDuration = async (
         select: {
           state: true,
           status: true,
+          floor: true,
+          lot: true,
         },
       },
     },

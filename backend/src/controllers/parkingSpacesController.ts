@@ -26,8 +26,10 @@ export const createParkingSpace = async (
   if (error) {
     throw new AppError("ParkingSpaceSchema Validation error", 400);
   }
+
+  const modifiedParkingSpace = { ...newParkingSpace, state: State.available };
   const parkingSpace = await prisma.parkingSpace.create({
-    data: newParkingSpace,
+    data: modifiedParkingSpace,
   });
 
   await clearParkingSpacesCache();

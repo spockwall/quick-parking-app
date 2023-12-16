@@ -154,10 +154,6 @@ export const updateUser = async (
     throw new AppError("User not found", 404);
   }
 
-  await deleteUserCache(userId);
-  await deleteAllUserListCaches();
-  await clearParkingSpaceUserInfoCache(userId);
-
   if (decodedToken!.role === "admin" && decodedToken!.userId !== userId) {
     const newRole = updatedUser.role;
     if (originalData!.role === "admin" && newRole !== "admin") {
@@ -198,6 +194,11 @@ export const updateUser = async (
   await prisma.licensePlate.deleteMany({
     where: { licensePlateNumber: { in: licensePlatesToDelete } },
   });
+
+  await deleteUserCache(userId);
+  await deleteAllUserListCaches();
+  await clearParkingSpaceUserInfoCache(userId);
+
   await prisma.licensePlate.createMany({
     data: updatedUser.licensePlates.map((lp: String) => ({
       licensePlateNumber: lp,

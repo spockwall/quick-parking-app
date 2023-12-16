@@ -2,19 +2,28 @@ import { QueryParams } from "./params";
 
 export const processQueryParams = (queryParams: Partial<QueryParams>) => {
   const { status, state, lot, floor } = queryParams;
-  const whereCondition: { [key: string]: any } = {};
+  const whereCondition: {
+    parkingSpace?: { [key: string]: any };
+    [key: string]: any;
+  } = {};
+
+  const parkingSpaceWhereCondition: { [key: string]: any } = {};
+  if (floor !== undefined) {
+    parkingSpaceWhereCondition.floor = Number(floor);
+  }
+  if (lot !== undefined) {
+    parkingSpaceWhereCondition.lot = Number(lot);
+  }
+
+  if (Object.keys(parkingSpaceWhereCondition).length > 0) {
+    whereCondition.parkingSpace = parkingSpaceWhereCondition;
+  }
 
   if (status) {
-    whereCondition.status = status;
+    whereCondition["parkingSpace.status"] = status;
   }
   if (state) {
-    whereCondition.state = state;
-  }
-  if (lot) {
-    whereCondition.lot = Number(lot);
-  }
-  if (floor) {
-    whereCondition.floor = Number(floor);
+    whereCondition["parkingSpace.state"] = state;
   }
 
   return whereCondition;
