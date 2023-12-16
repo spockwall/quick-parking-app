@@ -6,6 +6,8 @@ import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
+import { DurationUserInfo } from "../../../../types";
+
 type ModalProps = {
   open: boolean;
   onClose: () => void;
@@ -13,10 +15,11 @@ type ModalProps = {
   // Car Id
   // Phone Number
   // Email Address
+  userInfo: DurationUserInfo | null;
 };
 
 export default function UsageDurationModal(props: ModalProps) {
-  const { open, onClose} = props;
+  const { open, onClose, userInfo } = props;
 
   const handleClose = () => {
     onClose();
@@ -68,19 +71,19 @@ export default function UsageDurationModal(props: ModalProps) {
             <tbody>
               <tr className='w-full flex flex-col justify-start sm:flex-row sm:justify-between'>
                 <td className="text-blue-dark ">Name</td>
-                <td className="text-black font-bold">Alice</td>
+                <td className="text-black font-bold">{userInfo?.username}</td>
               </tr>
               <tr className='mt-2 w-full flex flex-col justify-start sm:flex-row sm:justify-between'>
                 <td className="text-blue-dark ">Car ID</td>
-                <td className="text-black font-bold">KA01BQ3232</td>
+                <td className="text-black font-bold">{userInfo?.licensePlateNumber}</td>
               </tr>
               <tr className='mt-2 w-full flex flex-col justify-start sm:flex-row sm:justify-between'>
                 <td className="text-blue-dark ">Phone Number</td>
-                <td className="text-black font-bold">0912345678</td>
+                <td className="text-black font-bold">{userInfo?.phone}</td>
               </tr>
               <tr className='mt-2 w-full flex flex-col justify-start sm:flex-row sm:justify-between'>
                 <td className="text-blue-dark ">Email Address</td>
-                <td className="text-black font-bold">XXX@gmaill.com </td>
+                <td className="text-black font-bold">{userInfo?.email}</td>
               </tr>
             </tbody>
           </table>

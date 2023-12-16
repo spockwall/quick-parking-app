@@ -19,8 +19,6 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
     const navigate = useNavigate();
 
     const { floor, slot, modal, carlicense, usagehistory } = props;
-    console.log(floor);
-    console.log(slot);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [status, setStatus] = useState<parkingSpaceStatus>();
 
