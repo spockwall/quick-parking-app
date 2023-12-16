@@ -33,8 +33,7 @@ export class UserService {
                     licensePlates: newInfo.licensePlateNumbers,
                 }),
             });
-            console.log(await response.json());
-            return true;
+            return response.ok;
         } catch (err) {
             console.log(err);
             return false;
@@ -57,7 +56,7 @@ export class UserService {
                 }),
             });
             console.log(await response.json());
-            return true;
+            return response.ok;
         } catch (error) {
             console.error(error);
             return false;
@@ -91,7 +90,7 @@ export class UserService {
                 }),
             });
             console.log(await response.json());
-            return true;
+            return response.ok;
         } catch (err) {
             console.log(err);
             return false;
@@ -114,7 +113,7 @@ export class UserService {
                 }),
             });
             console.log(await response.json());
-            return true;
+            return response.ok;
         } catch (err) {
             console.log(err);
             return false;

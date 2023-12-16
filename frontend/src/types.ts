@@ -18,6 +18,7 @@ export interface userInfo {
     licensePlateNumbers: string[];
     role: ROLE;
     status: "common" | "difficulty" | "disability";
+    password?: string;
 }
 
 export interface userParkingStatus {

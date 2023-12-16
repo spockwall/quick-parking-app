@@ -9,16 +9,19 @@ import { USERACTION } from "../../../reducers/userReducer";
 export default function Profile(): JSX.Element {
     const id = "qwe-123-qwe";
     const [disabled, setDisabled] = useState<boolean>(true);
+    const [password, setPassword] = useState<string>("");
     const { user, userDispatch } = useUserInfo(id);
 
     return (
         <>
             <div className="w-3/4 sm:w-2/3 md:w-1/2 lg:w-2/5 flex flex-col m-auto mt-8 sm:mt-3">
                 <form
-                    onSubmit={() => {
+                    onSubmit={async (e) => {
+                        e.preventDefault();
                         setDisabled(true);
+                        user.password = password;
                         const userService = new UserService();
-                        userService.updateUserInfo(user);
+                        await userService.updateUserInfo(user);
                     }}
                 >
                     <div>
@@ -74,6 +77,19 @@ export default function Profile(): JSX.Element {
                                     type: USERACTION.CHANGE_LICENSE_PLATE_NUMRER,
                                     payload: { ...user, licensePlateNumbers: [...user.licensePlateNumbers, newLPN] },
                                 });
+                            }}
+                        />
+                    </div>
+                    <div className="mt-2 sm:mt-0">
+                        <InputField
+                            title="Password"
+                            value={password}
+                            disabled={disabled}
+                            type="password"
+                            placeholder="Enter password to edit"
+                            required
+                            onChange={(e) => {
+                                setPassword(e.target.value);
                             }}
                         />
                     </div>
