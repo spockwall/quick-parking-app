@@ -21,6 +21,7 @@ export const getParkingSpacesDuration = async (
 ): Promise<void> => {
   const queryParams = req.query as Partial<QueryParams>;
   const whereCondition = processQueryParams(queryParams);
+  // console.log(whereCondition);
   const cacheKey = JSON.stringify(whereCondition);
 
   const cachedData = await redis.get(cacheKey);
@@ -42,15 +43,7 @@ export const getParkingSpacesDuration = async (
   const records = await prisma.record.findMany({
     skip: skipValue,
     take: takeValue,
-    where: {
-      ...whereCondition,
-      parkingSpace: {
-        ...(whereCondition.floor !== undefined && {
-          floor: whereCondition.floor,
-        }),
-        ...(whereCondition.lot !== undefined && { lot: whereCondition.lot }),
-      },
-    },
+    where: whereCondition,
     select: {
       spaceId: true,
       enterTime: true,
@@ -59,6 +52,8 @@ export const getParkingSpacesDuration = async (
         select: {
           state: true,
           status: true,
+          floor: true,
+          lot: true,
         },
       },
     },
