@@ -42,7 +42,15 @@ export const getParkingSpacesDuration = async (
   const records = await prisma.record.findMany({
     skip: skipValue,
     take: takeValue,
-    where: whereCondition,
+    where: {
+      ...whereCondition,
+      parkingSpace: {
+        ...(whereCondition.floor !== undefined && {
+          floor: whereCondition.floor,
+        }),
+        ...(whereCondition.lot !== undefined && { lot: whereCondition.lot }),
+      },
+    },
     select: {
       spaceId: true,
       enterTime: true,

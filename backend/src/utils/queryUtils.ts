@@ -10,11 +10,11 @@ export const processQueryParams = (queryParams: Partial<QueryParams>) => {
   if (state) {
     whereCondition.state = state;
   }
-  if (lot) {
-    whereCondition.lot = Number(lot);
+  if (lot !== undefined) {
+    whereCondition["parkingSpace.lot"] = Number(lot);
   }
-  if (floor) {
-    whereCondition.floor = Number(floor);
+  if (floor !== undefined) {
+    whereCondition["parkingSpace.floor"] = Number(floor);
   }
 
   return whereCondition;
