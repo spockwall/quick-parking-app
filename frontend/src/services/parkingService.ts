@@ -5,7 +5,7 @@ export class ParkingService {
     // private computeParkingSpaceId(slot: number, floor: number, simpleId: number): string {
     //     return `${slot}-${floor}-${simpleId}`;
     // }
-    public async getStaffParkingStatus(userId: string): Promise<userParkingStatus> {
+    public async getStaffParkingStatus(userId: string): Promise<userParkingStatus[]> {
         // TODO - backend need query
         try {
             const res = await fetch(`/api/staff/parking_spaces/${userId}`, {
@@ -15,7 +15,8 @@ export class ParkingService {
             return await res.json();
         } catch (err) {
             console.log(err);
-            return {} as userParkingStatus;
+            // return {} as userParkingStatus;
+            return [];
         }
     }
 

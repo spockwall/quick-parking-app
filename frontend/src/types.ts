@@ -1,5 +1,6 @@
 import { ROLE } from "./enums";
 
+export type roleType = ROLE.STAFF | ROLE.GUARD | ROLE.ADMIN | "any";
 export interface parkingSpaceStatus {
     id: string;
     spaceId: string;
@@ -33,4 +34,28 @@ export type authState = {
     role: roleType | "";
 };
 
-export type roleType = ROLE.STAFF | ROLE.GUARD | ROLE.ADMIN | "any";
+export type DurationStatus = {
+    parkingSpaceId: string;
+    state: "available" | "occupied" | "error";
+    status: "common" | "disability" | "difficulty";
+    startTime: number;
+    duration: number;
+};
+
+export type DurationUserInfo = {
+    username: string;
+    phone: string;
+    email: string;
+    licensePlateNumber: string;
+};
+
+export type RatioStatus = {
+    parkingSpaceId: string;
+    status: "common" | "disability" | "difficulty";
+    usageRatio: number;
+};
+
+export type OneWeekRatioInfo = {
+    dates: string[];
+    usageRatios: number[];
+};

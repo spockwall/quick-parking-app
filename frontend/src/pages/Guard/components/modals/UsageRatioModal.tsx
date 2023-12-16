@@ -7,14 +7,17 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
+import { OneWeekRatioInfo } from "../../../../types";
+
 type ModalProps = {
   open: boolean;
   onClose: () => void;
   // datas[date , ratio]
+  ratioInfo: OneWeekRatioInfo | null;
 };
 
 export default function UsageRatioModal(props: ModalProps) {
-  const { open, onClose } = props;
+  const { open, onClose, ratioInfo } = props;
 
   const handleClose = () => {
     onClose();
@@ -74,45 +77,45 @@ export default function UsageRatioModal(props: ModalProps) {
             ))} */}
             <Grid item xs={3} className='text-center'>
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/21
+                {ratioInfo?.dates[0]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>0 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[0]} %</span>
             </Grid>
             <Grid item xs={3} className='text-center'>
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/22
+                {ratioInfo?.dates[1]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>0 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[1]} %</span>
             </Grid>
             <Grid item xs={3} className='text-center'>
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/23
+                {ratioInfo?.dates[2]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>0 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[2]} %</span>
             </Grid>
             <Grid item xs={3} className='text-center'>
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/24
+                {ratioInfo?.dates[3]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>3 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[3]} %</span>
             </Grid>
             <Grid item xs={3} className='text-center' >
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/25
+                {ratioInfo?.dates[4]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>0 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[4]} %</span>
             </Grid>
             <Grid item xs={3} className='text-center'>
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/26
+                {ratioInfo?.dates[5]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>4 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[5]} %</span>
             </Grid>
             <Grid item xs={3} className='text-center'>
               <Typography id="transition-modal-description" sx={{ mt: 2 }} fontFamily="lexend" color="#214F6D">
-                11/27
+                {ratioInfo?.dates[6]}
               </Typography>
-              <span className='font-medium md:text-lg text-center'>0 %</span>
+              <span className='font-medium md:text-lg text-center'>{ratioInfo?.usageRatios[6]} %</span>
             </Grid>
           </Grid>          
         </Box>

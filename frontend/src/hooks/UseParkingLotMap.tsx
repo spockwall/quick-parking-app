@@ -7,7 +7,6 @@ export default function useParkingLotMap(floor: number, slot: number): number[][
         const getMap = async () => {
             const parkingService = new ParkingService();
             const map = await parkingService.getLotMap(floor, slot);
-            console.log(map);
             setMap(map ?? []);
         };
         getMap();

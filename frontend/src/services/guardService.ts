@@ -1,11 +1,12 @@
-import { userInfo } from "../types";
+import { DurationUserInfo } from "../types";
+import { DurationStatus, RatioStatus, OneWeekRatioInfo } from "../types";
 export class GuardService {
     // TODO: This Service haven't been tested yet.
     // TODO: Need to define type for return value
-    // GET /guard/parking_spaces/duration
-    public async getDuration(): Promise<any[]> {
+    // GET /guards/parking_spaces/duration
+    public async getDuration(floor: number, slot: number): Promise<DurationStatus[]> {
         try {
-            const res = await fetch(`/api/guard/parking_spaces/duration`, {
+            const res = await fetch(`/api/guards/parking_spaces/duration?lot=${slot}&floor=${floor}&limit=25`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -15,10 +16,10 @@ export class GuardService {
             return [];
         }
     }
-    // GET /guard/parking_spaces/vacancy
-    public async getVacancyRatio(): Promise<any[]> {
+    // GET /guards/parking_spaces/ratio
+    public async getVacancyRatio(floor: number, slot: number): Promise<RatioStatus[]> {
         try {
-            const res = await fetch(`/api/guard/parking_spaces/ratio`, {
+            const res = await fetch(`/api/guards/parking_spaces/ratio?lot=${slot}&floor=${floor}&limit=25`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -26,20 +27,33 @@ export class GuardService {
         } catch (err) {
             console.log(err);
             return [];
+        }
+    }
+    // GET /guards/parking_spaces/ratio/:spaceId
+    public async getVacancyRatioOneWeek(spaceId: string): Promise<OneWeekRatioInfo | null> {
+        try {
+            const res = await fetch(`/api/guards/parking_spaces/ratio/${spaceId}`, {
+                method: "GET",
+                credentials: "include",
+            });
+            return await res.json();
+        } catch (err) {
+            console.log(err);
+            return null;
         }
     }
 
-    // GET /guard/parking_spaces/:parkingSpaceId
-    public async getParkingSpaceUser(parkingSpaceId: string): Promise<userInfo> {
+    // GET /guards/parking_spaces/:parkingSpaceId
+    public async getParkingSpaceUser(parkingSpaceId: string): Promise<DurationUserInfo> {
         try {
-            const res = await fetch(`/api/guard/parking_spaces/${parkingSpaceId}`, {
+            const res = await fetch(`/api/guards/parking_spaces/${parkingSpaceId}`, {
                 method: "GET",
                 credentials: "include",
             });
             return await res.json();
         } catch (err) {
             console.log(err);
-            return {} as userInfo;
+            return {} as DurationUserInfo;
         }
     }
 }

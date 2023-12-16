@@ -20,6 +20,7 @@ export default function useAuth(permission: roleType) {
     );
     useEffect(() => {
         if (permission === "any") {
+            console.log(authState);
             console.log("hi");
         } else if (authState.role && authState.role !== permission) {
             logout();

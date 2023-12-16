@@ -3,20 +3,29 @@ import ScrollToTopButton from "../../../components/ScrollToTopButton";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import UsageDurationModal from "./modals/UsageDurationModal";
+import useParkingSpaceDuration from "../../../hooks/UseDurationData";
 
 import { useState } from "react";
 import { slots, floors } from "../../../data/parkingSlots";
 import { GridItemHeader, GridItemList } from "./GridItem";
-import { DurationData } from "../../../data/fakeData";
+// import { DurationData } from "../../../data/fakeData";
+import { GuardService } from "../../../services/guardService";
+import { DurationUserInfo } from "../../../types";
 
 export default function UsageDuration() {
     // TODO: Fetch data from backend
     // TODO: Show correct data in modal
     const [open, setOpen] = useState(false);
+    
     const [selectedFloorIndex, setSelectedFloorIndex] = useState(0);
     const [selectedSlotIndex, setSelectedSlotIndex] = useState(0);
+    const [userInfo, setUserInfo] = useState<DurationUserInfo | null>(null);
+    const DurationData = useParkingSpaceDuration(selectedFloorIndex, selectedSlotIndex);
     
-    const handleClickOpen = () => {
+    const handleClickOpen = async (parkingSpaceId: string) => {
+        const guardService = new GuardService();
+        const userData = await guardService.getParkingSpaceUser(parkingSpaceId);
+        setUserInfo(userData);
         setOpen(true);
     };
 
@@ -47,7 +56,7 @@ export default function UsageDuration() {
                             index={index + 1}
                             data={data.duration.toString()}
                             parkingSpaceId={data.parkingSpaceId}
-                            onClick={handleClickOpen}
+                            onClick={() => handleClickOpen(data.parkingSpaceId)}
                         />
                     ))}
                 </Stack>
@@ -61,6 +70,7 @@ export default function UsageDuration() {
                 // Car Id
                 // Phone Number
                 // Email Address
+                userInfo={userInfo}
             />
         </div>
     );

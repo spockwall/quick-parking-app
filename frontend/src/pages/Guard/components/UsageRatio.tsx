@@ -3,17 +3,41 @@ import UsageRatioModal from "./modals/UsageRatioModal";
 import ScrollToTopButton from "../../../components/ScrollToTopButton";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
+import useParkingSpaceRatio from "../../../hooks/UseRatioData";
+
 import { GridItemHeader, GridItemList } from "./GridItem";
 import { useState } from "react";
-import { RatioData } from "../../../data/fakeData";
-import { slots, floors } from "../../../data/parkingSlots";
+// import { RatioData } from "../../../data/fakeData";
+import { slots, floors } from "../../../data/parkingSlots"; 
+import { GuardService } from "../../../services/guardService";
+import { OneWeekRatioInfo } from "../../../types";
 
 export default function UsageRatio() {
     const [open, setOpen] = useState(false);
     const [selectedFloorIndex, setSelectedFloorIndex] = useState(0);
     const [selectedSlotIndex, setSelectedSlotIndex] = useState(0);
+    const RatioData = useParkingSpaceRatio(selectedFloorIndex, selectedSlotIndex);
+    const [ratioInfo, setRatioInfo] = useState<OneWeekRatioInfo | null>(null);
 
-    const handleClickOpen = () => {
+    const handleClickOpen = async (spaceId: string) => {
+        const guardService = new GuardService();
+        let ratios = await guardService.getVacancyRatioOneWeek(spaceId);
+        if (ratios && 'message' in ratios) {
+            delete ratios.message;
+        }
+        if (ratios && 'parkingSpaceId' in ratios) {
+            delete ratios.parkingSpaceId;
+        }
+        if (ratios && ratios.dates && ratios.usageRatios) {
+            ratios.dates = ratios?.dates.map(date => {
+                const parts = date.split("-");
+                return `${parts[1]}/${parts[2]}`;
+            });
+            ratios.usageRatios = ratios?.usageRatios.map(usageRatio => {
+                return parseFloat(usageRatio.toFixed(3));
+            });
+        }
+        setRatioInfo(ratios);
         setOpen(true);
     };
 
@@ -37,14 +61,14 @@ export default function UsageRatio() {
             />
             <div className="mt-6 w-3/4 md:w-1/2">
                 <Stack direction="column" spacing={2.5}>
-                    <GridItemHeader dataName="Duration"></GridItemHeader>
+                    <GridItemHeader dataName="Ratio"></GridItemHeader>
                     {RatioData.map((data, index) => (
                         <GridItemList
                             key={data.parkingSpaceId}
                             index={index + 1}
                             data={data.usageRatio.toString()}
                             parkingSpaceId={data.parkingSpaceId}
-                            onClick={handleClickOpen}
+                            onClick={() => handleClickOpen(data.parkingSpaceId)}
                         />
                     ))}
                 </Stack>
@@ -58,6 +82,7 @@ export default function UsageRatio() {
                 // Car Id
                 // Phone Number
                 // Email Address
+                ratioInfo={ratioInfo}
             />
         </div>
     );
