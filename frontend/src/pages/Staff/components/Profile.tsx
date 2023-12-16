@@ -3,63 +3,67 @@ import useUserInfo from "../../../hooks/useUserInfo";
 import useAuth from "../../../hooks/useAuth";
 import InputField from "../../../components/InputField";
 import InputLPN from "../../../components/InputLPN";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ROLE } from "../../../enums";
 import { UserService } from "../../../services/userService";
+import { userInfo } from "@/types";
 
 export default function Profile(): JSX.Element {
     useAuth(ROLE.STAFF);
+    const { userInfo, setUserInfo } = useUserInfo();
     const [disabled, setDisabled] = useState<boolean>(true);
     const [password, setPassword] = useState<string>("");
-    const { userInfo, setUserInfo } = useUserInfo();
-    console.log(userInfo);
+    const [newUserInfo, setNewUserInfo] = useState<userInfo>(userInfo);
+    useEffect(() => {
+        setNewUserInfo(userInfo);
+    }, [userInfo]);
     return (
         <>
             <div className="w-3/4 sm:w-2/3 md:w-1/2 lg:w-2/5 flex flex-col m-auto mt-8 sm:mt-3">
                 <form
+                    autoComplete="off"
                     onSubmit={async () => {
                         setDisabled(true);
-                        userInfo.password = password;
+                        newUserInfo.password = password;
+                        newUserInfo.licensePlates = newUserInfo.licensePlateNumbers;
                         const userService = new UserService();
-                        const success = await userService.updateUserInfo(userInfo);
-                        console.log(success);
-                        if (!success) {
-                            alert("Update failed");
-                            return;
-                        }
-                        setUserInfo(userInfo);
+                        const success = await userService.updateUserInfo(newUserInfo);
+                        if (success) {
+                            // need to cache new user info to cache
+                            setUserInfo(newUserInfo);
+                        } else alert("Update failed");
                     }}
                 >
                     <div>
-                        <InputField title="Your ID" value={userInfo.userId} disabled />
+                        <InputField title="Your ID" value={newUserInfo.userId} disabled />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField
                             title="Your Name"
-                            value={userInfo.name}
+                            value={newUserInfo.name}
                             disabled={disabled}
                             onChange={(e) => {
-                                setUserInfo({ ...userInfo, name: e.target.value });
+                                setNewUserInfo({ ...newUserInfo, name: e.target.value });
                             }}
                         />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField
                             title="Phone Number"
-                            value={userInfo.phone}
+                            value={newUserInfo.phone}
                             disabled={disabled}
                             onChange={(e) => {
-                                setUserInfo({ ...userInfo, phone: e.target.value });
+                                setNewUserInfo({ ...newUserInfo, phone: e.target.value });
                             }}
                         />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField
                             title="Email Address"
-                            value={userInfo.email}
+                            value={newUserInfo.email}
                             disabled={disabled}
                             onChange={(e) => {
-                                setUserInfo({ ...userInfo, email: e.target.value });
+                                setNewUserInfo({ ...newUserInfo, email: e.target.value });
                             }}
                         />
                     </div>
@@ -67,12 +71,12 @@ export default function Profile(): JSX.Element {
                     <div className="mt-2 sm:mt-0">
                         <InputLPN
                             title="License Plate Number"
-                            value={userInfo.licensePlateNumbers}
+                            value={newUserInfo.licensePlateNumbers}
                             disabled={disabled}
                             action={(newLPN: string) => {
-                                setUserInfo({
+                                setNewUserInfo({
                                     ...userInfo,
-                                    licensePlateNumbers: [...userInfo.licensePlateNumbers, newLPN],
+                                    licensePlateNumbers: [...newUserInfo.licensePlateNumbers, newLPN],
                                 });
                             }}
                         />
@@ -98,8 +102,7 @@ export default function Profile(): JSX.Element {
                     >
                         <Button
                             color="bg-blue-light"
-                            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                e.preventDefault();
+                            onClick={() => {
                                 setDisabled(!disabled);
                             }}
                         >

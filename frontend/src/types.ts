@@ -1,11 +1,12 @@
 import { ROLE } from "./enums";
 
 export type roleType = ROLE.STAFF | ROLE.GUARD | ROLE.ADMIN | "any";
+export type statusType = "common" | "disability" | "difficulty";
 export interface parkingSpaceStatus {
     id: string;
     spaceId: string;
     state: "available" | "occupied" | "error";
-    status: "common" | "disability" | "difficulty";
+    status: statusType;
     startTime: number;
     occupant: string;
     floor: number;
@@ -18,7 +19,8 @@ export interface userInfo {
     email: string;
     licensePlateNumbers: string[];
     role: ROLE;
-    status: "common" | "difficulty" | "disability";
+    status: statusType;
+    licensePlates?: string[]; // backend's fault
     password?: string;
 }
 
@@ -37,7 +39,7 @@ export type authState = {
 export type DurationStatus = {
     parkingSpaceId: string;
     state: "available" | "occupied" | "error";
-    status: "common" | "disability" | "difficulty";
+    status: statusType;
     startTime: number;
     duration: number;
 };
@@ -51,7 +53,7 @@ export type DurationUserInfo = {
 
 export type RatioStatus = {
     parkingSpaceId: string;
-    status: "common" | "disability" | "difficulty";
+    status: statusType;
     usageRatio: number;
 };
 
