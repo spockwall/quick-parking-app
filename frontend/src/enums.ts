@@ -9,3 +9,9 @@ export enum ParkingSpaceState {
     AVAILABLE = "available",
     ERROR = "error",
 }
+
+export enum AUTHACTION {
+    LOGIN = "LOGIN",
+    LOGOUT = "LOGOUT",
+    UNEXPIRED = "UNEXPIRED",
+}

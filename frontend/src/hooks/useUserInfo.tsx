@@ -1,13 +1,16 @@
-import useAuth from "./useAuth";
-import { useEffect, useReducer } from "react";
-import { USERACTION, userReducer } from "../reducers/userReducer";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import type { userInfo } from "../types";
 
-export default function useUserInfo(id: string) {
-    const { authState } = useAuth("any");
-    const [user, userDispatch] = useReducer(userReducer, {} as userInfo);
+export default function useUserInfo() {
+    const [userInfo, setUserInfoState] = useState<userInfo>({} as userInfo);
+    const setUserInfo = (userInfo: userInfo) => {
+        Cookies.set("userInfo", JSON.stringify(userInfo));
+        setUserInfoState(userInfo);
+    };
     useEffect(() => {
-        userDispatch({ type: USERACTION.CHANGE_ALL, payload: authState.user });
-    }, [id, authState]);
-    return { user, userDispatch };
+        const userInfo = JSON.parse(Cookies.get("userInfo") || "{}");
+        setUserInfoState(userInfo);
+    }, []);
+    return { userInfo, setUserInfo };
 }

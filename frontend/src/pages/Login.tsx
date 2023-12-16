@@ -2,6 +2,7 @@ import Logo from "../assets/logo.svg";
 import useAuth from "../hooks/useAuth";
 import InputField from "../components/InputField";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+import useUserInfo from "../hooks/useUserInfo";
 import { useCallback, useState } from "react";
 import { LoginService } from "../services/loginService";
 import { UserService } from "../services/userService";
@@ -14,6 +15,7 @@ export default function Login(): JSX.Element {
     const { login } = useAuth("any");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
+    const { setUserInfo } = useUserInfo();
     const location = useLocation();
     const navigate = useNavigate();
     const role = location.state?.role;
@@ -27,12 +29,12 @@ export default function Login(): JSX.Element {
         const loginService = new LoginService();
         const userService = new UserService();
         const token = await loginService.login(id, password);
-        console.log(token);
 
         if (token !== null) {
             const user = await userService.getUserInfo(id);
             const isFirstLogin = await loginService.checkFirstLogin(user);
-            login(token, role, user);
+            login(token, role);
+            setUserInfo(user);
             // If first time login, redirect to register page,
             // or redirect to default page of the role
             if (role === ROLE.STAFF) {
@@ -53,9 +55,8 @@ export default function Login(): JSX.Element {
         } else {
             window.alert("ID hasn't been registered or password is incorrect");
             handleBack();
-            // toast.error("ID hasn't been registered or password is incorrect");
         }
-    }, [id, password, role, login, navigate, handleBack]);
+    }, [id, password, role, login, navigate, handleBack, setUserInfo]);
 
     return (
         <form

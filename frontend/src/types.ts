@@ -31,7 +31,6 @@ export interface userParkingStatus {
 export type authState = {
     token: string;
     role: roleType | "";
-    user: userInfo;
 };
 
-export type roleType = ROLE.STAFF | ROLE.GUARD | ROLE.ADMIN;
+export type roleType = ROLE.STAFF | ROLE.GUARD | ROLE.ADMIN | "any";

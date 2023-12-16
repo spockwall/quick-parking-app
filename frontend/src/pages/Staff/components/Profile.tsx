@@ -1,68 +1,65 @@
 import Button from "../../../components/Button";
 import useUserInfo from "../../../hooks/useUserInfo";
+import useAuth from "../../../hooks/useAuth";
 import InputField from "../../../components/InputField";
 import InputLPN from "../../../components/InputLPN";
 import { useState } from "react";
+import { ROLE } from "../../../enums";
 import { UserService } from "../../../services/userService";
-import { USERACTION } from "../../../reducers/userReducer";
 
 export default function Profile(): JSX.Element {
-    const id = "qwe-123-qwe";
+    useAuth(ROLE.STAFF);
     const [disabled, setDisabled] = useState<boolean>(true);
     const [password, setPassword] = useState<string>("");
-    const { user, userDispatch } = useUserInfo(id);
-
+    const { userInfo, setUserInfo } = useUserInfo();
+    console.log(userInfo);
     return (
         <>
             <div className="w-3/4 sm:w-2/3 md:w-1/2 lg:w-2/5 flex flex-col m-auto mt-8 sm:mt-3">
                 <form
-                    onSubmit={async (e) => {
-                        e.preventDefault();
+                    onSubmit={async () => {
                         setDisabled(true);
-                        user.password = password;
+                        userInfo.password = password;
                         const userService = new UserService();
-                        await userService.updateUserInfo(user);
+                        const success = await userService.updateUserInfo(userInfo);
+                        console.log(success);
+                        if (!success) {
+                            alert("Update failed");
+                            return;
+                        }
+                        setUserInfo(userInfo);
                     }}
                 >
                     <div>
-                        <InputField title="Your ID" value={user?.userId} disabled />
+                        <InputField title="Your ID" value={userInfo.userId} disabled />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField
                             title="Your Name"
-                            value={user?.name}
+                            value={userInfo.name}
                             disabled={disabled}
                             onChange={(e) => {
-                                userDispatch({
-                                    type: USERACTION.CHANGE_NAME,
-                                    payload: { ...user, name: e.target.value },
-                                });
+                                setUserInfo({ ...userInfo, name: e.target.value });
                             }}
                         />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField
                             title="Phone Number"
-                            value={user?.phone}
+                            value={userInfo.phone}
                             disabled={disabled}
                             onChange={(e) => {
-                                userDispatch({
-                                    type: USERACTION.CHANGE_PHONE,
-                                    payload: { ...user, phone: e.target.value },
-                                });
+                                setUserInfo({ ...userInfo, phone: e.target.value });
                             }}
                         />
                     </div>
                     <div className="mt-2 sm:mt-0">
                         <InputField
                             title="Email Address"
-                            value={user?.email}
+                            value={userInfo.email}
                             disabled={disabled}
                             onChange={(e) => {
-                                userDispatch({
-                                    type: USERACTION.CHANGE_EMAIL,
-                                    payload: { ...user, email: e.target.value },
-                                });
+                                setUserInfo({ ...userInfo, email: e.target.value });
                             }}
                         />
                     </div>
@@ -70,12 +67,12 @@ export default function Profile(): JSX.Element {
                     <div className="mt-2 sm:mt-0">
                         <InputLPN
                             title="License Plate Number"
-                            value={user?.licensePlateNumbers}
+                            value={userInfo.licensePlateNumbers}
                             disabled={disabled}
                             action={(newLPN: string) => {
-                                userDispatch({
-                                    type: USERACTION.CHANGE_LICENSE_PLATE_NUMRER,
-                                    payload: { ...user, licensePlateNumbers: [...user.licensePlateNumbers, newLPN] },
+                                setUserInfo({
+                                    ...userInfo,
+                                    licensePlateNumbers: [...userInfo.licensePlateNumbers, newLPN],
                                 });
                             }}
                         />

@@ -17,7 +17,6 @@ export class UserService {
 
     public async updateUserInfo(newInfo: userInfo): Promise<boolean> {
         // PATCH /staff/users/:id
-        // TODO : need test
         try {
             const response = await fetch(`/api/staff/users/${newInfo.userId}`, {
                 method: "PATCH",
@@ -30,9 +29,13 @@ export class UserService {
                     name: newInfo.name,
                     phone: newInfo.phone,
                     email: newInfo.email,
+                    role: newInfo.role,
+                    status: newInfo.status,
+                    password: newInfo.password,
                     licensePlates: newInfo.licensePlateNumbers,
                 }),
             });
+            console.log(await response.json());
             return response.ok;
         } catch (err) {
             console.log(err);

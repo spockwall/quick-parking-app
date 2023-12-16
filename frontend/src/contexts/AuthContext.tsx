@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { createContext, useReducer, ReactNode, useEffect } from "react";
-import { AUTHACTION, authReducer, authActionType } from "../reducers/authReducer";
+import { authReducer, authActionType } from "../reducers/authReducer";
+import { AUTHACTION } from "../enums";
 import type { authState, roleType } from "../types";
 
 type authContextType = {
@@ -15,8 +16,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const token = Cookies.get("token") || "";
         const role = (Cookies.get("role") || "") as roleType;
-        authDispatch({ type: AUTHACTION.UNEXPIRED, payload: { token, role, user: authState.user } });
-    }, [authState.user]);
+        authDispatch({ type: AUTHACTION.UNEXPIRED, payload: { token, role } });
+    }, []);
 
     return <AuthContext.Provider value={{ authState, authDispatch }}>{children}</AuthContext.Provider>;
 };

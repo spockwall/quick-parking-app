@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { AUTHACTION } from "../reducers/authReducer";
-import type { roleType, userInfo, authState } from "../types";
+import { AUTHACTION } from "../enums";
+import type { roleType, authState } from "../types";
 
-export default function useAuth(permission: roleType | "any") {
+export default function useAuth(permission: roleType) {
     const { authState, authDispatch } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -13,8 +13,8 @@ export default function useAuth(permission: roleType | "any") {
     }, [authDispatch]);
 
     const login = useCallback(
-        async (token: string, role: roleType, user: userInfo) => {
-            authDispatch({ type: AUTHACTION.LOGIN, payload: { token, role, user } });
+        async (token: string, role: roleType) => {
+            authDispatch({ type: AUTHACTION.LOGIN, payload: { token, role } });
         },
         [authDispatch]
     );
