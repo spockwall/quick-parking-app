@@ -13,7 +13,7 @@ export default function useAuth(permission: roleType | "any") {
     }, [authDispatch]);
 
     const login = useCallback(
-        (token: string, role: roleType, user: userInfo) => {
+        async (token: string, role: roleType, user: userInfo) => {
             authDispatch({ type: AUTHACTION.LOGIN, payload: { token, role, user } });
         },
         [authDispatch]

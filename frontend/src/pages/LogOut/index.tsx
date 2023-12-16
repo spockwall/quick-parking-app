@@ -1,16 +1,19 @@
+import useAuth from "../../hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import { LoginService } from "../../services/loginService";
 
 export default function Logout() {
     const navigate = useNavigate();
     const { logout } = useAuth("any");
 
     useEffect(() => {
-        logout();
+        const loginService = new LoginService();
         const animationTimeout = setTimeout(() => {
             navigate("/checkrole");
         }, 2000);
+        logout();
+        loginService.logout();
         return () => clearTimeout(animationTimeout);
     }, [navigate, logout]);
 

@@ -63,6 +63,7 @@ export default function Profile(): JSX.Element {
                             }}
                         />
                     </div>
+
                     <div className="mt-2 sm:mt-0">
                         <InputLPN
                             title="License Plate Number"

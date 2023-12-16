@@ -6,6 +6,7 @@ import { userInfo } from "../types";
 export default function useUserInfo(id: string) {
     const { authState } = useAuth("any");
     const [user, userDispatch] = useReducer(userReducer, {} as userInfo);
+    console.log("useUserInfo", authState.user);
     useEffect(() => {
         userDispatch({ type: USERACTION.CHANGE_ALL, payload: authState.user });
     }, [id, authState.user]);

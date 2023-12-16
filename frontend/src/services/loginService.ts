@@ -15,16 +15,27 @@ export class LoginService {
                 }),
             });
             const { token } = await res.json();
-            if (token) {
-                Cookies.set("jwt", token, {
-                    expires: 7,
-                    secure: true,
-                });
-            }
             return token || null;
         } catch (err) {
             console.log(err);
             return null;
+        }
+    }
+    public async logout(): Promise<void> {
+        // POST /auth/logout
+        try {
+            const res = await fetch("/api/auth/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token: Cookies.get("jwt"),
+                }),
+            });
+            console.log(res);
+        } catch (err) {
+            console.log(err);
         }
     }
 
