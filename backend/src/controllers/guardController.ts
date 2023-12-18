@@ -240,6 +240,9 @@ export const getParkingSpacesRatio = async (
   res: Response
 ): Promise<void> => {
   const queryParams = req.query as Partial<QueryParams>;
+  const days = Number(queryParams.days || 7);
+  const startOfPeriod = moment().subtract(days, "days").startOf("day");
+  const endOfPeriod = moment().endOf("day");
   const whereCondition = processQueryParams(queryParams);
 
   const spaceUsage: Record<string, number> = {};
@@ -247,11 +250,19 @@ export const getParkingSpacesRatio = async (
   const records = await prisma.record.findMany({
     where: {
       ...whereCondition,
-      enterTime: {
-        gte: moment()
-          .subtract(Number(queryParams.days || 7), "days")
-          .unix(),
-      },
+      OR: [
+        {
+          enterTime: {
+            gte: startOfPeriod.unix(),
+          },
+        },
+        {
+          enterTime: {
+            lt: startOfPeriod.unix(),
+          },
+          OR: [{ exitTime: null }, { exitTime: { gte: startOfPeriod.unix() } }],
+        },
+      ],
     },
     include: {
       parkingSpace: true,
@@ -259,18 +270,19 @@ export const getParkingSpacesRatio = async (
   });
 
   records.forEach((record) => {
-    const exitTimeMoment = record.exitTime
-      ? moment.unix(record.exitTime)
-      : moment();
-    const enterTimeMoment = moment.unix(record.enterTime);
-    const durationInSeconds = exitTimeMoment.diff(enterTimeMoment, "seconds");
+    const entryTime = Math.max(record.enterTime, startOfPeriod.unix());
+    const exitTime = record.exitTime
+      ? Math.min(record.exitTime, endOfPeriod.unix())
+      : endOfPeriod.unix();
+    const durationInSeconds = exitTime - entryTime;
     if (durationInSeconds > 0) {
-      spaceUsage[record.spaceId] =
-        (spaceUsage[record.spaceId] || 0) + durationInSeconds;
+      spaceUsage[record.spaceId] = Math.min(
+        (spaceUsage[record.spaceId] || 0) + durationInSeconds,
+        days * 24 * 60 * 60
+      );
     }
   });
 
-  const days = Number(queryParams.days || 7);
   const totalPeriodInSeconds = days * 24 * 60 * 60;
 
   const parkingSpaces = Object.keys(spaceUsage).map((spaceId) => {
@@ -278,7 +290,7 @@ export const getParkingSpacesRatio = async (
       (record) => record.spaceId === spaceId
     )?.parkingSpace;
 
-    const usageRatio = spaceUsage[spaceId] / totalPeriodInSeconds;
+    const usageRatio = Math.min(spaceUsage[spaceId] / totalPeriodInSeconds, 1);
 
     return {
       parkingSpaceId: spaceId,
@@ -286,6 +298,7 @@ export const getParkingSpacesRatio = async (
       usageRatio: parseFloat(usageRatio.toFixed(5)),
     };
   });
+
   res.json(parkingSpaces);
 };
 
@@ -318,6 +331,7 @@ export const getParkingSpaceRatioById = async (
   if (!parkingSpace) {
     throw new AppError("Parking space not found", 404);
   }
+
   interface UsageHistory {
     parkingSpaceId: string;
     dates: string[];
@@ -337,17 +351,30 @@ export const getParkingSpaceRatioById = async (
     const records = await prisma.record.findMany({
       where: {
         spaceId: spaceId,
-        enterTime: {
-          gte: startOfDay,
-          lt: endOfDay,
-        },
+        OR: [
+          {
+            enterTime: {
+              gte: startOfDay,
+              lt: endOfDay,
+            },
+          },
+          {
+            enterTime: {
+              lt: startOfDay,
+            },
+            OR: [{ exitTime: null }, { exitTime: { gte: startOfDay } }],
+          },
+        ],
       },
     });
 
     let totalUsedTime = 0;
     records.forEach((record) => {
-      const exitTime = record.exitTime ?? endOfDay;
-      totalUsedTime += exitTime - record.enterTime;
+      const entryTime = Math.max(record.enterTime, startOfDay);
+      const exitTime = record.exitTime
+        ? Math.min(record.exitTime, endOfDay)
+        : endOfDay;
+      totalUsedTime += exitTime - entryTime;
     });
 
     const totalAvailableTime = endOfDay - startOfDay;
