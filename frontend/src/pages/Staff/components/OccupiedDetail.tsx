@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { commonDivClass } from "../../../styles/commonStyles";
 
 
-
 const OccupiedDetail = () => {
     // const { carlicense } = useParams();
     const navigate = useNavigate();
@@ -15,7 +14,6 @@ const OccupiedDetail = () => {
     const [spaceId, setSpaceId] = useState<string | null>(null);
 
     useEffect(() => {
-        // TODO: Fetch data based on spaceId
         const searchParams = new URLSearchParams(location.search);
         const id = searchParams.get("id");
         setId(id);

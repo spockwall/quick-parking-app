@@ -11,10 +11,21 @@ import { Outlet, useRoutes, useMatch } from "react-router-dom";
 import { ROLE } from "../../enums";
 import { useState } from "react";
 
+// TODO: seperate disability + difficulty available spaces count??
+
+// add available spaces count
+import AvailableSpacesCount from "../../hooks/UseParkingLotVacancy"; 
+
 const Staff = () => {
     useAuth(ROLE.STAFF);
     const [selectedFloorIndex, setSelectedFloorIndex] = useState(0);
     const [selectedSlotIndex, setSelectedSlotIndex] = useState(0);
+
+    const counts = AvailableSpacesCount(selectedFloorIndex, selectedSlotIndex);
+    // num of each avalible statusType
+    const commonSpacesCount = counts.common;
+    const disabilitySpacesCount = counts.disability;
+    const difficultySpacesCount = counts.difficulty;
 
     const isStaffRoute = useMatch("/staff");
     const routes = useRoutes([
@@ -33,23 +44,23 @@ const Staff = () => {
               justify-center sm:justify-around align-middle items-center w-4/5 sm:mb-2"
                             >
                                 <div className="flex gap-2">
-                                <SelectMenu options={floors} 
-                                    selectedIndex={selectedFloorIndex}
-                                    onSelectedIndexChanged={setSelectedFloorIndex} />
-                                <SelectMenu options={slots} 
-                                    selectedIndex={selectedSlotIndex}
-                                    onSelectedIndexChanged={setSelectedSlotIndex}/>
+                                    <SelectMenu options={slots}
+                                        selectedIndex={selectedSlotIndex}
+                                        onSelectedIndexChanged={setSelectedSlotIndex} />
+                                    <SelectMenu options={floors} 
+                                        selectedIndex={selectedFloorIndex}
+                                        onSelectedIndexChanged={setSelectedFloorIndex} />
                                 </div>
                                 <div className="flex flex-col justify-center items-center sm:flex-row gap-1 sm:gap-5 text-center sm:ml-1">
                                     <div>
                                         <span className="text-yellow underline decoration-yellow-dark text-sm md:text-xl lg:text-2xl mr-1">
-                                            6
+                                            {commonSpacesCount}
                                         </span>
                                         <span className="text-xs md:text-md lg:text-lg">Spaces Available</span>
                                     </div>
                                     <div>
                                         <span className="text-blue underline decoration-blue-dark text-sm md:text-xl lg:text-2xl mr-1">
-                                            2
+                                            {disabilitySpacesCount + difficultySpacesCount}
                                         </span>
                                         <span className="text-xs md:text-md lg:text-lg">
                                             Accessible Spaces Available
