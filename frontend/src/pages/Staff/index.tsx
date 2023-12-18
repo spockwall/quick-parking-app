@@ -1,7 +1,7 @@
 import useAuth from "../../hooks/useAuth";
 import NavBar from "./components/NavBar";
 import Profile from "./components/Profile";
-import Settings from "./components/Settings";
+// import Settings from "./components/Settings";
 import Occupied from "./components/Occupied";
 import OccupiedDetail from "./components/OccupiedDetail";
 import ParkingLot from "../../components/ParkingLot";
@@ -67,9 +67,9 @@ const Staff = () => {
             ),
             children: [
                 { path: "profile", element: <Profile /> },
-                { path: "settings", element: <Settings /> },
+                // { path: "settings", element: <Settings /> },
                 { path: "occupied", element: <Occupied /> },
-                { path: "occupied/:carlisence", element: <OccupiedDetail /> },
+                { path: "occupied/detail/*", element: <OccupiedDetail /> },
             ],
         },
     ]);

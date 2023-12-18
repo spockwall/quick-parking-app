@@ -5,7 +5,7 @@ import { StyledMenu } from "./StyledMenu";
 // Icons
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import PermIdentityRoundedIcon from "@mui/icons-material/PermIdentityRounded";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+// import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 // route
@@ -55,7 +55,7 @@ export default function CustomizedMenus() {
                     <PermIdentityRoundedIcon />
                     Profile
                 </MenuItem>
-                <Divider sx={{ borderColor: "#214F6D" }} />
+                {/* <Divider sx={{ borderColor: "#214F6D" }} />
                 <MenuItem
                     onClick={() => {
                         navigate("/staff/settings");
@@ -66,7 +66,7 @@ export default function CustomizedMenus() {
                 >
                     <SettingsOutlinedIcon />
                     Settings
-                </MenuItem>
+                </MenuItem> */}
                 <Divider sx={{ borderColor: "#214F6D" }} />
                 <MenuItem
                     onClick={() => {

@@ -8,18 +8,49 @@ import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
 import { useNavigate } from "react-router-dom";
 import { CommonButton } from "../../../components/CommonButton";
 
+// api
+import { useEffect, useState } from "react";
+import { ParkingService } from "../../../services/parkingService";
+import {  userParkingStatus } from "../../../types";
+
+import useUserInfo from "../../../hooks/useUserInfo";
+import useAuth from "../../../hooks/useAuth";
+import { ROLE } from "../../../enums";
+
+// TODO: change time format??
+
 export default function Occupied(): JSX.Element {
     const navigate = useNavigate();
-    const handleClick = () => {
-        navigate("/staff/occupied/[carlisence]");
-    };
+
+    // user info
+    useAuth(ROLE.STAFF);
+    const { userInfo } = useUserInfo();
+    const userId = userInfo.userId;
+
+    // get occupied status
+    const [status, setStatus] = useState<userParkingStatus[]>([]);
+    useEffect(() => {
+        const getOccupied = async () => {
+            const parkingService = new ParkingService();
+            const status = await parkingService.getStaffParkingStatus(userId);
+            setStatus(status ?? []);
+        };
+        getOccupied();
+    }, [status, userId]);
+
+    // fake data for testing
+    // const fakeStatus: userParkingStatus[] = [
+    //     { id: 'KA01BQ3232', spaceId: "1-2-3", userId: '45', enterTime: 1230 },
+    //     { id: 'L1234567890', spaceId: "3-1-8", userId: '45', enterTime: 7788 },
+    // ];
+    // const [status, setStatus] = useState<userParkingStatus[]>(fakeStatus);
 
     return (
         <>
             {/*INFO*/}
             <div className="flex flex-col justify-center items-center text-center  mt-8 mb-2 md:mb-0 text-blue-dark font-bold">
                 <div className="mb-2">
-                    <span className="text-yellow underline decoration-yellow-dark text-2xl md:text-3xl mr-3">2</span>
+                    <span className="text-yellow underline decoration-yellow-dark text-2xl md:text-3xl mr-3">{ status.length }</span>
                     <span className="text-lg md:text-xl ">Spaces Occupied</span>
                 </div>
                 <div className="mt-6 w-4/5 md:w-1/2 mb-20">
@@ -36,46 +67,28 @@ export default function Occupied(): JSX.Element {
                             </Grid>
                             <Grid item xs className="flex align-middle items-center justify-center"></Grid>
                         </Grid>
-                        <CommonButton onClick={handleClick}>
-                            <Grid
-                                container
-                                spacing={0}
-                                className="flex justify-center align-middle text-center text-black"
-                            >
-                                <Grid item xs={1} className="flex align-middle items-center justify-center text-red">
-                                    1
+                        {status.map((item, index) => (
+                            <CommonButton key={index} onClick={() => navigate(`/staff/occupied/detail/?id=${item.id}&spaceId=${item.spaceId}`)}>
+                                <Grid
+                                    container
+                                    spacing={0}
+                                    className="flex justify-center align-middle text-center text-black"
+                                >
+                                    <Grid item xs={1} className="flex align-middle items-center justify-center text-red">
+                                        {index + 1}
+                                    </Grid>
+                                    <Grid item xs={4} className="flex align-middle items-center justify-center">
+                                        {item.enterTime} 
+                                    </Grid>
+                                    <Grid item xs={5} className="flex align-middle items-center justify-center">
+                                        {item.id} 
+                                    </Grid>
+                                    <Grid item xs className="flex align-middle items-center justify-center">
+                                        <NavigateNextOutlinedIcon className="text-blue-dark" style={{ fontSize: "2rem" }} />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={4} className="flex align-middle items-center justify-center text-center">
-                                    12:30
-                                </Grid>
-                                <Grid item xs={5} className="flex align-middle items-center justify-center">
-                                    KA01BQ3232
-                                </Grid>
-                                <Grid item xs className="flex align-middle items-center justify-center">
-                                    <NavigateNextOutlinedIcon className="text-blue-dark" style={{ fontSize: "2rem" }} />
-                                </Grid>
-                            </Grid>
-                        </CommonButton>
-                        <CommonButton onClick={handleClick}>
-                            <Grid
-                                container
-                                spacing={0}
-                                className="flex justify-center align-middle text-center text-black"
-                            >
-                                <Grid item xs={1} className="flex align-middle items-center justify-center text-red">
-                                    2
-                                </Grid>
-                                <Grid item xs={4} className="flex align-middle items-center justify-center">
-                                    10:20
-                                </Grid>
-                                <Grid item xs={5} className="flex align-middle items-center justify-center">
-                                    K9999999999
-                                </Grid>
-                                <Grid item xs className="flex align-middle items-center justify-center">
-                                    <NavigateNextOutlinedIcon className="text-blue-dark" style={{ fontSize: "2rem" }} />
-                                </Grid>
-                            </Grid>
-                        </CommonButton>
+                            </CommonButton>
+                        ))}
                     </Stack>
                 </div>
                 <Button type="button" onClick={() => navigate("/staff")}>
