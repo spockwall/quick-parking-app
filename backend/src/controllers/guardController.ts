@@ -21,7 +21,6 @@ export const getParkingSpacesDuration = async (
 ): Promise<void> => {
   const queryParams = req.query as Partial<QueryParams>;
   const whereCondition = processQueryParams(queryParams);
-  // console.log(whereCondition);
   const cacheKey = JSON.stringify(whereCondition);
 
   const cachedData = await redis.get(cacheKey);
@@ -71,7 +70,7 @@ export const getParkingSpacesDuration = async (
     };
   });
 
-  await redis.set(cacheKey, JSON.stringify(parkingSpaces), "EX", 60);
+  await redis.set(cacheKey, JSON.stringify(parkingSpaces), "EX", 5);
 
   res.json(parkingSpaces);
 };
@@ -392,6 +391,51 @@ export const getParkingSpaceRatioById = async (
     ...usageHistory,
     message: "Fetch usage ratio of the specific parking spaces successfully",
   });
+};
+
+export const getDurationBySpaceId = async (
+  req: Request<{ spaceId: string }>,
+  res: Response
+): Promise<void> => {
+  const { spaceId } = req.params;
+
+  const startOfDay = moment().startOf("day").unix();
+  const endOfDay = moment().endOf("day").unix();
+
+  const records = await prisma.record.findMany({
+    where: {
+      spaceId: spaceId,
+      enterTime: {
+        lte: endOfDay,
+      },
+      OR: [
+        {
+          exitTime: null,
+        },
+        {
+          exitTime: {
+            gte: startOfDay,
+          },
+        },
+      ],
+    },
+  });
+
+  const formattedRecords = records.map((record) => {
+    const enterTimeFormatted = moment
+      .unix(record.enterTime)
+      .format("h:mm A YYYY-MM-DD");
+    const exitTimeFormatted = record.exitTime
+      ? moment.unix(record.exitTime).format("h:mm A YYYY-MM-DD")
+      : "Now";
+
+    return {
+      carId: record.licensePlateNumber,
+      period: `${enterTimeFormatted} - ${exitTimeFormatted}`,
+    };
+  });
+
+  res.json(formattedRecords);
 };
 
 async function clearParkingSpacesListCache() {

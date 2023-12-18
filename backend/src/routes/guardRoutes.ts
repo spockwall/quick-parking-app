@@ -6,6 +6,7 @@ import {
   getParkingSpacesDuration,
   getParkingSpacesRatio,
   getParkingSpaceRatioById,
+  getDurationBySpaceId,
 } from "../controllers/guardController";
 import { verifyAdminAndGuard } from "../auth/authService";
 
@@ -13,6 +14,7 @@ const guardRouter = Router();
 
 guardRouter
   .get("/duration", verifyAdminAndGuard, getParkingSpacesDuration)
+  .get("/duration/:spaceId", verifyAdminAndGuard, getDurationBySpaceId)
   .get("/ratio", verifyAdminAndGuard, getParkingSpacesRatio)
   .get("/ratio/:spaceId", verifyAdminAndGuard, getParkingSpaceRatioById)
   .get("/:parkingSpaceId", verifyAdminAndGuard, getParkingSpaceUserInfo)
