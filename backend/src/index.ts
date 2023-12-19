@@ -4,6 +4,7 @@ import { errorHandler } from "./err/errorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import router from "./routes";
+import { startProcessing } from "./controllers/messageProcessor";
 
 const app = express();
 
@@ -21,6 +22,9 @@ app.use("/", router);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
+
+startProcessing();
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

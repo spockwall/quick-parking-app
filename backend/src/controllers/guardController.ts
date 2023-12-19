@@ -12,6 +12,11 @@ import { processQueryParams } from "../utils/queryUtils";
 import { AppError } from "../err/errorHandler";
 import { recordSchema } from "../utils/validation";
 import redis from "../config/redisconfig";
+import amqp from "amqplib";
+import { connectRabbitMQ } from "../config/rabbitMQ";
+
+const RABBITMQ_SERVER = "amqp://guest:guest@localhost:5672"; // 替換為您的 RabbitMQ 服務器地址
+const QUEUE_NAME = "enterRecordQueue";
 
 const prisma = new PrismaClient();
 
@@ -115,70 +120,18 @@ export const getParkingSpaceUserInfo = async (
 
   res.status(200).json(userInfo);
 };
+// 生產者端代碼 (部分)
 
 export const createEnterRecord = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { spaceId, licensePlateNumber } = req.body;
-
-  const enterTime = moment().unix();
-
-  const parkingSpace = await prisma.parkingSpace.findUnique({
-    where: { spaceId },
-  });
-
-  if (!parkingSpace) {
-    throw new AppError("Resource not found", 404);
-  }
-
-  if (parkingSpace.state === State.occupied) {
-    throw new AppError("Operation not permitted", 400);
-  }
-
-  const licensePlate = await prisma.licensePlate.findUnique({
-    where: { licensePlateNumber },
-    include: { user: true },
-  });
-
-  if (!licensePlate || !licensePlate.user) {
-    throw new AppError("Resource not found", 404);
-  }
-
-  if (
-    (parkingSpace.status === Status.difficulty &&
-      licensePlate.user.status !== Status.difficulty) ||
-    (parkingSpace.status === Status.disability &&
-      licensePlate.user.status !== Status.disability)
-  ) {
-    throw new AppError("Operation not permitted", 403);
-  }
-
-  const record = await prisma.record.create({
-    data: {
-      spaceId,
-      userId: licensePlate.userId,
-      licensePlateNumber,
-      enterTime,
-    },
-  });
-
-  await prisma.parkingSpace.update({
-    where: { spaceId },
-    data: { state: State.occupied },
-  });
-
-  await redis.del(`parkingSpaceInfo:${spaceId}`);
-
-  await clearParkingSpacesListCache();
-
-  const userId = licensePlate.userId;
-  await redis.del(`staffParkingSpaceByUserId:${userId}`);
-
-  res.status(201).json({
-    ...record,
-    message: "Enter record created successfully",
-  });
+  const channel = await connectRabbitMQ();
+  const msg = JSON.stringify(req.body);
+  channel.sendToQueue("enterRecordQueue", Buffer.from(msg));
+  res
+    .status(202)
+    .json({ message: "Request received, processing will start shortly." });
 };
 
 export const recordExit = async (
@@ -438,7 +391,7 @@ export const getDurationBySpaceId = async (
   res.json(formattedRecords);
 };
 
-async function clearParkingSpacesListCache() {
+export async function clearParkingSpacesListCache() {
   const scanAndDelete = async (pattern: string) => {
     let cursor = "0";
     do {
