@@ -19,11 +19,14 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
     const navigate = useNavigate();
 
     const { floor, slot, modal, carlicense, usagehistory } = props;
+    // console.log(carlicense)
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [status, setStatus] = useState<parkingSpaceStatus>();
 
     const map = useParkingLotMap(floor, slot);
     const statusList = useParkingLotStatus(floor, slot);
+    
+    const carlicenseValue: string = carlicense || '';
     const handleParkingSpaceClick = (currentStatus: parkingSpaceStatus) => {
         setOpenModal(true);
         setStatus(currentStatus);
@@ -47,6 +50,7 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
                                     const currentStatus = statusList[col - 1];
                                     const curState = currentStatus?.state;
                                     const curType = currentStatus?.status;
+                                    
                                     return (
                                         <td key={j}>
                                             <ParkingSpace
@@ -56,8 +60,7 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
                                                 onClick={() => {
                                                     handleParkingSpaceClick(currentStatus);
                                                 }}
-                                                carlicense={carlicense === currentStatus?.id}
-                                                hover={usagehistory || modal}
+                                                carlicense={carlicenseValue}
                                             ></ParkingSpace>
                                         </td>
                                     );

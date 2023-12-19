@@ -11,8 +11,6 @@ import { Outlet, useRoutes, useMatch } from "react-router-dom";
 import { ROLE } from "../../enums";
 import { useState } from "react";
 
-// TODO: seperate disability + difficulty available spaces count??
-
 // add available spaces count
 import useParkingLotVacancy from "../../hooks/useParkingLotVacancy"; 
 
@@ -60,10 +58,18 @@ const Staff = () => {
                                     </div>
                                     <div>
                                         <span className="text-blue underline decoration-blue-dark text-sm md:text-xl lg:text-2xl mr-1">
-                                            {disabilitySpacesCount + difficultySpacesCount}
+                                            {disabilitySpacesCount }
                                         </span>
                                         <span className="text-xs md:text-md lg:text-lg">
-                                            Accessible Spaces Available
+                                            Disability Spaces Available
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span className="text-red underline decoration-red-dark text-sm md:text-xl lg:text-2xl mr-1">
+                                            { difficultySpacesCount}
+                                        </span>
+                                        <span className="text-xs md:text-md lg:text-lg">
+                                            Difficulty Spaces Available
                                         </span>
                                     </div>
                                 </div>

@@ -7,12 +7,12 @@ type ParkingSpacePropsType = {
     serial: number;
     occupied: boolean;
     type: string;
-    carlicense: boolean;
+    carlicense: string;
     hover: boolean;
     onClick: () => void;
 };
 export default function ParkingSpace(props: ParkingSpacePropsType): JSX.Element {
-    const { serial, occupied, type} = props; // fix: hover deprecated
+    const { serial, occupied, type, carlicense } = props; // fix: hover deprecated
     const wheelchairImg = <img src={wheelchair} className="-mt-2 -mb-2" alt="Wheelchair"></img>;
     const priorityImg = <img src={priority} className="-mt-2 -mb-2" alt="priority"></img>;
     const carImg = <img src={car} className="w-12 -mt-2 -mb-2" alt="Car"></img>;
@@ -25,7 +25,7 @@ export default function ParkingSpace(props: ParkingSpacePropsType): JSX.Element 
         <>
             <div className="text-center">{serial}</div>
             <button
-                className={`w-20 h-10 border-2 border-blue-dark rounded-md flex items-center justify-center`}
+                    className={`w-20 h-10 border-2 border-blue-dark rounded-md flex items-center justify-center ${serial == parseInt(carlicense, 10) ? 'bg-yellow' : '' }`}                
                 onClick={props.onClick}
             >
                 {occupied && carImg}

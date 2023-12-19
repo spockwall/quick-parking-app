@@ -9,18 +9,13 @@ import { commonDivClass } from "../../../styles/commonStyles";
 const OccupiedDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [id, setId] = useState<string | null>(null);
     const [spaceId, setSpaceId] = useState<string | null>(null);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const id = searchParams.get("id");
-        setId(id);
         const spaceId = searchParams.get("spaceId");
         setSpaceId(spaceId);
 
-        console.log("Car License:", id);
-        console.log("Space ID:", spaceId);
     }, [location.search]);
 
     if (!spaceId) {
@@ -62,7 +57,7 @@ const OccupiedDetail = () => {
 
             <div className="flex justify-center align-middle items-center text-center mt-6 sm:mt-2 w-full">
                 <div className="flex w-full max-h-full mt-2  justify-center">
-                    <ParkingLot floor={parseInt(floor, 10)} slot={parseInt(lot, 10)} modal={false} carlicense={id} usagehistory={false} />
+                    <ParkingLot floor={parseInt(floor, 10)} slot={parseInt(lot, 10)} modal={false} carlicense={space} usagehistory={false} />
                 </div>
             </div>
         </div>

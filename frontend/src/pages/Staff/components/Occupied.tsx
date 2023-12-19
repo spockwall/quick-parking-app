@@ -17,7 +17,17 @@ import useUserInfo from "../../../hooks/useUserInfo";
 import useAuth from "../../../hooks/useAuth";
 import { ROLE } from "../../../enums";
 
-// TODO: change time format??
+function formatDuration(seconds) {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+
+    if (days > 7) {
+        return `${days} d ${hours} hr`;
+    } else {
+        return `${days} d ${hours} hr ${minutes} m`;
+    }
+}
 
 export default function Occupied(): JSX.Element {
     const navigate = useNavigate();
@@ -25,19 +35,22 @@ export default function Occupied(): JSX.Element {
     // user info
     useAuth(ROLE.STAFF);
     const { userInfo } = useUserInfo();
-    const userId = userInfo.userId;
 
     // get occupied status
     const [status, setStatus] = useState<userParkingStatus[]>([]);
     console.log(status);
     useEffect(() => {
-        const getOccupied = async () => {
-            const parkingService = new ParkingService();
-            const status = await parkingService.getStaffParkingStatus(userId);
-            setStatus(status ?? []);
+        const fetchUserId = async () => {
+            if (userInfo.userId) {
+                const userId = userInfo.userId;
+                const parkingService = new ParkingService();
+                const status = await parkingService.getStaffParkingStatus(userId);
+                setStatus(status ?? []);
+            }
         };
-        getOccupied();
-    }, [userId]);
+        fetchUserId();
+    }, [userInfo.userId]);
+
 
     return (
         <>
@@ -55,48 +68,62 @@ export default function Occupied(): JSX.Element {
                             <Grid item xs={1.5} className="flex align-middle items-center justify-center">
                                 Order
                             </Grid>
-                            <Grid item xs={3} className="flex align-middle items-center justify-center">
+                            <Grid item xs={4} className="flex align-middle items-center justify-center">
                                 Time
                             </Grid>
-                            <Grid item xs={5} className="flex align-middle items-center justify-center">
+                            <Grid item xs={5.5} className="flex align-middle items-center justify-center">
                                 Car License
                             </Grid>
                             <Grid item xs className="flex align-middle items-center justify-center"></Grid>
                         </Grid>
-                        {status?.map((item, index) => (
-                            <CommonButton
-                                key={index}
-                                onClick={() =>
-                                    navigate(`/staff/occupied/detail/?id=${item.id}&spaceId=${item.spaceId}`)
-                                }
-                            >
-                                <Grid
-                                    container
-                                    spacing={0}
-                                    className="flex justify-center align-middle text-center text-black"
+                        {status?.map((item, index) => {
+                            const formattedDuration = formatDuration(item.enterTime);
+                            const isWarn = formattedDuration.includes('d') && parseInt(formattedDuration.split(' ')[0], 10) > 7;
+                            return (
+                                <CommonButton
+                                    key={index}
+                                    
+                                    onClick={() =>
+                                        navigate(`/staff/occupied/detail/?spaceId=${item.spaceId}`)
+                                    }
+                                    bgColor={
+                                        isWarn ? '#E65345': undefined
+                                    }
+
                                 >
                                     <Grid
-                                        item
-                                        xs={1}
-                                        className="flex align-middle items-center justify-center text-red"
+                                        container
+                                        spacing={0}
+                                        className="flex justify-center align-middle text-center text-black"
                                     >
-                                        {index + 1}
+                                        <Grid
+                                            item
+                                            xs={1}
+                                            className={`flex align-middle items-center justify-center ${isWarn ? 'text-black' : 'text-red'}
+                                    }`}
+                                        >
+                                            {index + 1}
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={6}
+                                            className="flex align-middle items-center justify-center"
+                                        >
+                                            {formattedDuration}
+                                        </Grid>
+                                        <Grid item xs={3} className="flex align-middle items-center justify-center">
+                                            {item.licensePlateNumber}
+                                        </Grid>
+                                        <Grid item xs className="flex align-middle items-center justify-center">
+                                            <NavigateNextOutlinedIcon
+                                                className="text-blue-dark"
+                                                style={{ fontSize: "2rem" }}
+                                            />
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={4} className="flex align-middle items-center justify-center">
-                                        {item.enterTime}
-                                    </Grid>
-                                    <Grid item xs={5} className="flex align-middle items-center justify-center">
-                                        {item.id}
-                                    </Grid>
-                                    <Grid item xs className="flex align-middle items-center justify-center">
-                                        <NavigateNextOutlinedIcon
-                                            className="text-blue-dark"
-                                            style={{ fontSize: "2rem" }}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </CommonButton>
-                        ))}
+                                </CommonButton>
+                            );
+                        })}
                     </Stack>
                 </div>
                 <Button type="button" onClick={() => navigate("/staff")}>

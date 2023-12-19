@@ -34,7 +34,7 @@ export default function UsageRatio() {
                 return `${parts[1]}/${parts[2]}`;
             });
             ratios.usageRatios = ratios?.usageRatios.map(usageRatio => {
-                return parseFloat(usageRatio.toFixed(3));
+                return parseFloat(usageRatio.toFixed(4));
             });
         }
         setRatioInfo(ratios);
@@ -66,7 +66,7 @@ export default function UsageRatio() {
                         <GridItemList
                             key={data.parkingSpaceId}
                             index={index + 1}
-                            data={data.usageRatio.toString()}
+                            data={data.usageRatio.toFixed(4).toString()}
                             parkingSpaceId={data.parkingSpaceId}
                             onClick={() => handleClickOpen(data.parkingSpaceId)}
                         />

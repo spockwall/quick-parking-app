@@ -12,6 +12,16 @@ import { GridItemHeader, GridItemList } from "./GridItem";
 import { GuardService } from "../../../services/guardService";
 import { DurationUserInfo } from "../../../types";
 
+function formatDuration(seconds) {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+
+    const formattedDuration = `${days} d ${hours} hr ${minutes} m`;
+    return formattedDuration;
+}
+
+
 export default function UsageDuration() {
     // TODO: Fetch data from backend
     // TODO: Show correct data in modal
@@ -54,7 +64,7 @@ export default function UsageDuration() {
                         <GridItemList
                             key={data.parkingSpaceId}
                             index={index + 1}
-                            data={data.duration.toString()}
+                            data={formatDuration(data.duration)}
                             parkingSpaceId={data.parkingSpaceId}
                             onClick={() => handleClickOpen(data.parkingSpaceId)}
                         />

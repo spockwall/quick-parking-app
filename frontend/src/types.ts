@@ -12,6 +12,7 @@ export interface parkingSpaceStatus {
     floor: number;
     slot: number;
     type: "general" | "disabledOnly";
+    licensePlateNumbers: string;
 }
 export interface userInfo {
     userId: string;
@@ -30,6 +31,7 @@ export interface userParkingStatus {
     spaceId: string;
     userId: string;
     enterTime: number;
+    licensePlateNumber: string;
 }
 
 export type authState = {
