@@ -7,7 +7,6 @@ import { commonDivClass } from "../../../styles/commonStyles";
 
 
 const OccupiedDetail = () => {
-    // const { carlicense } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const [id, setId] = useState<string | null>(null);

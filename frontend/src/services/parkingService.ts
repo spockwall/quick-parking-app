@@ -12,10 +12,14 @@ export class ParkingService {
                 method: "GET",
                 credentials: "include",
             });
-            return await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error(data.message);
+            }
+            return data;
         } catch (err) {
             console.log(err);
-            // return {} as userParkingStatus;
             return [];
         }
     }
@@ -27,7 +31,12 @@ export class ParkingService {
                 method: "GET",
                 credentials: "include",
             });
-            return await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error(data.message);
+            }
+            return data;
         } catch (err) {
             console.log(err);
             return [];

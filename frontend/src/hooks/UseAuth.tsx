@@ -26,7 +26,7 @@ export default function useAuth(permission: roleType) {
             logout();
             navigate("/checkrole");
         }
-    }, [navigate, authState.role, permission, logout]);
+    }, [navigate, authState, permission, logout]);
 
     return { authState, login, logout };
 }

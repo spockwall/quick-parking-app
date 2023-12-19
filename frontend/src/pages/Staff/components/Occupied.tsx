@@ -11,7 +11,7 @@ import { CommonButton } from "../../../components/CommonButton";
 // api
 import { useEffect, useState } from "react";
 import { ParkingService } from "../../../services/parkingService";
-import {  userParkingStatus } from "../../../types";
+import { userParkingStatus } from "../../../types";
 
 import useUserInfo from "../../../hooks/useUserInfo";
 import useAuth from "../../../hooks/useAuth";
@@ -29,6 +29,7 @@ export default function Occupied(): JSX.Element {
 
     // get occupied status
     const [status, setStatus] = useState<userParkingStatus[]>([]);
+    console.log(status);
     useEffect(() => {
         const getOccupied = async () => {
             const parkingService = new ParkingService();
@@ -36,21 +37,16 @@ export default function Occupied(): JSX.Element {
             setStatus(status ?? []);
         };
         getOccupied();
-    }, [status, userId]);
-
-    // fake data for testing
-    // const fakeStatus: userParkingStatus[] = [
-    //     { id: 'KA01BQ3232', spaceId: "1-2-3", userId: '45', enterTime: 1230 },
-    //     { id: 'L1234567890', spaceId: "3-1-8", userId: '45', enterTime: 7788 },
-    // ];
-    // const [status, setStatus] = useState<userParkingStatus[]>(fakeStatus);
+    }, [userId]);
 
     return (
         <>
             {/*INFO*/}
             <div className="flex flex-col justify-center items-center text-center  mt-8 mb-2 md:mb-0 text-blue-dark font-bold">
                 <div className="mb-2">
-                    <span className="text-yellow underline decoration-yellow-dark text-2xl md:text-3xl mr-3">{ status.length }</span>
+                    <span className="text-yellow underline decoration-yellow-dark text-2xl md:text-3xl mr-3">
+                        {status.length}
+                    </span>
                     <span className="text-lg md:text-xl ">Spaces Occupied</span>
                 </div>
                 <div className="mt-6 w-4/5 md:w-1/2 mb-20">
@@ -67,24 +63,36 @@ export default function Occupied(): JSX.Element {
                             </Grid>
                             <Grid item xs className="flex align-middle items-center justify-center"></Grid>
                         </Grid>
-                        {status.map((item, index) => (
-                            <CommonButton key={index} onClick={() => navigate(`/staff/occupied/detail/?id=${item.id}&spaceId=${item.spaceId}`)}>
+                        {status?.map((item, index) => (
+                            <CommonButton
+                                key={index}
+                                onClick={() =>
+                                    navigate(`/staff/occupied/detail/?id=${item.id}&spaceId=${item.spaceId}`)
+                                }
+                            >
                                 <Grid
                                     container
                                     spacing={0}
                                     className="flex justify-center align-middle text-center text-black"
                                 >
-                                    <Grid item xs={1} className="flex align-middle items-center justify-center text-red">
+                                    <Grid
+                                        item
+                                        xs={1}
+                                        className="flex align-middle items-center justify-center text-red"
+                                    >
                                         {index + 1}
                                     </Grid>
                                     <Grid item xs={4} className="flex align-middle items-center justify-center">
-                                        {item.enterTime} 
+                                        {item.enterTime}
                                     </Grid>
                                     <Grid item xs={5} className="flex align-middle items-center justify-center">
-                                        {item.id} 
+                                        {item.id}
                                     </Grid>
                                     <Grid item xs className="flex align-middle items-center justify-center">
-                                        <NavigateNextOutlinedIcon className="text-blue-dark" style={{ fontSize: "2rem" }} />
+                                        <NavigateNextOutlinedIcon
+                                            className="text-blue-dark"
+                                            style={{ fontSize: "2rem" }}
+                                        />
                                     </Grid>
                                 </Grid>
                             </CommonButton>
