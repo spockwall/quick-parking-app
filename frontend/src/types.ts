@@ -10,7 +10,8 @@ export interface parkingSpaceStatus {
     startTime: number;
     occupant: string;
     floor: number;
-    lot: number;
+    slot: number;
+    type: "general" | "disabledOnly";
 }
 export interface userInfo {
     userId: string;
