@@ -10,7 +10,12 @@ export class GuardService {
                 method: "GET",
                 credentials: "include",
             });
-            return await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error("Failed to fetch data");
+            }
+            return data;
         } catch (err) {
             console.log(err);
             return [];
@@ -23,7 +28,12 @@ export class GuardService {
                 method: "GET",
                 credentials: "include",
             });
-            return await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error("Failed to fetch data");
+            }
+            return data;
         } catch (err) {
             console.log(err);
             return [];
@@ -36,7 +46,12 @@ export class GuardService {
                 method: "GET",
                 credentials: "include",
             });
-            return await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error("Failed to fetch data");
+            }
+            return data;
         } catch (err) {
             console.log(err);
             return null;
@@ -50,7 +65,12 @@ export class GuardService {
                 method: "GET",
                 credentials: "include",
             });
-            return await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error("Failed to fetch data");
+            }
+            return data;
         } catch (err) {
             console.log(err);
             return {} as DurationUserInfo;
