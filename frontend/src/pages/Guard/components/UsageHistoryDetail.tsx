@@ -92,12 +92,11 @@ const UsageHistoryDetail = () => {
                     <Stack direction="column" spacing={2}>
                         {UsageHistoryData.map((data, index) => {
                             return (
-                                <div key={index}>
+                                <>
                                     <Grid
                                         container
                                         spacing={0}
                                         className="justify-center align-middle text-center text-black"
-                                        key={index}
                                     >
                                         <div className="flex w-full" key={index}>
                                             <TitledGrid title="Car ID" value={data.carId} width={2} />
@@ -113,7 +112,7 @@ const UsageHistoryDetail = () => {
                                             borderRadius: "24px",
                                         }}
                                     />
-                                </div>
+                                </>
                             );
                         })}
                     </Stack>
