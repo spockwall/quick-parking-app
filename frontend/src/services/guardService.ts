@@ -1,5 +1,4 @@
-import { DurationUserInfo } from "../types";
-import { DurationStatus, RatioStatus, OneWeekRatioInfo } from "../types";
+import { DurationUserInfo, DurationStatus, RatioStatus, OneWeekRatioInfo, HistoryInfo } from "../types";
 export class GuardService {
     // TODO: This Service haven't been tested yet.
     // TODO: Need to define type for return value
@@ -19,6 +18,24 @@ export class GuardService {
         } catch (err) {
             console.log(err);
             return [];
+        }
+    }
+     // GET /guards/parking_spaces/duration/:spaceId
+     public async getHitory(spaceId: string): Promise<HistoryInfo | null> {
+        try {
+            const res = await fetch(`/api/guards/parking_spaces/duration/${spaceId}`, {
+                method: "GET",
+                credentials: "include",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data);
+                throw new Error("Failed to fetch data");
+            }
+            return data;
+        } catch (err) {
+            console.log(err);
+            return null;
         }
     }
     // GET /guards/parking_spaces/ratio

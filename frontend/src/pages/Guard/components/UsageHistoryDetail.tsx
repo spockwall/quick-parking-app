@@ -6,8 +6,9 @@ import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftR
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UsageHistoryData } from "../../../data/fakeData";
+// import { UsageHistoryData } from "../../../data/fakeData";
 import { commonDivClass2 } from "../../../styles/commonStyles";
+import useParkingSpaceHistory from "../../../hooks/useParkingSpaceHistory";
 
 
 interface TitleGridProps {
@@ -38,8 +39,9 @@ function TitledGrid(props: TitleGridProps) {
 
 const UsageHistoryDetail = () => {
     // TODO: there is no api for this page.
-    const { spaceId } = useParams();
+    const { spaceId } = useParams<{ spaceId: string }>();
     const navigate = useNavigate();
+    const UsageHistoryData = useParkingSpaceHistory(spaceId || "");
 
     useEffect(() => {
         console.log("Space ID:", spaceId);
@@ -88,15 +90,16 @@ const UsageHistoryDetail = () => {
             <div className="flex justify-center align-middle items-center text-center mt-4">
                 <div className="mt-4 w-5/6 sm:w-1/2 ">
                     <Stack direction="column" spacing={2}>
-                        {UsageHistoryData.map((data) => {
+                        {UsageHistoryData.map((data, index) => {
                             return (
-                                <>
+                                <div key={index}>
                                     <Grid
                                         container
                                         spacing={0}
                                         className="justify-center align-middle text-center text-black"
+                                        key={index}
                                     >
-                                        <div className="flex w-full">
+                                        <div className="flex w-full" key={index}>
                                             <TitledGrid title="Car ID" value={data.carId} width={2} />
                                             <TitledGrid title="Duration" value={data.period} width={3} />
                                         </div>
@@ -110,7 +113,7 @@ const UsageHistoryDetail = () => {
                                             borderRadius: "24px",
                                         }}
                                     />
-                                </>
+                                </div>
                             );
                         })}
                     </Stack>

@@ -62,3 +62,8 @@ export type OneWeekRatioInfo = {
     dates: string[];
     usageRatios: number[];
 };
+
+export type HistoryInfo = {
+    carId: string;
+    period: string;
+};
