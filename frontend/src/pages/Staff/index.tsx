@@ -14,14 +14,14 @@ import { useState } from "react";
 // TODO: seperate disability + difficulty available spaces count??
 
 // add available spaces count
-import AvailableSpacesCount from "../../hooks/UseParkingLotVacancy"; 
+import useParkingLotVacancy from "../../hooks/useParkingLotVacancy"; 
 
 const Staff = () => {
     useAuth(ROLE.STAFF);
     const [selectedFloorIndex, setSelectedFloorIndex] = useState(0);
     const [selectedSlotIndex, setSelectedSlotIndex] = useState(0);
 
-    const counts = AvailableSpacesCount(selectedFloorIndex, selectedSlotIndex);
+    const counts = useParkingLotVacancy(selectedFloorIndex, selectedSlotIndex);
     // num of each avalible statusType
     const commonSpacesCount = counts.common;
     const disabilitySpacesCount = counts.disability;

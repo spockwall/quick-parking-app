@@ -3,7 +3,7 @@ import UsageRatioModal from "./modals/UsageRatioModal";
 import ScrollToTopButton from "../../../components/ScrollToTopButton";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
-import useParkingSpaceRatio from "../../../hooks/UseRatioData";
+import useParkingSpaceRatio from "../../../hooks/useParkingSpaceRatio";
 
 import { GridItemHeader, GridItemList } from "./GridItem";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export default function UsageRatio() {
 
     const handleClickOpen = async (spaceId: string) => {
         const guardService = new GuardService();
-        let ratios = await guardService.getVacancyRatioOneWeek(spaceId);
+        const ratios = await guardService.getVacancyRatioOneWeek(spaceId);
         if (ratios && 'message' in ratios) {
             delete ratios.message;
         }

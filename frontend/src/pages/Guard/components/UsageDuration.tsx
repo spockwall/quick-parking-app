@@ -3,7 +3,7 @@ import ScrollToTopButton from "../../../components/ScrollToTopButton";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import UsageDurationModal from "./modals/UsageDurationModal";
-import useParkingSpaceDuration from "../../../hooks/UseDurationData";
+import useParkingSpaceDuration from "../../../hooks/useParkingSpaceDuration";
 
 import { useState } from "react";
 import { slots, floors } from "../../../data/parkingSlots";
