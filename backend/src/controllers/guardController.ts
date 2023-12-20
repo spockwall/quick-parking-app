@@ -14,6 +14,7 @@ import { recordSchema } from "../utils/validation";
 import redis from "../config/redisconfig";
 import amqp from "amqplib";
 import { connectRabbitMQ } from "../config/rabbitMQ";
+import { processEnterRecord } from "./messageProcessor";
 
 const RABBITMQ_SERVER = "amqp://guest:guest@localhost:5672"; // 替換為您的 RabbitMQ 服務器地址
 const QUEUE_NAME = "enterRecordQueue";
@@ -129,6 +130,21 @@ export const createEnterRecord = async (
   const channel = await connectRabbitMQ();
   const msg = JSON.stringify(req.body);
   channel.sendToQueue("enterRecordQueue", Buffer.from(msg));
+  channel.consume(
+    "enterRecordQueue",
+    async (msg) => {
+      if (msg) {
+        try {
+          const msgContent = msg.content.toString();
+          await processEnterRecord(JSON.parse(msgContent));
+          channel.ack(msg);
+        } catch (error) {
+          console.error("Error processing message:", error);
+        }
+      }
+    },
+    { noAck: false }
+  );
   res
     .status(202)
     .json({ message: "Request received, processing will start shortly." });

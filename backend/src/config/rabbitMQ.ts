@@ -1,7 +1,7 @@
 import amqp from "amqplib";
 
-// const amqpUrl = "amqp://127.0.0.1:5672";
-const amqpUrl = "amqp://rabbitmq:5672";
+const amqpUrl = "amqp://127.0.0.1:5672";
+// const amqpUrl = "amqp://34.207.79.90:5672";
 
 export const connectRabbitMQ = async () => {
   try {

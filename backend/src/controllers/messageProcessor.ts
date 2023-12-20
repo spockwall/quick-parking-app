@@ -16,22 +16,22 @@ const prisma = new PrismaClient();
 export const startProcessing = async () => {
   const channel = await connectRabbitMQ();
 
-  channel.consume(
-    "enterRecordQueue",
-    async (msg) => {
-      if (msg) {
-        try {
-          const msgContent = msg.content.toString();
-          await processEnterRecord(JSON.parse(msgContent));
-          channel.ack(msg);
-        } catch (error) {
-          console.error("Error processing message:", error);
-          // 可以考虑在这里添加错误处理逻辑，例如重新入队或记录错误
-        }
-      }
-    },
-    { noAck: false }
-  );
+  //   channel.consume(
+  //     "enterRecordQueue",
+  //     async (msg) => {
+  //       if (msg) {
+  //         try {
+  //           const msgContent = msg.content.toString();
+  //           await processEnterRecord(JSON.parse(msgContent));
+  //           channel.ack(msg);
+  //         } catch (error) {
+  //           console.error("Error processing message:", error);
+  //           // 可以考虑在这里添加错误处理逻辑，例如重新入队或记录错误
+  //         }
+  //       }
+  //     },
+  //     { noAck: false }
+  //   );
 };
 
 // 可以添加更多的处理函数或队列消费者
@@ -51,6 +51,7 @@ export const processEnterRecord = async (message: EnterRecordMessage) => {
     where: { spaceId },
   });
 
+  // console.log(parkingSpace);
   if (!parkingSpace) {
     throw new AppError("Resource not found", 404);
   }
@@ -105,5 +106,3 @@ export const processEnterRecord = async (message: EnterRecordMessage) => {
   // 返回记录（或其他处理，取决于您的业务逻辑）
   return record;
 };
-
-// 额外的辅助函数，例如 clearParkingSpacesListCache，需要根据您的实际需求定义

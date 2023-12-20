@@ -132,6 +132,7 @@ export const updateUser = async (
   res: Response
 ): Promise<void> => {
   const { userId } = req.params;
+  // console.log(userId);
 
   if (!userId) {
     throw new AppError("User ID is required for update", 400);
@@ -156,9 +157,9 @@ export const updateUser = async (
 
   if (decodedToken!.role === "admin" && decodedToken!.userId !== userId) {
     const newRole = updatedUser.role;
-    if (originalData!.role === "admin" && newRole !== "admin") {
-      throw new AppError("Can't edit other admins' role", 401);
-    }
+    // if (originalData!.role === "admin" && newRole !== "admin") {
+    //   throw new AppError("Can't edit other admins' role", 401);
+    // }
     const user = await prisma.user.update({
       where: { userId },
       data: {
