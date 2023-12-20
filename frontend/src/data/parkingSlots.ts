@@ -1,5 +1,5 @@
 export const floors = ["0 F", "1 F", "2 F", "3 F", "4 F", "5 F"];
-export const slots = ["Lot 1", "Lot 2", "Lot 3", "Lot 4", "Lot 5", "Lot 6", "Lot 7", "Lot 8"];
+export const slots = ["Lot 0", "Lot 1", "Lot 2", "Lot 3", "Lot 4", "Lot 5", "Lot 6", "Lot 7"];
 
 export const parkingSlots = {
     0: {

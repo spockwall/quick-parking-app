@@ -1,0 +1,14 @@
+待解決: 
+Usage Detail(是自己的車牌號碼的話 車子顏色變黃色)
+current status modal內容
+
+問題: 
+login handle back回checkrole??
+
+Staff:
+
+Guard: 
+call api問題
+duration 數值??
+history
+登入身分問題
