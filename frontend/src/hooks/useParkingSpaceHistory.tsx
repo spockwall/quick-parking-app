@@ -8,7 +8,9 @@ export default function useParkingSpaceHistory(spaceId: string): HistoryInfo[] {
         const getStatus = async () => {
             const guardService = new GuardService();
             const status = await guardService.getHitory(spaceId);
-            const currentDate = new Date();
+            const NowTime = new Date();
+            const NowTimeStr = String(NowTime.getFullYear()) + '-' + String(NowTime.getMonth()+1) + '-' + String(NowTime.getDate());
+            const currentDate = new Date(NowTimeStr);
             if (status && Array.isArray(status)) {
                 const filteredStatus = status
                     .filter(car => {
