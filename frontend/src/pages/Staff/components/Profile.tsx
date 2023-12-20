@@ -3,10 +3,13 @@ import useUserInfo from "../../../hooks/useUserInfo";
 import useAuth from "../../../hooks/useAuth";
 import InputField from "../../../components/InputField";
 import InputLPN from "../../../components/InputLPN";
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 import { ROLE } from "../../../enums";
 import { UserService } from "../../../services/userService";
 import { userInfo } from "@/types";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Profile(): JSX.Element {
     useAuth(ROLE.STAFF);
@@ -22,18 +25,20 @@ export default function Profile(): JSX.Element {
             <div className="w-3/4 sm:w-2/3 md:w-1/2 lg:w-2/5 flex flex-col m-auto mt-8 sm:mt-3">
                 <form
                     autoComplete="off"
-                    onSubmit={async () => {
+                    onSubmit={async (e) => {
+                        e.preventDefault();
                         setDisabled(true);
                         newUserInfo.password = password;
                         newUserInfo.licensePlates = newUserInfo.licensePlateNumbers;
                         const userService = new UserService();
                         const success = await userService.updateUserInfo(newUserInfo);
                         if (success) {
-                            // need to cache new user info to cache
+                            toast.success("Update successful!");
                             setUserInfo(newUserInfo);
                         } else alert("Update failed");
                     }}
                 >
+                    <ToastContainer />
                     <div>
                         <InputField title="Your ID" value={newUserInfo.userId} disabled />
                     </div>
