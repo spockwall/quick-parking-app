@@ -18,10 +18,15 @@ import useAuth from "../../../hooks/useAuth";
 import { ROLE } from "../../../enums";
 
 function formatDuration(seconds) {
-    const days = Math.floor(seconds / (24 * 60 * 60));
-    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
-    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+    const start = new Date(1970, 0, 1, 0, 0, 0, 0);
+    const currentTime = Math.floor(new Date().getTime() / 1000);
+    const secondsToNow = currentTime - Math.floor(start.getTime() / 1000);
 
+    const secondsLeft = secondsToNow - seconds;
+
+    const days = Math.floor(secondsLeft / (24 * 60 * 60));
+    const hours = Math.floor((secondsLeft % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((secondsLeft % (60 * 60)) / 60);
     if (days > 7) {
         return `${days} d ${hours} hr`;
     } else {
@@ -86,8 +91,11 @@ export default function Occupied(): JSX.Element {
                                     onClick={() =>
                                         navigate(`/staff/occupied/detail/?spaceId=${item.spaceId}`)
                                     }
-                                    bgColor={
+                                    bgcolor={
                                         isWarn ? '#E65345': undefined
+                                    }
+                                    bordercolor={
+                                        isWarn ? '#000000' : undefined
                                     }
 
                                 >

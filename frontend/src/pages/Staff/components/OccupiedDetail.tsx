@@ -15,7 +15,6 @@ const OccupiedDetail = () => {
         const searchParams = new URLSearchParams(location.search);
         const spaceId = searchParams.get("spaceId");
         setSpaceId(spaceId);
-
     }, [location.search]);
 
     if (!spaceId) {

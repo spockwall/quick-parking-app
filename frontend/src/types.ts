@@ -12,7 +12,6 @@ export interface parkingSpaceStatus {
     floor: number;
     slot: number;
     type: "general" | "disabledOnly";
-    licensePlateNumbers: string;
 }
 export interface userInfo {
     userId: string;
