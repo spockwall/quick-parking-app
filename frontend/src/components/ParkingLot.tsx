@@ -18,15 +18,15 @@ type ParkingLotPropsType = {
 export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
     const navigate = useNavigate();
 
-    const { floor, slot, modal, carlicense, usagehistory } = props;
+    const { floor, slot, carlicense, usagehistory } = props;
     // console.log(carlicense)
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [status, setStatus] = useState<parkingSpaceStatus>();
 
     const map = useParkingLotMap(floor, slot);
     const statusList = useParkingLotStatus(floor, slot);
-    
-    const carlicenseValue: string = carlicense || '';
+
+    const carlicenseValue: string = carlicense || "";
     const handleParkingSpaceClick = (currentStatus: parkingSpaceStatus) => {
         setOpenModal(true);
         setStatus(currentStatus);
@@ -37,9 +37,7 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
 
     return (
         <>
-            {openModal && (
-                <StatusModal status={status} openModal={openModal} onClose={() => setOpenModal(false)}></StatusModal>
-            )}
+            {openModal && <StatusModal status={status} openModal={openModal} onClose={() => setOpenModal(false)}></StatusModal>}
 
             <div className="border-2 border-blue-dark w-10/12 md:w-8/12 text-center mt-2 rounded-lg overflow-y-auto">
                 <table className="m-auto">
@@ -50,7 +48,7 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
                                     const currentStatus = statusList[col - 1];
                                     const curState = currentStatus?.state;
                                     const curType = currentStatus?.status;
-                                    
+
                                     return (
                                         <td key={j}>
                                             <ParkingSpace
@@ -61,6 +59,7 @@ export default function ParkingLot(props: ParkingLotPropsType): JSX.Element {
                                                     handleParkingSpaceClick(currentStatus);
                                                 }}
                                                 carlicense={carlicenseValue}
+                                                hover={false}
                                             ></ParkingSpace>
                                         </td>
                                     );

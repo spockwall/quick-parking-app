@@ -5,7 +5,7 @@ import RegisterStaff from "./pages/RegisterStaff.tsx";
 import RegisterGuard from "./pages/RegisterGuard.tsx";
 import CheckRole from "./pages/CheckRole/index.tsx";
 import Login from "./pages/Login.tsx";
-import Logout from "./pages/Logout/index.tsx";
+import Logout from "./pages/LogOut/index.tsx";
 import AddUser from "./pages/AddUser.tsx";
 import { Route, Routes } from "react-router-dom";
 export default function App() {
