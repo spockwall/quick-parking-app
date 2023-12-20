@@ -46,12 +46,13 @@ export default function UsageRatio() {
             <div className="mt-5 md:mb-2 text-2xl md:text-2xl text-blue-dark font-bold flex flex-col sm:flex-row sm:justify-around align-middle items-center w-4/5">
                 <div className="hidden sm:flex">Usage Ratio</div>
                 <div className="flex lg:w-1/3 gap-12 md:gap-9 mt-2 md:mt-0 mb-2 md:mb-0">
+                    <SelectMenu options={slots}
+                        selectedIndex={selectedSlotIndex}
+                        onSelectedIndexChanged={setSelectedSlotIndex} />
                     <SelectMenu options={floors} 
                         selectedIndex={selectedFloorIndex}
                         onSelectedIndexChanged={setSelectedFloorIndex} />
-                    <SelectMenu options={slots} 
-                        selectedIndex={selectedSlotIndex}
-                        onSelectedIndexChanged={setSelectedSlotIndex}/>
+                    
                 </div>
             </div>
 

@@ -11,6 +11,19 @@ import { useLocation } from "react-router-dom";
 import { commonButtonClass4 } from "../styles/commonStyles";
 import { ROLE } from "../enums";
 
+const selectRouteText = (currentRoute?: string) => {
+    switch (currentRoute) {
+        case "staff":
+            return "Staff";
+        case "guard":
+            return "Guard";
+        case "admin":
+            return "Admin";
+        default:
+            return "Error";
+    }
+};
+
 export default function Login(): JSX.Element {
     const { login } = useAuth("any");
     const [id, setId] = useState("");
@@ -19,6 +32,9 @@ export default function Login(): JSX.Element {
     const location = useLocation();
     const navigate = useNavigate();
     const role = location.state?.role;
+
+    const currentRoute = location.pathname.split("/").pop();
+    const routeText = selectRouteText(currentRoute);
 
     const handleBack = useCallback(() => {
         navigate("/checkrole");
@@ -33,6 +49,12 @@ export default function Login(): JSX.Element {
         if (token !== null) {
             const user = await userService.getUserInfo(id);
             const isFirstLogin = await loginService.checkFirstLogin(user);
+
+            // add check user role match
+            if (user.role !== role) {
+                navigate("/checkrole");
+            }
+
             login(token, role);
             setUserInfo(user);
             // If first time login, redirect to register page,
@@ -80,8 +102,9 @@ export default function Login(): JSX.Element {
                 </div>
 
                 {/* Log In */}
-                <div className="flex flex-col items-center text-white text-3xl sm:text-4xl">
-                    <div className="flex items-center font-bold mt-8">Log In</div>
+                <div className="flex flex-col items-center ">
+                    <div className="flex items-center font-bold mt-6 text-white text-3xl sm:text-4xl">Log In</div>
+                    <div className="flex items-center font-bold mt-6 text-blue text-xl sm:text-2xl">{routeText}</div>
                 </div>
 
                 {/* Info */}
