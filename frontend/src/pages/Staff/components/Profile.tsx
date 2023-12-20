@@ -3,13 +3,13 @@ import useUserInfo from "../../../hooks/useUserInfo";
 import useAuth from "../../../hooks/useAuth";
 import InputField from "../../../components/InputField";
 import InputLPN from "../../../components/InputLPN";
-import { ToastContainer } from 'react-toastify';
-import { toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { ROLE } from "../../../enums";
 import { UserService } from "../../../services/userService";
 import { userInfo } from "@/types";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Profile(): JSX.Element {
     useAuth(ROLE.STAFF);
@@ -35,10 +35,12 @@ export default function Profile(): JSX.Element {
                         if (success) {
                             toast.success("Update successful!");
                             setUserInfo(newUserInfo);
-                        } else alert("Update failed");
+                        } else toast.error("Update failed!");
                     }}
                 >
-                    <ToastContainer />
+                    <ToastContainer 
+                        toastClassName="w-2/3 m-auto mt-3"
+                        />
                     <div>
                         <InputField title="Your ID" value={newUserInfo.userId} disabled />
                     </div>
