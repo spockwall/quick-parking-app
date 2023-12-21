@@ -65,6 +65,7 @@ export const createUser = async (
     userId: newUser.userId,
     password: newUser.password,
     role: newUser.role,
+    status: Status.common,
   };
 
   const user = await prisma.user.create({ data: userData });
@@ -148,6 +149,7 @@ export const updateUser = async (
     where: { userId: updatedUser.userId },
     select: {
       role: true,
+      // status: true,
       licensePlates: { select: { licensePlateNumber: true } },
     },
   });
@@ -160,6 +162,7 @@ export const updateUser = async (
     // if (originalData!.role === "admin" && newRole !== "admin") {
     //   throw new AppError("Can't edit other admins' role", 401);
     // }
+    // console.log(originalData.status);
     const user = await prisma.user.update({
       where: { userId },
       data: {
@@ -214,10 +217,12 @@ export const updateUser = async (
     updatedUser.password = await encryptPswd(updatedUser.password);
   }
 
+  // const { status, ...updateUser } = updatedUser;
   const user = await prisma.user.update({
     where: { userId: updatedUser.userId },
     data: {
       ...updatedUser,
+      // status: originalData.status || ("common" as Status),
     },
   });
 
